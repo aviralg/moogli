@@ -22,7 +22,7 @@ static const uint qt_meta_data_Viewer[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       2,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -34,13 +34,17 @@ static const uint qt_meta_data_Viewer[] = {
 
  // slots: signature, parameters, type, tag, flags
       33,    7,    7,    7, 0x0a,
+      95,   91,   44,    7, 0x0a,
+     128,  118,    7,    7, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_Viewer[] = {
     "Viewer\0\0id\0selected(const char*)\0"
-    "updateGL()\0"
+    "updateGL()\0osgUtil::LineSegmentIntersector::Intersections\0"
+    "x,y\0intersections(int,int)\0start,end\0"
+    "intersections(osg::Vec3f,osg::Vec3f)\0"
 };
 
 void Viewer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -51,6 +55,9 @@ void Viewer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         switch (_id) {
         case 0: _t->selected((*reinterpret_cast< const char*(*)>(_a[1]))); break;
         case 1: _t->updateGL(); break;
+        case 2: { osgUtil::LineSegmentIntersector::Intersections _r = _t->intersections((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])));
+            if (_a[0]) *reinterpret_cast< osgUtil::LineSegmentIntersector::Intersections*>(_a[0]) = _r; }  break;
+        case 3: _t->intersections((*reinterpret_cast< const osg::Vec3f(*)>(_a[1])),(*reinterpret_cast< const osg::Vec3f(*)>(_a[2]))); break;
         default: ;
         }
     }
@@ -90,9 +97,9 @@ int Viewer::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 2)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 2;
+        _id -= 4;
     }
     return _id;
 }

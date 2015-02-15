@@ -58,6 +58,7 @@
 #include <osgQt/GraphicsWindowQt>
 
 #include <osgGA/TrackballManipulator>
+#include <osgGA/MultiTouchTrackballManipulator>
 #include <osgGA/FirstPersonManipulator>
 #include <osgGA/OrbitManipulator>
 #include <osgGA/FlightManipulator>

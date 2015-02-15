@@ -4,6 +4,7 @@ std::unordered_map<unsigned int, osg::ref_ptr<osg::Vec3Array> > Shape::_polygons
 std::unordered_map<unsigned int, osg::ref_ptr<osg::DrawElementsUShort> > Shape::_basal_triangles;
 std::unordered_map<unsigned int, osg::ref_ptr<osg::DrawElementsUShort> > Shape::_axial_triangles;
 //std
+std::unordered_map<uint, osg::ref_ptr<osg::Vec3Array> > Shape::_regular_polygon_cache;
 
 const osg::Vec3Array *
 Shape::regular_polygon(unsigned int vertices)
@@ -56,7 +57,7 @@ Shape::axial_triangle(unsigned int vertices)
 
     unsigned int axial_triangle_count = 2 * vertices;
     unsigned int axial_triangle_vertex_count = axial_triangle_count * 3;
-    unsigned int i, j, k, l, m, n, o;
+    unsigned int i = 0, j = 0, k = 0, l = 0, m = 0, n = 0, o = 0;
     osg::DrawElementsUShort * axial_triangle = new osg::DrawElementsUShort(GL_TRIANGLES, axial_triangle_vertex_count);
 
     for(i = 0; i < vertices; ++i)
@@ -83,6 +84,399 @@ Shape::axial_triangle(unsigned int vertices)
     Shape::_axial_triangles[vertices] = axial_triangle;
     return axial_triangle;
 }
+
+
+osg::Vec3f
+Shape::face_normal(osg::Vec3f x, osg::Vec3f y, osg::Vec3f z)
+{
+    return (y - x) ^ (z - y);
+}
+
+
+void
+Shape::fill_regular_polygon( osg::Vec3Array * T
+                           , uint index
+                           , uint vertices
+                           , float radius
+                           , const osg::Vec3f & center
+                           , const osg::Vec3f & D
+                           )
+{
+    // Fill vector T with the coordinates of a radial_segments sided regular polygon of radius 'radius' centered at 'center' with axis 'axis'
+    // starting from index t.
+    // A cache is used to speed up generation of coordinates. The cache ensures that sine and cosine operations are not recomputed and that only basic vector operations are required at each step.
+    // generates the unit polygons in such a way that the first point is guaranteed to be in the XZ plane.
+
+    std::unordered_map<uint, osg::ref_ptr<osg::Vec3Array> >::const_iterator result = _regular_polygon_cache.find(vertices);
+    osg::Vec3Array * P;
+    if(result != _regular_polygon_cache.end()) { P = result -> second.get(); }
+    else
+    {
+        P = new osg::Vec3Array(vertices);
+        float delta_theta = 2 * osg::PI / vertices;
+        float theta;
+        for(uint i = 0; i < vertices; ++i)
+          {
+            theta = i * delta_theta;
+            (*P)[i] = osg::Vec3f(cos(theta) , sin(theta) , 0.0f);
+          }
+        _regular_polygon_cache[vertices] = P;
+    }
+
+    osg::Vec3f U(D.z(), 0.0f, -D.x());
+    float l = U.length();
+
+    if(l == 0.0f) { U = osg::Vec3f(1.0f, 0.0f, 0.0f); }
+    else          { U = U / l; }
+
+    osg::Vec3f V = D ^ U;
+
+    for(size_t i = 0; i < vertices; ++i)
+    {
+        (*T)[index + i] =  U * (*P)[i][0] * radius
+                        +  V * (*P)[i][1] * radius
+                        + center;
+    }
+}
+
+void
+Shape::fill_surface_triangles( osg::DrawElementsUShort * I
+                             , uint axial_segments
+                             , uint radial_segments
+                             )
+{
+    size_t triangle_index = 0;
+    size_t rows = I -> size() / ( 6 * radial_segments);
+    size_t row, col;
+    for(row = 0; row < rows - 1; ++row)
+    {
+        for(col = 0 ; col < radial_segments; ++col)
+        {
+            /*************************************
+
+            d---------------c
+            |               |
+            |               |
+            |               |
+            |               |
+            |               |
+            |               |
+            a---------------b
+
+            ***************************************/
+            ushort a = row * radial_segments + col;
+            ushort b = a + 1;
+            ushort d = a + radial_segments;
+            ushort c = d + 1;
+            // std::cerr << a <<" " << b << " " << c << " " << d << std::endl;
+            (*I)[triangle_index    ] = a;
+            (*I)[triangle_index + 1] = b;
+            (*I)[triangle_index + 2] = d;
+
+            (*I)[triangle_index + 3] = d;
+            (*I)[triangle_index + 4] = b;
+            (*I)[triangle_index + 5] = c;
+            triangle_index += 6;
+        }
+
+        (*I)[triangle_index - 1]     = (row + 1) * radial_segments;
+        (*I)[triangle_index - 2]     = row       * radial_segments;
+        (*I)[triangle_index - 5]     = row       * radial_segments;
+    }
+}
+
+void
+Shape::fill_surface_normals( osg::Vec3Array * V
+                           , osg::Vec3Array * N
+                           , uint axial_segments
+                           , uint radial_segments
+                           )
+{
+    size_t rows = V -> size() / radial_segments;
+    size_t row, col;
+    size_t current_index;
+    ushort a;
+    ushort b;
+    ushort e;
+    ushort d;
+    ushort c;
+    ushort f;
+    ushort g;
+    ushort h;
+    ushort i;
+
+    /*****************************************
+        d---------------c---------------f
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        a---------------b---------------e
+
+      ***************************************/
+      row = 0;
+      col = 0;
+
+      b = row * radial_segments;
+      e = b + 1;
+      a = b + radial_segments - 1;
+      d = a + radial_segments;
+      c = b + radial_segments;
+      f = e + radial_segments;
+      (*N)[b] = face_normal((*V)[a], (*V)[b], (*V)[d])
+              + face_normal((*V)[d], (*V)[b], (*V)[c])
+              + face_normal((*V)[b], (*V)[e], (*V)[c]);
+      (*N)[b].normalize();
+
+      for(col = 1; col < radial_segments - 1; ++col)
+      {
+            /*************************************
+
+        d---------------c---------------f
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        a---------------b---------------e
+
+            ***************************************/
+            b = row * radial_segments + col;
+            a = b - 1;
+            e = b + 1;
+            d = a + radial_segments;
+            c = b + radial_segments;
+            f = e + radial_segments;
+            // std::cerr << a <<" " << b << " " << c << " " << d << std::endl;
+            (*N)[b] = face_normal((*V)[a], (*V)[b], (*V)[d])
+                    + face_normal((*V)[d], (*V)[b], (*V)[c])
+                    + face_normal((*V)[b], (*V)[e], (*V)[c]);
+            (*N)[b].normalize();
+        }
+
+      /*************************************
+        d---------------c---------------f
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        a---------------b---------------e
+      ***************************************/
+
+
+      b = row * radial_segments + col;
+      e = row * radial_segments;
+      a = b - 1;
+      d = a + radial_segments;
+      c = b + radial_segments;
+      f = e + radial_segments;
+      (*N)[b] = face_normal((*V)[a], (*V)[b], (*V)[d])
+              + face_normal((*V)[d], (*V)[b], (*V)[c])
+              + face_normal((*V)[b], (*V)[e], (*V)[c]);
+      (*N)[b].normalize();
+
+    for(row = 1; row < rows - 1; ++row)
+    {
+
+      /*************************************
+        d---------------c---------------f
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        a---------------b---------------e
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        g---------------h---------------i
+
+      ***************************************/
+
+      col = 0;
+
+      b = row * radial_segments;
+      e = b + 1;
+      a = b + radial_segments - 1;
+      d = a + radial_segments;
+      c = b + radial_segments;
+      f = e + radial_segments;
+      g = a - radial_segments;
+      h = b - radial_segments;
+      i = e - radial_segments;
+      (*N)[b] = face_normal((*V)[a], (*V)[b], (*V)[d])
+              + face_normal((*V)[d], (*V)[b], (*V)[c])
+              + face_normal((*V)[h], (*V)[i], (*V)[b])
+              + face_normal((*V)[b], (*V)[i], (*V)[e])
+              + face_normal((*V)[a], (*V)[h], (*V)[b])
+              + face_normal((*V)[b], (*V)[e], (*V)[c]);
+      (*N)[b].normalize();
+ 
+      for(col = 1; col < radial_segments - 1; ++col)
+      {
+            /*************************************
+
+            d---------------c---------------f
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            a---------------b---------------e
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            g---------------h---------------i
+
+            ***************************************/
+            b = row * radial_segments + col;
+            a = b - 1;
+            e = b + 1;
+            d = a + radial_segments;
+            c = b + radial_segments;
+            f = e + radial_segments;
+            g = a - radial_segments;
+            h = b - radial_segments;
+            i = e - radial_segments;
+            // std::cerr << a <<" " << b << " " << c << " " << d << std::endl;
+            (*N)[b] = face_normal((*V)[a], (*V)[b], (*V)[d])
+                                + face_normal((*V)[d], (*V)[b], (*V)[c])
+                                + face_normal((*V)[h], (*V)[i], (*V)[b])
+                                + face_normal((*V)[b], (*V)[i], (*V)[e])
+                                + face_normal((*V)[a], (*V)[h], (*V)[b])
+                                + face_normal((*V)[b], (*V)[e], (*V)[c]);
+            (*N)[b].normalize();
+        }
+
+      /*************************************
+        d---------------c---------------f
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        a---------------b---------------e
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        g---------------h---------------i
+
+      ***************************************/
+
+
+      b = row * radial_segments + col;
+      e = row * radial_segments;
+      a = b - 1;
+      d = a + radial_segments;
+      c = b + radial_segments;
+      f = e + radial_segments;
+      g = a - radial_segments;
+      h = b - radial_segments;
+      i = e - radial_segments;
+      (*N)[b] = face_normal((*V)[a], (*V)[b], (*V)[d])
+              + face_normal((*V)[d], (*V)[b], (*V)[c])
+              + face_normal((*V)[h], (*V)[i], (*V)[b])
+              + face_normal((*V)[b], (*V)[i], (*V)[e])
+              + face_normal((*V)[a], (*V)[h], (*V)[b])
+              + face_normal((*V)[b], (*V)[e], (*V)[c]);
+      (*N)[b].normalize();
+ 
+    }
+
+      /*************************************
+        a---------------b---------------e
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        g---------------h---------------i
+
+      ***************************************/
+
+      col = 0;
+
+      b = row * radial_segments;
+      e = b + 1;
+      a = b + radial_segments - 1;
+      g = a - radial_segments;
+      h = b - radial_segments;
+      i = e - radial_segments;
+      (*N)[b] = face_normal((*V)[h], (*V)[i], (*V)[b])
+              + face_normal((*V)[b], (*V)[i], (*V)[e])
+              + face_normal((*V)[a], (*V)[h], (*V)[b]);
+      (*N)[b].normalize();
+ 
+      for(col = 1; col < radial_segments - 1; ++col)
+      {
+            /*************************************
+
+            a---------------b---------------e
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            g---------------h---------------i
+
+            ***************************************/
+            b = row * radial_segments + col;
+            a = b - 1;
+            e = b + 1;
+            g = a - radial_segments;
+            h = b - radial_segments;
+            i = e - radial_segments;
+            // std::cerr << a <<" " << b << " " << c << " " << d << std::endl;
+            (*N)[b] = face_normal((*V)[h], (*V)[i], (*V)[b])
+                    + face_normal((*V)[b], (*V)[i], (*V)[e])
+              + face_normal((*V)[a], (*V)[h], (*V)[b]);
+            (*N)[b].normalize();
+        }
+
+      /*************************************
+        a---------------b---------------e
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        g---------------h---------------i
+
+      ***************************************/
+
+
+      b = row * radial_segments + col;
+      e = row * radial_segments;
+      a = b - 1;
+      g = a - radial_segments;
+      h = b - radial_segments;
+      i = e - radial_segments;
+      (*N)[b] = face_normal((*V)[h], (*V)[i], (*V)[b])
+              + face_normal((*V)[b], (*V)[i], (*V)[e])
+              + face_normal((*V)[a], (*V)[h], (*V)[b]);
+      (*N)[b].normalize();
+}
+
 
 Shape::Shape(const string & id): _outline(new osgFX::Outline())
                                , _cartoon(new osgFX::Cartoon())
@@ -119,7 +513,7 @@ Shape::Shape(const string & id): _outline(new osgFX::Outline())
 const std::string &
 Shape::id() const
 {
-    return _geometry -> getName();
+    return root -> getName();
 }
 // void
 // Shape::allocate()
@@ -492,4 +886,6 @@ Shape::~Shape()
 //     (*V)[index + i] = ((*polygon)[i] * radius) * rotation + center;
 //   }
 // }
+//_fill_regular_polygon(V0, 0, radial_segments, this -> radius, this -> distal, dc);
+
 

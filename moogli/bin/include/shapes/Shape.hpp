@@ -19,6 +19,31 @@ public:
     static const osg::DrawElementsUShort *
     axial_triangle(unsigned int vertices);
 
+    static osg::Vec3f
+    face_normal(osg::Vec3f x, osg::Vec3f y, osg::Vec3f z);
+
+    static void
+    fill_regular_polygon( osg::Vec3Array * V
+                        , uint index
+                        , uint vertices
+                        , float radius
+                        , const osg::Vec3f & center
+                        , const osg::Vec3f & D
+                        );
+
+    static void
+    fill_surface_normals( osg::Vec3Array * V
+                        , osg::Vec3Array * N
+                        , uint axial_segments
+                        , uint radial_segments
+                        );
+
+    static void
+    fill_surface_triangles( osg::DrawElementsUShort * I
+                          , uint axial_segments
+                          , uint radial_segments
+                          );
+
     osg::ref_ptr<osg::Node> root;
 
     Shape(const string & id);
@@ -179,6 +204,7 @@ protected:
     osg::ref_ptr<osgFX::SpecularHighlights> _specular_highlights;
     osg::ref_ptr<osg::Geode> _geode;
     osg::ref_ptr<osg::Geometry> _geometry;
+    static std::unordered_map<uint, osg::ref_ptr<osg::Vec3Array> > _regular_polygon_cache;
 
 public:
 

@@ -10,18 +10,22 @@ https://docs.python.org/2/distutils/apiref.html
 http://stackoverflow.com/questions/3207219/how-to-list-all-files-of-a-directory-in-python
 """
 
-print """
+print("""
 Please ensure the following libraries are installed in case the
 installation of this library fails -
 
-print 1) python-qt4-dev
-print 2)
-print 3)
-print 4)
-print 5)
-print 6)
-print 7)
-"""
+1) libpython-dev
+1) python-qt4-dev
+2) libqt4-dev
+3) libopenscenegraph-dev
+4) python-sip-dev
+5) python-qt4-gl
+6) python-matplotlib
+
+Ubuntu -
+=========
+sudo -E apt-get install libpython-dev python-qt4-dev libqt4-dev libopenscenegraph-dev python-sip-dev python-qt4-gl python-matplotlib
+""")
 
 from setuptools import setup, Extension
 from PyQt4 import pyqtconfig
@@ -118,14 +122,18 @@ moogli = Extension(name="moogli.core._moogli",
                        #      "moogli/bin/src/utility/numerics.cpp",
                        #      "moogli/bin/src/callbacks/CaptureView.cpp",
                        #      "moogli/bin/moc/NetworkViewer.moc.cpp",
+                            "moogli/bin/src/view/Viewer.cpp",
                             "moogli/bin/src/shapes/Shape.cpp",
+                            "moogli/bin/src/shapes/CatmullRom.cpp",
                             "moogli/bin/src/shapes/Frustum.cpp",
                             "moogli/bin/src/shapes/Sphere.cpp",
                             "moogli/bin/src/shapes/EllipsoidalSurface.cpp",
                             "moogli/bin/src/widgets/ColorBar.cpp",
+                            "moogli/bin/moc/View.moc.cpp",
+                            "moogli/bin/src/view/CompositeView.cpp",
+                            "moogli/bin/src/view/CompositeViewer.cpp",
                             "moogli/bin/src/view/View.cpp",
                             "moogli/bin/moc/Viewer.moc.cpp",
-                            "moogli/bin/src/view/Viewer.cpp",
                             "moogli/bin/sip/moogli.sip"
                    ],
                    include_dirs=include_dirs,

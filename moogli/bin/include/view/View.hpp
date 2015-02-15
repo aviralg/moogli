@@ -4,8 +4,9 @@
 #include "utility/libraries.hpp"
 #include "widgets/ColorBar.hpp"
 
-class MeshView
+class MeshView: public QObject
 {
+  Q_OBJECT
 public:
     MeshView();
 
@@ -41,6 +42,9 @@ public:
 
     osg::Camera *
     create_orthographic_projection_camera();
+
+    bool
+    event(QEvent * event);
 
     void
     set_background_color(const osg::Vec4f & background_color);

@@ -1,9 +1,21 @@
 import PyQt4
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import Qt
 import math
 import moogli.core._moogli
+#from moogli.core._moogli import CompositeView
+from moogli.core._moogli import CompositeViewer
 
+
+TOP_LEFT = "TOP_LEFT"
+TOP_RIGHT = "TOP_RIGHT"
+BOTTOM_LEFT = "BOTTOM_LEFT"
+BOTTOM_RIGHT = "BOTTOM_RIGHT"
+
+class CompositeView(moogli.core._moogli.CompositeView):
+    def setParent(self, parent):
+        print "called"
+        super(CompositeView, self).setParent(parent)
 
 class View(moogli.core._moogli.MeshView):
     def __init__(self,
@@ -28,6 +40,69 @@ class View(moogli.core._moogli.MeshView):
         self._done = False
         self._pause = False
         self._viewer = None
+
+    # def event(self, event):
+    #     print "called"
+    #     if event.type = QEvent.KeyPress:
+    #         self.keyPressEvent(event)
+    #     super(View, self).event(event)
+
+
+    def keyPressEvent(self, event):
+        key = event.key()
+        # modifiers = QtGui.QApplication.keyboardModifiers()
+        control_pressed = event.modifiers() & Qt.ControlModifier == Qt.ControlModifier
+        shift_pressed = event.modifiers() & Qt.ShiftModifier == Qt.ShiftModifier
+
+        if key == Qt.Key_Q and control_pressed:
+            QtGui.QApplication.quit()
+        elif key == Qt.Key_W and control_pressed:
+            QtGui.QApplication.quit()
+        elif key == Qt.Key_Space:
+            self.home()
+        elif key == Qt.Key_Up:
+            self.up(self.up_distance)
+        elif key == Qt.Key_Down:
+            self.down(self.down_distance)
+        elif key == Qt.Key_Left:
+            self.left(self.left_distance)
+        elif key == Qt.Key_Right:
+            self.right(self.right_distance)
+        elif key == Qt.Key_F:
+            self.forward(self.forward_distance)
+        elif key == Qt.Key_B:
+            self.backward(self.backward_distance)
+        elif key == Qt.Key_Plus:
+            self.zoom(self.zoom_factor)
+        elif key == Qt.Key_Equal:
+            self.zoom(self.zoom_factor)
+        elif key == Qt.Key_Period:
+            self.zoom(self.zoom_factor)
+        elif key == Qt.Key_Greater:
+            self.zoom(self.zoom_factor)
+        elif key == Qt.Key_Minus:
+            self.zoom(-self.zoom_factor)
+        elif key == Qt.Key_Underscore:
+            self.zoom(-self.zoom_factor)
+        elif key == Qt.Key_Comma:
+            self.zoom(-self.zoom_factor)
+        elif key == Qt.Key_Less:
+            self.zoom(-self.zoom_factor)
+        elif key == Qt.Key_R:
+            if shift_pressed:
+                self.roll(-self.roll_angle)
+            else:
+                self.roll(self.roll_angle)
+        elif key == Qt.Key_P:
+            if shift_pressed:
+                self.pitch(-self.pitch_angle)
+            else:
+                self.pitch(self.pitch_angle)
+        elif key == Qt.Key_Y:
+            if shift_pressed:
+                self.yaw(-self.yaw_angle)
+            else:
+                self.yaw(self.yaw_angle)
 
     def viewer(self):
         return self._viewer
@@ -77,8 +152,9 @@ class Viewer(moogli.core._moogli.Viewer):
     def __init__(self, id):
         self._id = id
         super(Viewer, self).__init__()
+        super(Viewer, self).initializeGL()
         self.setMouseTracking(True)
-        self.groups     = set()
+        self.groups = set()
         self._views = dict()
         self._meshes = set()
         self.roll_angle = math.pi / 36.0
@@ -91,6 +167,10 @@ class Viewer(moogli.core._moogli.Viewer):
         self.right_distance = 10.0
         self.up_distance = 10.0
         self.down_distance = 10.0
+        self.setMouseTracking(True)
+        self._timer = QtCore.QTimer()
+        self._timer.start(0)
+        self._timer.timeout.connect(self.updateGL)
 
     def id(self):
         return self._id
@@ -110,6 +190,18 @@ class Viewer(moogli.core._moogli.Viewer):
     def run(self):
         [view.run() for view in self._views.values()]
 
+    # def event(self, event):
+    #     print "hello"
+    #     for child in self.children():
+    #         child.event(event)
+    #     return super(Viewer, self).event(event)
+    #     return super(Viewer, self).event(event)
+    #     self.update()
+    #    self.updateGL()
+    #     return event
+    #     #return super(Viewer, self).event(event)
+    # #     return True
+
     def resizeEvent(self, event):
         super(Viewer, self).resizeEvent(event)
         for view in self._views.values():
@@ -119,6 +211,7 @@ class Viewer(moogli.core._moogli.Viewer):
         #self.updateGL()
         if view in self._views.values(): return
         super(Viewer, self).attach_view(view)
+        view.setParent(self)
         self._views[view.id()] = view
         view._viewer = self
         print "Here"
@@ -150,7 +243,9 @@ class Viewer(moogli.core._moogli.Viewer):
         map(self.detach_shape, shapes)
 
     def home(self):
-        [view.home() for view in self._views.values()]
+        return
+        print self.children()
+        [view.home() for view in self.children()]
 
     def forward(self, distance_delta):
         [view.forward(distance_delta) for view in self._views.values()]
@@ -183,7 +278,7 @@ class Viewer(moogli.core._moogli.Viewer):
         [view.yaw(angle) for view in self._views.values()]
 
     def keyPressEvent(self, event):
-        #super(Viewer, self).event(event)
+        return super(Viewer, self).event(event)
         key = event.key()
         # modifiers = QtGui.QApplication.keyboardModifiers()
         control_pressed = event.modifiers() & Qt.ControlModifier == Qt.ControlModifier

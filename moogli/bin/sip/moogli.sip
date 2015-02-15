@@ -3,6 +3,58 @@
 %Import QtGui/QtGuimod.sip
 %Import QtOpenGL/QtOpenGLmod.sip
 
+%ModuleHeaderCode
+#include <osg/Geometry>
+#include <osgUtil/LineSegmentIntersector>
+#include <iostream>
+#include <Python.h>
+PyObject *
+intersections_to_tuple_of_pairs(const osgUtil::LineSegmentIntersector::Intersections & intersections);
+%End
+
+%ModuleCode
+#include <osg/Geometry>
+#include <osgUtil/LineSegmentIntersector>
+#include <iostream>
+#include <Python.h>
+
+PyObject *
+intersections_to_tuple_of_pairs(const osgUtil::LineSegmentIntersector::Intersections & intersections)
+{
+    PyObject * tuple = PyTuple_New(intersections.size());
+    uint index = 0;
+    for(const osgUtil::LineSegmentIntersector::Intersection & hit : intersections)
+    {
+         std::cerr << hit.drawable -> className() << std::endl;
+         osg::Geometry * geometry = hit.drawable -> asGeometry();
+         if(geometry)
+         {
+             PyObject * pair = PyTuple_New(2);
+             PyTuple_SET_ITEM( pair
+                             , 0
+                             , PyString_FromString(geometry -> getName().c_str())
+                             );
+             
+             osg::Vec3f * point = new osg::Vec3f( hit.getWorldIntersectPoint().x()
+                                                , hit.getWorldIntersectPoint().y()
+                                                , hit.getWorldIntersectPoint().z()
+                                                );
+             PyTuple_SET_ITEM( pair
+                             , 1
+                             , sipConvertFromType( point 
+                                                 , sipFindType("Vec3f")
+                                                 , Py_None
+                                                 )
+                             );
+
+             PyTuple_SET_ITEM(tuple, index, pair);
+             index += 1;
+         }
+    }
+    return tuple;
+}
+%End
+
 class Vec2i
 {
 %TypeHeaderCode
@@ -1178,6 +1230,32 @@ public:
 };
 
 
+class CatmullRom : public Shape
+{
+%TypeHeaderCode
+#include "shapes/CatmullRom.hpp"
+%End
+
+public:
+
+    CatmullRom( const char * id
+              , const Vec3f & distal
+              , float radius
+              );
+
+    void
+    set_color(const Vec4f & color);
+
+    const Vec4f &
+    get_color() const;
+
+    void
+    _interpolate_root_node_to_leaf_node( CatmullRom * child
+                                       , const uint   axial_segments
+                                       , const uint   radial_segments
+                                       );
+};
+
 class ColorBar
 {
 %TypeHeaderCode
@@ -1310,7 +1388,7 @@ public:
     get_label_formatting_precision() const;
 };
 
-class MeshView 
+class MeshView : public QObject
 {
 %TypeHeaderCode
 #include "view/View.hpp"
@@ -1318,6 +1396,9 @@ class MeshView
 
 public:
     MeshView();
+
+    bool
+    event(QEvent * event);
 
     void
     set_position(const Vec2f & position);
@@ -1381,32 +1462,55 @@ public:
 
 };
 
+class GLWidget : public QGLWidget
+{
+%TypeHeaderCode
+#include <osgQt/GraphicsWindowQt>
+using namespace osgQt;
+%End
 
+public:
+    GLWidget( QWidget* parent = NULL, const QGLWidget* shareWidget = NULL, Qt::WindowFlags f = 0, bool forwardKeyEvents = false );
+    GLWidget( QGLContext* context, QWidget* parent = NULL, const QGLWidget* shareWidget = NULL, Qt::WindowFlags f = 0, bool forwardKeyEvents = false );
+    GLWidget( const QGLFormat& format, QWidget* parent = NULL, const QGLWidget* shareWidget = NULL, Qt::WindowFlags f = 0, bool forwardKeyEvents = false );
+    virtual ~GLWidget();
 
-class Viewer : public QGLWidget
+    bool getForwardKeyEvents() const; 
+    virtual void setForwardKeyEvents( bool f );
+    
+    void setKeyboardModifiers( QInputEvent* event );
+
+    virtual void keyPressEvent( QKeyEvent* event );
+    virtual void keyReleaseEvent( QKeyEvent* event );
+    virtual void mousePressEvent( QMouseEvent* event );
+    virtual void mouseReleaseEvent( QMouseEvent* event );
+    virtual void mouseDoubleClickEvent( QMouseEvent* event );
+    virtual void mouseMoveEvent( QMouseEvent* event );
+    virtual void wheelEvent( QWheelEvent* event );
+    //virtual bool gestureEvent( QGestureEvent* event );
+
+protected:
+
+    virtual void resizeEvent( QResizeEvent* event );
+    virtual void moveEvent( QMoveEvent* event );
+    virtual void glDraw();
+    virtual bool event( QEvent* event );
+};
+
+class Viewer : public GLWidget
 {
 %TypeHeaderCode
 #include "view/Viewer.hpp"
+using namespace osgQt;
 %End
 
 public:
 
-    Viewer( QWidget * parent = nullptr
+    Viewer( const QGLFormat & format
+          , QWidget * parent = nullptr
           , const QGLWidget * share_widget = nullptr
           , Qt::WindowFlags f = 0
           );
-
-    PyObject *
-    get_view_with_focus();
-    %MethodCode
-        sipRes = PyString_FromString(sipCpp -> get_view_with_focus() -> getName().c_str());
-    %End
-
-    void
-    detach_view(MeshView * mesh_view);
- 
-    void
-    attach_view(MeshView * mesh_view);
 
     void
     attach_shape(Shape * shape);
@@ -1414,21 +1518,142 @@ public:
     void
     detach_shape(Shape * shape);
 
-protected:
     void
+    set_background_color(const Vec4f & background_color);
+
+    const Vec4f &
+    get_background_color();
+
+ 
+protected:
+    virtual void
     initializeGL();
 
     void
     paintGL();
 
-    bool
-    event(QEvent * event);
-
 public Q_SLOTS:
     void
     updateGL();
 
+    PyObject *
+    intersections(int x, int y);
+    %MethodCode
+        std::cerr << "Called int sip function" << std::endl;
+        const auto result = sipCpp -> intersections(a0, a1);
+        sipRes = intersections_to_tuple_of_pairs(result);
+        // const auto result = sipCpp -> intersections((int)(a0), (int)(a1));
+        // sipRes = PyTuple_New(result.size());
+        // for(uint i = 0; i < result.size(); ++i)
+        // {
+        //     PyTuple_SET_ITEM(sipRes, i, PyString_FromString(result[i].c_str()));
+        // }
+    %End
+
+    PyObject *
+    intersections(const Vec3f & start, const Vec3f & end);
+    %MethodCode
+        const auto result = sipCpp -> intersections(*a0, *a1);
+        sipRes = intersections_to_tuple_of_pairs(result);
+    %End
+
 signals:
     void
     selected(const char * id);
+};
+
+
+class CompositeView : public GLWidget
+{
+%TypeHeaderCode
+#include "view/CompositeView.hpp"
+using namespace osgQt;
+%End
+
+public:
+
+    CompositeView( QWidget * parent = nullptr
+                 , const QGLWidget * share_widget = nullptr
+                 , Qt::WindowFlags f = 0
+                 );
+
+    void
+    attach_shape(Shape * shape);
+
+    void
+    detach_shape(Shape * shape);
+
+    const Vec4f &
+    get_background_color();
+
+    void
+    set_background_color(const Vec4f & background_color);
+
+    void
+    attach_color_bar(ColorBar * color_bar);
+
+    void
+    detach_color_bar(ColorBar * color_bar);
+
+    void
+    home();
+
+    void
+    forward(double distance_delta);
+
+    void
+    backward(double distance_delta);
+
+    void
+    left(double distance_delta);
+
+    void
+    right(double distance_delta);
+
+    void
+    up(double distance_delta);
+
+    void
+    down(double distance_delta);
+
+    void
+    zoom(double factor);
+
+    void
+    roll(double angle);
+
+    void
+    pitch(double angle);
+
+    void
+    yaw(double angle);
+
+    void
+    setParent(QWidget * parent, Qt::WindowFlags f);
+
+    void
+    setParent(QWidget * parent);
+
+protected:
+    virtual void
+    initializeGL();
+
+signals:
+    void
+    selected(const char * id);
+};
+
+
+class CompositeViewer: public QWidget
+{
+%TypeHeaderCode
+#include "view/CompositeViewer.hpp"
+using namespace osgQt;
+%End
+
+public:
+    CompositeViewer(QWidget * parent = 0, Qt::WindowFlags f = 0);
+protected:
+    virtual void
+    paintEvent(QPaintEvent * event);
 };

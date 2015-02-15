@@ -1,6 +1,10 @@
 import moogli.core._moogli
 import collections
 
+
+class CatmullRom(moogli.core._moogli.CatmullRom):
+    pass
+
 class EllipsoidalSurface(moogli.core._moogli.EllipsoidalSurface):
     pass
 
@@ -203,4 +207,5 @@ class Sphere(moogli.core._moogli.Sphere):
 
 
 __all__ = ["Frustum",
-           "Sphere"]
+           "Sphere",
+           "CatmullRom"]
