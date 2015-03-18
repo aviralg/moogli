@@ -4,6 +4,9 @@ python:
 before_install:
     - sudo apt-get update -qq
     - sudo apt-get install -y libopenscenegraph-dev
+    - sudo apt-get install -y libqt4-dev
+    - sudo apt-get install -y libqt4-opengl-dev
+    - sudo apt-get install -y python-qt4-gl
     - sudo apt-get install -y python-qt4-dev
     - sudo apt-get install -y python-sip4-dev
 script:  sudo python setup.py install
