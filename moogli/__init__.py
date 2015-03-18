@@ -5,7 +5,7 @@ from PyQt4 import QtOpenGL
 
 
 # from PyQt4.QtGui import *
-from ._moogli import *
+from _moogli import *
 
 class DynamicNetworkViewer(NetworkViewer):
     _timer = QtCore.QTimer()

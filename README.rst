@@ -1,0 +1,1 @@
+Moogli is a 3D neuronal network activity visualizer. It can show neuronal network morphologies and visualize electrical and chemical activity from compartmental modeling simulations. It is platform agnostic and completely based on open source tools and libraries. Feel free to download, use and fork it.
