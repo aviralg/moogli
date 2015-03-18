@@ -1,5 +1,17 @@
 # -*- coding: utf-8 -*-
 
+"""
+The following resources have been really helpful in making this setup script -
+
+https://github.com/numpy/numpy/blob/master/setup.py
+https://packaging.python.org/en/latest/index.html
+https://github.com/pypa/sampleproject/blob/master/setup.py
+https://docs.python.org/2/distutils/apiref.html
+http://stackoverflow.com/questions/3207219/how-to-list-all-files-of-a-directory-in-python
+"""
+
+
+
 from setuptools import setup, Extension
 import sipdistutils
 import sys
