@@ -1,5 +1,11 @@
 language: python
 python:
     - "2.7"
-install: sudo apt-get install libopenscenegraph-dev python-qt-dev python-sip-dev
-script:  python setup.py build
+before_install:
+    - sudo apt-get update -qq
+    - sudo apt-get install -y libopenscenegraph-dev
+    - sudo apt-get install -y python-qt-dev
+    - sudo apt-get install -y python-sip-dev
+script:  sudo python setup.py install
+cache:
+    - apt
