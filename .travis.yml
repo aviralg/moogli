@@ -1,0 +1,6 @@
+language: python
+python:
+    - "2.7"
+    - "2.6"
+install: apt-get install libopenscenegraph-dev python-qt-dev python-sip-dev
+script:  python setup.py build
