@@ -76,7 +76,16 @@ extra_link_args         =   [ "-fPIC"
                             ]
 
 #specify include directories to search
-include_dirs            =   [ os.path.join(here, "moogli/include/")
+include_dirs            =   [ "."
+                            , "/usr/share/sip/PyQt4/"
+                            , "/usr/include/qt4/"
+                            , "/usr/include/qt4/QtCore/"
+                            , "/usr/include/qt4/QtGui/"
+                            , "/usr/include/qt4/QtOpenGL/"
+                            , "/usr/share/sip/PyQt4/QtCore/"
+                            , "/usr/share/sip/PyQt4/QtGui/"
+                            , "/usr/share/sip/PyQt4/QtOpenGL/"
+                            , "./moogli/include/"
                             ]
 
 # define pre-processor macros

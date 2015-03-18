@@ -79,7 +79,6 @@ extra_link_args         =   [ "-fPIC"
 
 #specify include directories to search
 include_dirs            =   [ "."
-                            , "./include"
                             , "/usr/share/sip/PyQt4/"
                             , "/usr/include/qt4/"
                             , "/usr/include/qt4/QtCore/"
