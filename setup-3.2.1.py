@@ -141,13 +141,10 @@ setup( name             =   'moogli'
      , download_url     =   ''
      , description      =   "A 3D visualizer for neuronal networks"
      , long_description =   long_description
-     , classifiers      =   [ 'Development Status :: Alpha'
-                            , 'Environment :: GUI'
-                            , 'Environment :: Desktop'
-                            , 'Intended Audience :: End Users/Desktop'
-                            , 'Intended Audience :: Computational Neuroscience'
+     , classifiers      =   [ 'Development Status :: 3 - Alpha'
+                            , 'Environment :: X11 Applications :: Qt'
                             , 'Intended Audience :: Science/Research'
-                            , "License :: GPLv2"
+                            , "License :: OSI Approved :: GNU General Public License v2 (GPLv2)"
                             , 'Programming Language :: Python :: 2.6'
                             , 'Programming Language :: Python :: 2.7'
                             , 'Programming Language :: C++'
