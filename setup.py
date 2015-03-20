@@ -10,8 +10,6 @@ https://docs.python.org/2/distutils/apiref.html
 http://stackoverflow.com/questions/3207219/how-to-list-all-files-of-a-directory-in-python
 """
 
-
-
 from setuptools import setup, Extension
 import sipdistutils
 import sys
@@ -76,15 +74,10 @@ extra_link_args         =   [ "-fPIC"
                             ]
 
 #specify include directories to search
-include_dirs            =   [ "."
-                            , "/usr/share/sip/PyQt4/"
-                            , "/usr/include/qt4/"
+include_dirs            =   [ "/usr/include/qt4/"
                             , "/usr/include/qt4/QtCore/"
                             , "/usr/include/qt4/QtGui/"
                             , "/usr/include/qt4/QtOpenGL/"
-                            , "/usr/share/sip/PyQt4/QtCore/"
-                            , "/usr/share/sip/PyQt4/QtGui/"
-                            , "/usr/share/sip/PyQt4/QtOpenGL/"
                             , "./moogli/include/"
                             ]
 
@@ -108,6 +101,7 @@ moogli = Extension( name                  =   "_moogli"
                                               , "moogli/src/utility/globals.cpp"
                                               , "moogli/src/utility/conversions.cpp"
                                               , "moogli/moc/NetworkViewer.moc.cpp"
+                                              , "moogli/sip/moogli.sip"
                                               ]
                   , include_dirs          =   include_dirs
                   , extra_compile_args    =   extra_compile_args
@@ -120,10 +114,10 @@ moogli = Extension( name                  =   "_moogli"
                   , undef_macros          =   undef_macros
                   )
 
-with open('requirements.txt') as f:
-    required = f.read().splitlines()
+with open(os.path.join(here, 'requirements.txt')) as f:
+    requires = f.read().splitlines()
 
-long_description = open("README.rst").read()
+long_description = open(os.path.join(here,"README.rst")).read()
 
 scripts_dir = os.path.join(here, "scripts")
 scripts = [os.path.join(scripts_dir,fn) for fn in next(os.walk(scripts_dir))[2]]
@@ -133,7 +127,7 @@ setup( name             =   'moogli'
      , author_email     =   'aviralg@ncbs.res.in'
      , maintainer       =   'Aviral Goel'
      , maintainer_email =   'aviralg@ncbs.res.in'
-     , version          =   "0.1.0"
+     , version          =   "0.5.0"
      , url              =   ''
      , download_url     =   ''
      , description      =   "A 3D visualizer for neuronal networks"
@@ -150,7 +144,7 @@ setup( name             =   'moogli'
                             , 'Topic :: Scientific/Engineering'
                             ]
      , license          =   'GPLv2'
-     , requires         =   required
+     , requires         =   requires
      , packages         =   [ "moogli"
                             , "moogli.reader"
                             , "moogli.simulator"
