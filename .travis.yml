@@ -17,5 +17,3 @@ deploy:
   user: aviralgoel
   password:
     secure: d4CmChzACj1fYOgRuKKkkZf5QQ7HYITKG4mqE2uCZCWhD4tZhk6ospznwddXybL2+X5ARpSPlVG7XFnYWo86UnhRHS0gyiZmJRtzs4v+D5Q1BCIEOp451G05vyzf3tZknur6qNJB6De2jt0Av0/lW3/qWL7eOQP1ZI1ybDI13UY=
-  on:
-    repo: aviralg/moogli
