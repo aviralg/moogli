@@ -1,3 +1,5 @@
 build
-*.pyc
 dist
+*.o
+*.a
+*.pyc
