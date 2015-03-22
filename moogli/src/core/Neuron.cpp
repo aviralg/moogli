@@ -9,6 +9,18 @@ Neuron::Neuron(const char * id) : id(id)
     node -> addChild(compartment_group_node.get(), true);
 }
 
+Compartment *
+Neuron::get_compartment(const char * id)
+{
+    auto iter = compartment_map.find(id);
+    if(iter == compartment_map.end())
+    {
+        RECORD_WARNING("Compartment does not exist!");
+        // TODO : raise exception instead of returning nullptr
+        return nullptr;
+    }
+    return iter -> second;
+}
 
 Neuron::~Neuron()
 {

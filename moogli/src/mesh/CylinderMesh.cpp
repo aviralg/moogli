@@ -55,8 +55,20 @@ CylinderMesh::unit(unsigned int points)
 
         // (*normals)[i]           = Vec3f(nx, ny,  NZ);
         // (*normals)[i + points]  = Vec3f(nx, ny, -NZ);
-        (*normals)[i]           = Vec3f(nx, ny,  0);
-        (*normals)[i + points]  = Vec3f(nx, ny,  0);
+        (*normals)[i]           = Vec3f( 2 * x * (1 - COS_DELTA_THETA )
+                                       , 2 * y * (1 - COS_DELTA_THETA )
+                                       , 1.0
+                                       );
+        (*normals)[i].normalize();
+
+        (*normals)[i + points]  = Vec3f( (*normals)[i][0]
+                                       , (*normals)[i][1]
+                                       , -(*normals)[i][2]
+                                       );
+
+        // (*normals)[i + points] -> normalize();
+        // (*normals)[i]           = Vec3f(nx, ny,  0);
+        // (*normals)[i + points]  = Vec3f(nx, ny,  0);
 
     }
 
@@ -164,15 +176,15 @@ CylinderMesh::operator()( Vec3f        center
     // for(i = 0; i < vertices -> size(); ++i)
     // {
     // }
-    // cylinder_geometry -> setNormalArray( normals.get()
-    //                                    , Array::BIND_PER_VERTEX
-    //                                    );
+    geometry -> setNormalArray( normals.get()
+                                       , Array::BIND_PER_VERTEX
+                                       );
     // polyGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES,0,6));
     geometry -> addPrimitiveSet(indices.get());
     geometry -> setVertexArray(vertices.get());
     geometry -> setColorArray(colors);
     geometry -> setColorBinding( osg::Geometry::BIND_OVERALL );
-    osgUtil::SmoothingVisitor::smooth(*geometry);
+    // osgUtil::SmoothingVisitor::smooth(*geometry);
 }
 
 Geometry *
