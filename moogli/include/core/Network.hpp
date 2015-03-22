@@ -37,6 +37,10 @@ public:
 
     unsigned int
     remove_neuron(Neuron * neuron);
+
+    Neuron *
+    get_neuron(const char * id);
+
 };
 
 #endif /* _NETWORK_HPP_ */

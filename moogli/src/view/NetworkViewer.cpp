@@ -25,8 +25,9 @@ NetworkViewer::NetworkViewer( Network * network
 
     material->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE );
 
-    stateSet->setAttributeAndModes( material, osg::StateAttribute::ON );
-    stateSet->setMode( GL_DEPTH_TEST, osg::StateAttribute::ON );
+    stateSet -> setAttributeAndModes( material, osg::StateAttribute::ON );
+    stateSet -> setMode( GL_DEPTH_TEST, osg::StateAttribute::ON );
+    stateSet -> setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
 
     _previous_width  = this -> width();
     _previous_height = this -> height();
@@ -185,7 +186,7 @@ NetworkViewer::~NetworkViewer()
 void
 NetworkViewer::paintEvent( QPaintEvent* /* paintEvent */ )
 {
-    this->makeCurrent();
+    // this->makeCurrent();
     QPainter painter( this );
     painter.setRenderHint( QPainter::Antialiasing );
     this->paintGL();

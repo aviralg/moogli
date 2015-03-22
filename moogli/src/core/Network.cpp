@@ -62,6 +62,20 @@ Network::add_neuron(Neuron * neuron)
     return static_cast<unsigned int>(neuron_seq.size());
 }
 
+Neuron *
+Network::get_neuron(const char * id)
+{
+    auto iter = neuron_map.find(id);
+    if(iter == neuron_map.end())
+    {
+        RECORD_WARNING("Neuron does not exist!");
+        // TODO : raise exception instead of returning nullptr
+        return nullptr;
+    }
+    return iter -> second;
+}
+
+
 unsigned int
 Network::remove_neuron(Neuron * neuron)
 {

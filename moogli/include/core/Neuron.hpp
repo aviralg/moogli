@@ -30,6 +30,9 @@ public:
     Network *
     get_network();
 
+    Compartment *
+    get_compartment(const char * id);
+
     void
     hide();
 

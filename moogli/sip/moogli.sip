@@ -40,6 +40,10 @@ public:
 
     unsigned int
     remove_neuron(Neuron * neuron);
+
+    Neuron *
+    get_neuron(const char * id);
+
 };
 
 
@@ -97,6 +101,10 @@ public:
 
     void
     hide_all_geometries();
+
+    Compartment *
+    get_compartment(const char * id);
+
 };
 
 class Compartment

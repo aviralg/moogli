@@ -9,7 +9,6 @@ Compartment::Compartment(const char * id) : id(id)
     node -> addChild(voxel_group_node.get(), true);
 }
 
-
 Compartment::~Compartment()
 {
     for(Voxel * voxel : voxel_seq)

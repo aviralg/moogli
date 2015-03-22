@@ -1,31 +1,67 @@
-from PyQt4 import QtGui
-from PyQt4 import QtCore
-from PyQt4 import Qt
-from PyQt4 import QtOpenGL
+import PyQt4
+import PyQt4.Qt
+import PyQt4.QtGui
+import PyQt4.QtCore
 
 
-# from PyQt4.QtGui import *
-from _moogli import *
+import _moogli
+from _moogli import Network
+from _moogli import Neuron
+from _moogli import Compartment
+from _moogli import Voxel
 
-class DynamicNetworkViewer(NetworkViewer):
-    _timer = QtCore.QTimer()
+class NetworkViewer(_moogli.NetworkViewer):
 
-    def set_callback(self,callback, idletime = 0):
-        self.callback = callback
-        self.idletime = idletime
-        self._timer.timeout.connect(self.start_cycle)
-        self.start_cycle()
+    def __init__( self
+                , network
+                , prelude   = id
+                , interlude = id
+                , postlude  = id
+                , idletime  = 0
+                ):
+        PyQt4.QtGui.QApplication.instance().aboutToQuit.connect(self.stop)
+        _moogli.NetworkViewer.__init__(self, network)
+        self.network    = network
+        self.prelude    = prelude
+        self.interlude  = interlude
+        self.postlude   = postlude
+        self.idletime   = idletime
+        self._done      = False
+        self._pause     = False
+        self.start()
 
-    def start_cycle(self):
-        if self.isVisible():
-            if self.callback(self.get_morphology(), self):
-                self._timer.start(self.idletime)
-            else:
-                self._timer.timeout.disconnect(self.start_cycle)
-            self.update()
-        else:
-            self._timer.start(self.idletime)
+    def start(self):
+        self._done = False
+        self.prelude(self)
+        self.update()
+        self.run()
 
+    def pause(self):
+        self._pause = True
+
+    def resume(self):
+        self._pause = False
+        self.run()
+
+    def stop(self):
+        self._done = True
+        self.postlude(self)
+
+    def run(self):
+        self.interlude(self)
+        self.update()
+        if self._done: return
+        if self._pause: return
+        PyQt4.QtCore.QTimer.singleShot(self.idletime, self.run)
+
+__all__ = [ "Voxel"
+          , "Compartment"
+          , "Neuron"
+          , "Network"
+          , "NetworkViewer"
+          , "simulator"
+          , "reader"
+          ]
 
 # __all__ = [ "Morphology"
 #           , "MorphologyViewer"
