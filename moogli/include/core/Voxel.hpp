@@ -39,6 +39,8 @@ public:
                 , PyObject * proximal = Py_None
                 );
 
+    void
+    set_color(PyObject * color);
 };
 
 #endif /* _VOXEL_HPP_ */

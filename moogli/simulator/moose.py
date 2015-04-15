@@ -3,6 +3,7 @@ import moose
 import moogli
 import operator
 import PyQt4
+import math
 
 def _compartment_parameters(moose_compartment):
     distal_radius = moose_compartment.diameter / 2.0
@@ -32,6 +33,9 @@ def _compartment_parameters(moose_compartment):
 
 
 def read_network(name = "", path = "", track_parent = True):
+    neuron_map      = {}
+    compartment_map = {}
+    voxel_map       = {}
     network = moogli.Network(name)
     compartments = moose.wildcardFind(path + "/##[ISA=CompartmentBase]")
     neuron_ids = set( map( lambda compartment : "" if compartment.parent.path == "/" else compartment.parent.path
@@ -40,54 +44,171 @@ def read_network(name = "", path = "", track_parent = True):
                     )
     for neuron_id in neuron_ids:
         neuron = moogli.Neuron(neuron_id)
+        neuron_map[neuron_id] = neuron
         soma_center = None
         moose_compartments = moose.wildcardFind(neuron_id + "/#[ISA=CompartmentBase]")
         for moose_compartment in moose_compartments:
             compartment = moogli.Compartment(moose_compartment.path)
+            compartment_map[moose_compartment.path] = compartment
             (proximal, distal, center) = _compartment_parameters(moose_compartment)
             if proximal is None : soma_center = distal
             compartment.add_geometry(distal, proximal)
             neuron.add_compartment(compartment)
         neuron.add_geometry(soma_center)
-
-        # neuron.show_geometry(1, True)
         network.add_neuron(neuron)
+        #neuron.show_geometry(0, True)
 
     meshes = moose.wildcardFind(path + "/##[ISA=NeuroMesh]")
+    # print(path + "/##[ISA=NeuroMesh]")
     for mesh in meshes:
         for i in range(len(mesh.elecComptList)):
+            soma = False
+            average_direction = [0.0, 0.0, 0.0, 0.0]
             moose_compartment = mesh.elecComptList[i][0]
             neuron      = network.get_neuron(moose_compartment.parent.path)
             compartment = neuron.get_compartment(moose_compartment.path)
             voxel_count = mesh.endVoxelInCompt[i] - mesh.startVoxelInCompt[i]
             (proximal, distal, center) = _compartment_parameters(moose_compartment)
             # print(proximal, distal, center)
-            total_height    = map(operator.sub, distal, proximal)
-            previous_distal = proximal
-            for j in range(0, voxel_count):
-                voxel_proximal = previous_distal
-                temp = [ (j + 1) * dim / voxel_count
-                         for dim in total_height
-                       ]
-                previous_distal = voxel_distal  = map(operator.add, proximal, temp)
-                # print(voxel_proximal, voxel_distal)
-                voxel = moogli.Voxel(moose_compartment.path + "/" + str(j + mesh.startVoxelInCompt[i]))
-                voxel.set_geometry(voxel_distal, voxel_proximal)
-                compartment.add_voxel(voxel)
-
+            if proximal is None:
+                soma = True
+                for child in moose_compartment.neighbors["axial"]:
+                    (child_proximal, child_distal, child_center) = _compartment_parameters(child[0])
+                    average_direction = map( operator.add
+                                           , average_direction
+                                           , map( operator.sub
+                                                , child_distal
+                                                , child_proximal
+                                                )
+                                           )
+                    print(average_direction)
+                total_height = average_direction
+                total_height[3] = 0.0 # radius will be recomputed in the for loop below
+                magnitude = math.sqrt(sum([dim * dim for dim in total_height]))
+                total_height = [ 2.0 * distal[3] * dim / magnitude for dim in total_height ]
+                proximal = previous_distal = map(operator.sub, distal, [dim / 2.0 for dim in total_height])
+                for j in range(0, voxel_count):
+                    phi1 = 1 - (j + 0.0) / voxel_count
+                    phi2 = 1 - (j + 1.0) / voxel_count
+                    r1 = distal[3] * math.sin( math.pi * phi1)
+                    r2 = distal[3] * math.sin( math.pi * phi2)
+                    voxel_proximal = previous_distal
+                    temp = [ (j + 1) * dim / voxel_count
+                             for dim in total_height
+                           ]
+                    previous_distal = voxel_distal  = map(operator.add, proximal, temp)
+                    voxel_distal[3] = r2
+                    voxel_proximal[3] = r2
+                    # print(voxel_proximal, voxel_distal)
+                    voxel = moogli.Voxel(moose_compartment.path + "/" + str(j + mesh.startVoxelInCompt[i]))
+                    voxel_map[mesh.startVoxelInCompt[i] + j] = voxel
+                    voxel.set_geometry(voxel_distal, voxel_proximal)
+                    compartment.add_voxel(voxel)
+                compartment.show_geometry(0, True)
+            else:
+                total_height    = map(operator.sub, distal, proximal)
+                previous_distal = proximal
+                for j in range(0, voxel_count):
+                    voxel_proximal = previous_distal
+                    temp = [ (j + 1) * dim / voxel_count
+                             for dim in total_height
+                           ]
+                    previous_distal = voxel_distal  = map(operator.add, proximal, temp)
+                    # print(voxel_proximal, voxel_distal)
+                    voxel = moogli.Voxel(moose_compartment.path + "/" + str(j + mesh.startVoxelInCompt[i]))
+                    voxel.set_geometry(voxel_distal, voxel_proximal)
+                    voxel_map[mesh.startVoxelInCompt[i] + j] = voxel
+                    compartment.add_voxel(voxel)
             compartment.show_geometry(0, True)
-    return network
+
+    # SPINES
+
+    meshes = moose.wildcardFind(path + "/##[ISA=SpineMesh]")
+    spine_map = {}
+    for mesh in meshes:
+        for i in range(len(mesh.elecComptList)):
+            soma = False
+            average_direction = [0.0, 0.0, 0.0, 0.0]
+            moose_compartment = mesh.elecComptList[i][0]
+            neuron      = network.get_neuron(moose_compartment.parent.path)
+            compartment = neuron.get_compartment(moose_compartment.path)
+            voxel_count = mesh.endVoxelInCompt[i] - mesh.startVoxelInCompt[i]
+            (proximal, distal, center) = _compartment_parameters(moose_compartment)
+            # print(proximal, distal, center)
+            if proximal is None:
+                soma = True
+                for child in moose_compartment.neighbors["axial"]:
+                    (child_proximal, child_distal, child_center) = _compartment_parameters(child[0])
+                    average_direction = map( operator.add
+                                           , average_direction
+                                           , map( operator.sub
+                                                , child_distal
+                                                , child_proximal
+                                                )
+                                           )
+                    print(average_direction)
+                total_height = average_direction
+                total_height[3] = 0.0 # radius will be recomputed in the for loop below
+                magnitude = math.sqrt(sum([dim * dim for dim in total_height]))
+                total_height = [ 2.0 * distal[3] * dim / magnitude for dim in total_height ]
+                proximal = previous_distal = map(operator.sub, distal, [dim / 2.0 for dim in total_height])
+                for j in range(0, voxel_count):
+                    phi1 = 1 - (j + 0.0) / voxel_count
+                    phi2 = 1 - (j + 1.0) / voxel_count
+                    r1 = distal[3] * math.sin( math.pi * phi1)
+                    r2 = distal[3] * math.sin( math.pi * phi2)
+                    voxel_proximal = previous_distal
+                    temp = [ (j + 1) * dim / voxel_count
+                             for dim in total_height
+                           ]
+                    previous_distal = voxel_distal  = map(operator.add, proximal, temp)
+                    voxel_distal[3] = r2
+                    voxel_proximal[3] = r2
+                    # print(voxel_proximal, voxel_distal)
+                    voxel = moogli.Voxel(moose_compartment.path + "/" + str(j + mesh.startVoxelInCompt[i]))
+                    spine_map[mesh.startVoxelInCompt[i] + j] = voxel
+                    voxel.set_geometry(voxel_distal, voxel_proximal)
+                    compartment.add_voxel(voxel)
+                compartment.show_geometry(0, True)
+            else:
+                total_height    = map(operator.sub, distal, proximal)
+                previous_distal = proximal
+                for j in range(0, voxel_count):
+                    voxel_proximal = previous_distal
+                    temp = [ (j + 1) * dim / voxel_count
+                             for dim in total_height
+                           ]
+                    previous_distal = voxel_distal  = map(operator.add, proximal, temp)
+                    # print(voxel_proximal, voxel_distal)
+                    voxel = moogli.Voxel(moose_compartment.path + "/" + str(j + mesh.startVoxelInCompt[i]))
+                    voxel.set_geometry(voxel_distal, voxel_proximal)
+                    spine_map[mesh.startVoxelInCompt[i] + j] = voxel
+                    compartment.add_voxel(voxel)
+            compartment.show_geometry(0, True)
+
+
+
+    return ( network
+           , neuron_map.values()
+           , [compartment_map[key.path] for key in moose.wildcardFind(path + "/##[ISA=CompartmentBase]")]
+           , [voxel_map[key] for key in sorted(voxel_map.keys())]
+           , [spine_map[key] for key in sorted(spine_map.keys())]
+           )
 
 def view(path="", callbacks = [(id, id, id)]):
     application = PyQt4.QtGui.QApplication([])
     viewers = []
     for (prelude, interlude, postlude) in callbacks:
-        network = read_network(path)
+        (network, neurons, compartments, voxels, spines) = read_network(path = path)
         viewer = moogli.NetworkViewer( network
                                      , prelude
                                      , interlude
                                      , postlude
                                      )
+        viewer.neurons["neurons"] = neurons
+        viewer.compartments["compartments"] = compartments
+        viewer.voxels["voxels"] = voxels
+        viewer.spines["spines"] = spines
         viewer.show()
         viewers.append(viewer)
 

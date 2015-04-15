@@ -3,3 +3,7 @@ dist
 *.o
 *.a
 *.pyc
+*.so
+*.egg-info
+data
+doc

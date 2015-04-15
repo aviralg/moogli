@@ -162,3 +162,40 @@ Compartment::hide_all_geometries()
     node -> setAllChildrenOff();
 }
 
+bool
+Compartment::set_colors(PyObject * colors)
+{
+    if(PySequence_Check(colors) != 1)
+    {
+        RECORD_ERROR("Invalid data structure provided for setting voxel colors.");
+        Py_RETURN_FALSE;
+    }
+
+    unsigned int limit = std::min( static_cast<unsigned int>(PySequence_Length(colors))
+                                 , static_cast<unsigned int>(voxel_seq.size())
+                                 );
+    unsigned int i;
+    for(i = 0; i < limit;++i)
+    {
+        voxel_seq[i] -> set_color(PySequence_GetItem(colors, i));
+    }
+    Py_RETURN_TRUE;
+}
+
+void
+Compartment::set_color(PyObject * color)
+{
+    for(unsigned int i = 1; i < node -> getNumChildren(); ++i)
+    {
+        Geode * geode = node -> getChild(i) -> asGeode();
+        for(unsigned int j = 0; j < geode -> getNumDrawables(); ++j)
+        {
+            Geometry * geometry = geode -> getDrawable(j) -> asGeometry();
+            Vec4Array * colors = new Vec4Array();
+            colors -> push_back(pysequence_to_vec4d(color));
+            geometry -> setColorArray(colors, osg::Array::BIND_OVERALL);
+            geometry -> setColorBinding(osg::Geometry::BIND_OVERALL);
+        }
+    }
+}
+

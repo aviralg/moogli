@@ -18,6 +18,7 @@
 #include <sstream>
 #include <cassert>
 #include <stdexcept>
+#include <algorithm>
 
 /******************************************************************************/
 /* OSG HEADERS                                                                */

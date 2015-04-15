@@ -20,15 +20,17 @@ NetworkViewer::NetworkViewer( Network * network
                                               , capture_location("/home/aviral/moogli_test")
 {
 
-    osg::StateSet* stateSet = network -> node ->getOrCreateStateSet();
+    osg::StateSet* stateSet = network -> node -> getOrCreateStateSet();
     osg::Material* material = new osg::Material;
 
     material->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE );
-
+    material->setAlpha( osg::Material::FRONT_AND_BACK, 1.0);
     stateSet -> setAttributeAndModes( material, osg::StateAttribute::ON );
     stateSet -> setMode( GL_DEPTH_TEST, osg::StateAttribute::ON );
-    stateSet -> setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
+    stateSet -> setMode( GL_BLEND, osg::StateAttribute::ON );
+    stateSet -> setMode( GL_ALPHA_TEST, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);// just added this now as a test but still no luck
 
+    stateSet -> setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
     _previous_width  = this -> width();
     _previous_height = this -> height();
     add_view(0,0,this -> width(), this -> height());
