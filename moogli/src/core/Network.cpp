@@ -97,3 +97,23 @@ Network::remove_neuron(Neuron * neuron)
     }
     return static_cast<unsigned int>(neuron_seq.size());
 }
+
+bool
+Network::set_colors(PyObject * colors)
+{
+    if(PySequence_Check(colors) != 1)
+    {
+        RECORD_ERROR("Invalid data structure provided for setting neuron colors.");
+        Py_RETURN_FALSE;
+    }
+
+    unsigned int limit = std::min( static_cast<unsigned int>(PySequence_Length(colors))
+                                 , static_cast<unsigned int>(neuron_seq.size())
+                                 );
+    unsigned int i;
+    for(i = 0; i < limit;++i)
+    {
+        neuron_seq[i] -> set_color(PySequence_GetItem(colors, i));
+    }
+    Py_RETURN_TRUE;
+}

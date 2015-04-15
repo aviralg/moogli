@@ -73,3 +73,12 @@ Voxel::set_geometry( PyObject * distal
                 );
     }
 }
+
+void
+Voxel::set_color(PyObject * color)
+{
+    Vec4Array * colors = new Vec4Array();
+    colors -> push_back(pysequence_to_vec4d(color));
+    node -> setColorArray(colors, osg::Array::BIND_OVERALL);
+    node -> setColorBinding(osg::Geometry::BIND_OVERALL);
+}

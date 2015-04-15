@@ -67,6 +67,12 @@ public:
 
     void
     hide_all_geometries();
+
+    void
+    set_color(PyObject * color);
+
+    bool
+    set_colors(PyObject * colors);
 };
 
 #endif /* _NEURON_HPP_ */

@@ -41,6 +41,8 @@ public:
     Neuron *
     get_neuron(const char * id);
 
+    bool
+    set_colors(PyObject * colors);
 };
 
 #endif /* _NETWORK_HPP_ */

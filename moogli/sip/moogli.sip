@@ -44,6 +44,8 @@ public:
     Neuron *
     get_neuron(const char * id);
 
+    bool
+    set_colors(PyObject * colors);
 };
 
 
@@ -105,6 +107,11 @@ public:
     Compartment *
     get_compartment(const char * id);
 
+    void
+    set_color(PyObject * color);
+
+    bool
+    set_colors(PyObject * colors);
 };
 
 class Compartment
@@ -162,6 +169,12 @@ public:
 
     void
     hide_all_geometries();
+
+    void
+    set_color(PyObject * color);
+
+    bool
+    set_colors(PyObject * colors);
 };
 
 class Voxel
@@ -197,6 +210,9 @@ public:
     set_geometry( PyObject * distal
                 , PyObject * proximal = Py_None
                 );
+
+    void
+    set_color(PyObject * color);
 
 };
 
