@@ -48,6 +48,7 @@ public:
     unsigned int
     add_geometry( PyObject * distal
                 , PyObject * proximal = Py_None
+                , PyObject * parent   = Py_None
                 );
 
     unsigned int

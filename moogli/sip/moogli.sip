@@ -6,6 +6,11 @@
 
 class Network
 {
+%Docstring
+This will be at the start of the class's docstring.
+%End
+
+
 
 %TypeHeaderCode
 #include "utility/libraries.hpp"
@@ -84,6 +89,7 @@ public:
     unsigned int
     add_geometry( PyObject * distal
                 , PyObject * proximal = Py_None
+                , PyObject * direction = Py_None
                 );
 
     unsigned int
@@ -150,6 +156,7 @@ public:
     unsigned int
     add_geometry( PyObject * distal
                 , PyObject * proximal = Py_None
+                , PyObject * direction = Py_None
                 );
 
     unsigned int
@@ -209,6 +216,7 @@ public:
     void
     set_geometry( PyObject * distal
                 , PyObject * proximal = Py_None
+                , PyObject * direction = Py_None
                 );
 
     void

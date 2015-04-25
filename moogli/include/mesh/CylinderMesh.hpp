@@ -24,6 +24,8 @@
 #include <string>
 #include <vector>
 
+
+#include "utility/record.hpp"
 using namespace std;
 using namespace osg;
 
@@ -33,6 +35,9 @@ public:
 
     CylinderMesh();
 
+    float
+    angle(Vec3f& vector1, Vec3f& vector2);
+
     void
     operator()( Vec3f        center
               , float        upper_radius
@@ -42,6 +47,7 @@ public:
               , Geometry  *  geometry
               , unsigned int points
               , const Vec4&  color
+              , Vec3f        parent
               );
 
     Geometry *
@@ -52,6 +58,7 @@ public:
               , Vec3f        direction
               , unsigned int points
               , const Vec4&  color
+              , Vec3f        parent
               );
 
     void
@@ -60,6 +67,7 @@ public:
               , Geometry  *  geometry
               , unsigned int points
               , const Vec4&  color
+              , Vec3f        parent
               );
 
     Geometry *
@@ -67,6 +75,7 @@ public:
               , Vec4f        proximal
               , unsigned int points
               , const Vec4&  color
+              , Vec3f        parent
               );
 
 

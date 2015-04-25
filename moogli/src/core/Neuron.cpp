@@ -77,12 +77,15 @@ Neuron::size()
 unsigned int
 Neuron::add_geometry( PyObject * distal
                     , PyObject * proximal
+                    , PyObject * parent
                     )
 {
     Vec4f d(pysequence_to_vec4f(distal));
 
     osg::Geometry * geometry = new osg::Geometry();
+    geometry -> setName(id);
     osg::Geode    * geode   = new osg::Geode();
+    geode -> setName(id);
 
     if(proximal == Py_None)
     {
@@ -101,6 +104,7 @@ Neuron::add_geometry( PyObject * distal
                 , geometry
                 , CYLINDRICAL_NEURON_POINTS
                 , CYLINDRICAL_NEURON_COLOR
+                , pysequence_to_vec3f(parent)
                 );
     }
     geode -> addDrawable(geometry);

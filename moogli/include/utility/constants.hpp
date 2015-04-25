@@ -13,8 +13,8 @@ const unsigned int SPHERICAL_VOXEL_POINTS         = 10;
 
 const osg::Vec4f CYLINDRICAL_NEURON_COLOR      = osg::Vec4f(0.0f, 1.0f, 0.0f, 1.0f); //green
 const osg::Vec4f SPHERICAL_NEURON_COLOR        = osg::Vec4f(0.0f, 0.0f, 1.0f, 1.0f); //blue
-const osg::Vec4f CYLINDRICAL_COMPARTMENT_COLOR = osg::Vec4f(1.0f, 0.5f, 0.0f, 1.0f); //orange
-const osg::Vec4f SPHERICAL_COMPARTMENT_COLOR   = osg::Vec4f(0.5f, 0.0f, 1.0f, 1.0f); //violet
+const osg::Vec4f CYLINDRICAL_COMPARTMENT_COLOR = osg::Vec4f(1.0f, 0.5f, 0.0f, 0.5f); //orange
+const osg::Vec4f SPHERICAL_COMPARTMENT_COLOR   = osg::Vec4f(0.5f, 0.0f, 1.0f, 0.5f); //violet
 const osg::Vec4f CYLINDRICAL_VOXEL_COLOR       = osg::Vec4f(0.0f, 1.0f, 1.0f, 0.5f); //yellow
 const osg::Vec4f SPHERICAL_VOXEL_COLOR         = osg::Vec4f(1.0f, 0.0f, 0.0f, 0.9f); //red
 
