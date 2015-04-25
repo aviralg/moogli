@@ -1,3 +1,6 @@
+# http://neuromorpho.org/neuroMorpho/SomaFormat.html
+# http://neuromorpho.org/neuroMorpho/myfaq.jsp
+
 from __future__ import absolute_import
 import moose
 import moogli
@@ -48,11 +51,23 @@ def read_network(name = "", path = "", track_parent = True):
         soma_center = None
         moose_compartments = moose.wildcardFind(neuron_id + "/#[ISA=CompartmentBase]")
         for moose_compartment in moose_compartments:
+            parent_direction = None
             compartment = moogli.Compartment(moose_compartment.path)
             compartment_map[moose_compartment.path] = compartment
             (proximal, distal, center) = _compartment_parameters(moose_compartment)
-            if proximal is None : soma_center = distal
-            compartment.add_geometry(distal, proximal)
+            if proximal is None :
+                soma_center = distal
+            else:
+                parent_compartment = moose_compartment.neighbors["raxial"][0][0]
+                (parent_proximal, parent_distal, parent_center) = _compartment_parameters(parent_compartment)
+                if parent_proximal is None:
+                    parent_direction = None
+                else:
+                    parent_direction = map(operator.sub, parent_distal, parent_proximal)
+                    parent_height = math.sqrt(sum(map(lambda x : x * x, parent_direction)))
+                    parent_direction = [dim/parent_height for dim in parent_direction][0:3]
+            print(parent_direction)
+            compartment.add_geometry(distal, proximal, parent_direction)
             neuron.add_compartment(compartment)
         neuron.add_geometry(soma_center)
         network.add_neuron(neuron)
@@ -211,7 +226,6 @@ def view(path="", callbacks = [(id, id, id)]):
         viewer.spines["spines"] = spines
         viewer.show()
         viewers.append(viewer)
-
 # def delete_gl_widget():
 #     global vm_visualizer
 #     global rm_visualizer

@@ -4,6 +4,7 @@
 #include "utility/libraries.hpp"
 #include "utility/constants.hpp"
 #include "core/Network.hpp"
+#include "handlers/GeometrySelector.hpp"
 
 using namespace std;
 
@@ -107,6 +108,10 @@ public:
 
     virtual
     ~NetworkViewer();
+
+signals:
+    void selected(const char * id);
+
 
 protected:
 

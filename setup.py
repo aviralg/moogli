@@ -33,7 +33,7 @@ here = os.path.dirname(__file__)
 
 # list of object files to be passed to the linker.
 # These files must not have extensions, as the default extension for the compiler is used.
-os.environ["CC"]="g++"
+os.environ["CC"]="clang++"
 extra_objects           =   [
                             ]
 
@@ -97,6 +97,7 @@ moogli = Extension( name                  =   "_moogli"
                                               , "moogli/src/view/NetworkViewer.cpp"
                                               , "moogli/src/mesh/CylinderMesh.cpp"
                                               , "moogli/src/mesh/SphereMesh.cpp"
+                                              , "moogli/src/handlers/GeometrySelector.cpp"
                                               , "moogli/src/utility/record.cpp"
                                               , "moogli/src/utility/globals.cpp"
                                               , "moogli/src/utility/conversions.cpp"

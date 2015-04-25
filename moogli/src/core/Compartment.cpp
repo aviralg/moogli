@@ -63,12 +63,15 @@ Compartment::size()
 unsigned int
 Compartment::add_geometry( PyObject * distal
                          , PyObject * proximal
+                         , PyObject * parent
                          )
 {
     Vec4f d(pysequence_to_vec4f(distal));
 
     osg::Geometry * geometry = new osg::Geometry();
-    osg::Geode    * geode    = new osg::Geode();
+    geometry -> setName(id);
+    osg::Geode    * geode   = new osg::Geode();
+    geode -> setName(id);
 
     if(proximal == Py_None)
     {
@@ -87,6 +90,7 @@ Compartment::add_geometry( PyObject * distal
                 , geometry
                 , CYLINDRICAL_COMPARTMENT_POINTS
                 , CYLINDRICAL_COMPARTMENT_COLOR
+                , pysequence_to_vec3f(parent)
                 );
     }
     geode -> addDrawable(geometry);
@@ -199,3 +203,24 @@ Compartment::set_color(PyObject * color)
     }
 }
 
+// void
+// Compartment::create_chemical_compartments( Vec3f & proximal
+//                                          , Vec3f & distal
+//                                          , unsigned int count
+//                                          ,
+//                                          )
+// {
+//     Vec3f direction = distal - proximal;
+//     Vec3f height    = direction.normalize();
+
+//     Vec3f current_proximal(proximal);
+//     for(uint i = 1; i < count; ++i)
+//     {
+//         current_distal = i * height * direction;
+
+//         ChemicalCompartment * chemical_compartment = new ChemicalCompartment( current_proximal
+//                                                                             , current_distal
+//                                                                             );
+//         current_proximal = current_distal;
+//     }
+// }

@@ -16,3 +16,15 @@ PyPI Classifiers
 ================
 
 https://pypi.python.org/pypi?%3Aaction=list_classifiers
+
+Shading
+=======
+
+https://www.cs.csustan.edu/~rsc/SDSU/Shading.Models.pdf
+http://www.cs.uml.edu/~haim/teaching/cg/resources/presentations/427/AngelCG20_shading_OpenGL.pdf
+http://www.sm.luth.se/csee/courses/smm/011/l/t2.pdf
+
+
+Lighting
+========
+http://www.glprogramming.com/red/chapter05.html#name4

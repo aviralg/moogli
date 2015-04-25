@@ -3,7 +3,9 @@
 Voxel::Voxel(const char * id) : id(id)
                               , node(new osg::Geometry())
                               , compartment(nullptr)
-{ }
+{
+    node -> setName(id);
+}
 
 
 Voxel::~Voxel()
@@ -49,6 +51,7 @@ Voxel::is_visible()
 void
 Voxel::set_geometry( PyObject * distal
                    , PyObject * proximal
+                   , PyObject * parent
                    )
 {
     Vec4f d(pysequence_to_vec4f(distal));
@@ -70,6 +73,7 @@ Voxel::set_geometry( PyObject * distal
                 , node.get()
                 , CYLINDRICAL_VOXEL_POINTS
                 , CYLINDRICAL_VOXEL_COLOR
+                , pysequence_to_vec3f(parent)
                 );
     }
 }

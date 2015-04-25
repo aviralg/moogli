@@ -2,13 +2,25 @@ import PyQt4
 import PyQt4.Qt
 import PyQt4.QtGui
 import PyQt4.QtCore
-
+from PyQt4 import *
 
 import _moogli
-from _moogli import Network
-from _moogli import Neuron
-from _moogli import Compartment
-from _moogli import Voxel
+from _moogli import Network as Network
+from _moogli import Neuron as Neuron
+from _moogli import Compartment as Compartment
+from _moogli import Voxel as Voxel
+
+# class Network(_moogli.Network):
+#     pass
+
+# class Neuron(_moogli.Neuron):
+#     pass
+
+# class Compartment(_moogli.Compartment):
+#     pass
+
+# class Voxel(_moogli.Voxel):
+#     pass
 
 class NetworkViewer(_moogli.NetworkViewer):
 
@@ -53,7 +65,7 @@ class NetworkViewer(_moogli.NetworkViewer):
                             , "peak_color"     :   [0.0, 0.0, 1.0, 1.0]
                             , "spines"     :   []
                             }
-
+        # QtCore.QObject.connect(self, QtCore.SIGNAL('selected(const char *)'), self.printme);
         self.start()
 
     def _interpolate_color(self, factor, base_color, peak_color):
@@ -143,6 +155,17 @@ class NetworkViewer(_moogli.NetworkViewer):
         if self._done: return
         if self._pause: return
         PyQt4.QtCore.QTimer.singleShot(self.idletime, self.run)
+
+    @QtCore.pyqtSlot(str)
+    def printme(self, name):
+        # cursor = QtGui.QCursor().pos()
+        menu = QtGui.QMenu()
+        menu.addAction("a")
+        menu.addAction("b")
+        menu.addAction("c")
+        menu.exec_(QtGui.QCursor().pos())
+        print("Selected = > ", name)
+
 
 __all__ = [ "Voxel"
           , "Compartment"

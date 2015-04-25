@@ -20,16 +20,114 @@ NetworkViewer::NetworkViewer( Network * network
                                               , capture_location("/home/aviral/moogli_test")
 {
 
+    // Light * light;
+    // LightSource * light_source;
+
+    // light = new osg::Light;
+    // light->setLightNum( 0 );
+    // light->setDiffuse( osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f) );
+    // light->setAmbient( osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f) );
+    // light->setDirection( osg::Vec3(1.0f, 0.0f, 0.0f) );
+    // light->setPosition( osg::Vec4(0,0,0,0) );      // last param   w = 0.0 directional light (direction)
+    //                                                 //              w = 1.0 point light (position)
+    // // light source
+    // light_source = new osg::LightSource;
+    // light_source->setLight( light );
+    // network-> node ->addChild( light_source );
+
+
+    // light = new osg::Light;
+    // light->setLightNum( 1 );
+    // light->setDiffuse( osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f) );
+    // light->setAmbient( osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f) );
+    // light->setDirection( osg::Vec3(-1.0f, 0.0f, 0.0f) );
+    // light->setPosition( osg::Vec4(0,0,0,0) );      // last param   w = 0.0 directional light (direction)
+    //                                                 //              w = 1.0 point light (position)
+    // // light source
+    // light_source = new osg::LightSource;
+    // light_source->setLight( light );
+    // network-> node ->addChild( light_source );
+
+    // light = new osg::Light;
+    // light->setLightNum( 2 );
+    // light->setDiffuse( osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f) );
+    // light->setAmbient( osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f) );
+    // light->setDirection( osg::Vec3(0.0f, 1.0f, 0.0f) );
+    // light->setPosition( osg::Vec4(0,0,0,0) );      // last param   w = 0.0 directional light (direction)
+    //                                                 //              w = 1.0 point light (position)
+    // // light source
+    // light_source = new osg::LightSource;
+    // light_source->setLight( light );
+    // network-> node ->addChild( light_source );
+
+    // light = new osg::Light;
+    // light->setLightNum( 3 );
+    // light->setDiffuse( osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f) );
+    // light->setAmbient( osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f) );
+    // light->setDirection( osg::Vec3(0.0f, -1.0f, 0.0f) );
+    // light->setPosition( osg::Vec4(0,0,0,0) );      // last param   w = 0.0 directional light (direction)
+    //                                                 //              w = 1.0 point light (position)
+    // // light source
+    // light_source = new osg::LightSource;
+    // light_source->setLight( light );
+    // network-> node ->addChild( light_source );
+
+    // light = new osg::Light;
+    // light->setLightNum( 4 );
+    // light->setDiffuse( osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f) );
+    // light->setAmbient( osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f) );
+    // light->setDirection( osg::Vec3(0.0f, 0.0f, 1.0f) );
+    // light->setPosition( osg::Vec4(0,0,0,0) );      // last param   w = 0.0 directional light (direction)
+    //                                                 //              w = 1.0 point light (position)
+    // // light source
+    // light_source = new osg::LightSource;
+    // light_source->setLight( light );
+    // network-> node ->addChild( light_source );
+
+    // light = new osg::Light;
+    // light->setLightNum( 5 );
+    // light->setDiffuse( osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f) );
+    // light->setAmbient( osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f) );
+    // light->setDirection( osg::Vec3(0.0f, 0.0f, -1.0f) );
+    // light->setPosition( osg::Vec4(0,0,0,0) );      // last param   w = 0.0 directional light (direction)
+    //                                                 //              w = 1.0 point light (position)
+    // // light source
+    // light_source = new osg::LightSource;
+    // light_source->setLight( light );
+    // network-> node ->addChild( light_source );
+
+    // network -> node ->getOrCreateStateSet()->setMode( GL_LIGHT0, osg::StateAttribute::OFF );
+    // network -> node ->getOrCreateStateSet()->setMode( GL_LIGHT1, osg::StateAttribute::ON );
+    // network -> node ->getOrCreateStateSet()->setMode( GL_LIGHT2, osg::StateAttribute::ON );
+    // network -> node ->getOrCreateStateSet()->setMode( GL_LIGHT3, osg::StateAttribute::ON );
+    // network -> node ->getOrCreateStateSet()->setMode( GL_LIGHT4, osg::StateAttribute::ON );
+    // network -> node ->getOrCreateStateSet()->setMode( GL_LIGHT5, osg::StateAttribute::ON );
+
+    // network -> node ->getOrCreateStateSet()->setMode( GL_LIGHT0, osg::StateAttribute::OFF );
+
+
+
     osg::StateSet* stateSet = network -> node -> getOrCreateStateSet();
     osg::Material* material = new osg::Material;
 
     material->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE );
     material->setAlpha( osg::Material::FRONT_AND_BACK, 1.0);
+    material->setShininess(osg::Material::FRONT_AND_BACK, 128.0);
+    material->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 1.0, 1.0));
+    material->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 1.0, 1.0));
+    // material->setColorMode( osg::Material::EMISSION);
+    // material->setEmission( osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 1.0, 1.0));
+    // material->setShininess(osg::Material::FRONT_AND_BACK, 128.0);
+    // material->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 1.0, 1.0));
+    // material->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 1.0, 1.0));
+
+
     stateSet -> setAttributeAndModes( material, osg::StateAttribute::ON );
     stateSet -> setMode( GL_DEPTH_TEST, osg::StateAttribute::ON );
     stateSet -> setMode( GL_BLEND, osg::StateAttribute::ON );
     stateSet -> setMode( GL_ALPHA_TEST, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);// just added this now as a test but still no luck
-
+    osg::ShadeModel * shade_model = new osg::ShadeModel(osg::ShadeModel::SMOOTH);
+    stateSet -> setAttributeAndModes(shade_model,osg::StateAttribute::ON);
     stateSet -> setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
     _previous_width  = this -> width();
     _previous_height = this -> height();
@@ -168,6 +266,11 @@ NetworkViewer::add_view( int x
     // view->addEventHandler( new osgViewer::StatsHandler );
     view->setCameraManipulator( new osgGA::TrackballManipulator() );
     _viewer->addView( view );
+    view -> setLightingMode(osg::View::HEADLIGHT);
+    // osg::Light * light = view -> getLight();
+    // light->setDiffuse( osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f) );
+    // light->setAmbient( osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f) );
+
     unsigned int index = _viewer -> getNumViews() - 1;
     QDir().mkdir((capture_location + "/" + to_string(index)).c_str());
     auto* capture_operation =
@@ -178,7 +281,7 @@ NetworkViewer::add_view( int x
     // auto* capture_handler = new MorphologyCaptureHandler(
     //     dynamic_cast<osgViewer::ScreenCaptureHandler::CaptureOperation *>(capture_operation)
     //                                                            );
-    // view -> addEventHandler(capture_handler);
+    // view -> addEventHandler(new GeometrySelector());
 }
 
 NetworkViewer::~NetworkViewer()
@@ -606,6 +709,70 @@ NetworkViewer::wheelEvent( QWheelEvent* event )
     this->getEventQueue()->mouseScroll( motion );
 }
 
+
+/*
+    unsigned int view_index = _get_view_index_with_focus();
+    osgViewer::View * view = _viewer -> getView(view_index);
+    osgUtil::LineSegmentIntersector::Intersections intersections;
+    float x = (event -> x() / (width() - 0.0f)) * 2.0f - 1.0f;
+    float y = (event -> y() / (height() - 0.0f)) * 2.0f - 1.0f;
+    RECORD_INFO(to_string(x));
+    RECORD_INFO(to_string(y));
+    RECORD_INFO(to_string(this->getEventQueue()->getCurrentEventState() -> getXnormalized()));
+    RECORD_INFO(to_string(this->getEventQueue()->getCurrentEventState() -> getYnormalized()));
+
+
+    osgGA::GUIEventAdapter* eventa = new osgGA::GUIEventAdapter(*(this->getEventQueue()->getCurrentEventState()));
+    eventa->setEventType(osgGA::GUIEventAdapter::PUSH);
+    eventa->setButton(osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON);
+
+    // osgUtil::LineSegmentIntersector::Intersections intersections;
+
+    // osg::ref_ptr<osgUtil::LineSegmentIntersector> intersector =
+    //     new osgUtil::LineSegmentIntersector( osgUtil::Intersector::WINDOW
+    //                                        , this->getEventQueue()->getCurrentEventState() -> getX()
+    //                                        , this->getEventQueue()->getCurrentEventState() -> getY()
+    //                                        );
+    // osgUtil::IntersectionVisitor iv( intersector.get() );
+    // view ->getCamera() -> accept( iv );
+
+    // if ( intersector->containsIntersections() )
+    // {
+    //     const osgUtil::LineSegmentIntersector::Intersection& result =
+    //             *(intersector->getIntersections().begin());
+
+    //         // LOD * lod = dynamic_cast<LOD *>(result.drawable -> getParent(0) -> getParent(0));
+    //     // RECORD_INFO("Reaching here!");
+    //     RECORD_INFO(result.drawable -> asGeometry() -> getName());
+    // }
+
+    bool result = view -> computeIntersections ( *eventa
+                                               , intersections
+                                               );
+
+
+    // bool result = view -> computeIntersections ( view -> getCamera()
+    //                                            , osgUtil::Intersector::CoordinateFrame::PROJECTION
+    //                                            , this->getEventQueue()->getCurrentEventState() -> getXnormalized()
+    //                                            , this->getEventQueue()->getCurrentEventState() -> getYnormalized()
+    //                                            , intersections
+    //                                            );
+
+                                 //                view -> getCamera()
+                                 // , osgUtil::Intersector::CoordinateFrame::PROJECTION
+                                 // , x
+                                 // , y
+                                 // , intersections
+                                 // );
+    if(result)
+    {
+        const osgUtil::LineSegmentIntersector::Intersection& hit = *intersections.begin();
+        RECORD_INFO(hit.drawable -> asGeometry() -> getName());
+    }
+    // RECORD_INFO((static_cast<GeometrySelector *>(view -> getEventHandlers().front().get()))->id);
+
+*/
+
 bool
 NetworkViewer::event( QEvent* event )
 {
@@ -626,7 +793,30 @@ NetworkViewer::event( QEvent* event )
                                             break;
         default:                            break;
     }
+    if(  event -> type() == QEvent::MouseButtonPress
+      // && QApplication::keyboardModifiers() & Qt::ControlModifier
+      )
+    {
+        unsigned int view_index = _get_view_index_with_focus();
+        osgViewer::View * view = _viewer -> getView(view_index);
+        osgUtil::LineSegmentIntersector::Intersections intersections;
+        bool result = view -> computeIntersections ( view -> getCamera()
+                                                   , osgUtil::Intersector::CoordinateFrame::PROJECTION
+                                                   , this->getEventQueue()->getCurrentEventState() -> getXnormalized()
+                                                   , this->getEventQueue()->getCurrentEventState() -> getYnormalized()
+                                                   , intersections
+                                                   );
+        if(result)
+        {
+            const osgUtil::LineSegmentIntersector::Intersection& hit = *intersections.begin();
+            this->getEventQueue()->mouseButtonRelease( this->getEventQueue()->getCurrentEventState() -> getX()
+                                                     , this->getEventQueue()->getCurrentEventState() -> getY()
+                                                     , 1
+                                                     );
+            emit selected(hit.drawable -> asGeometry() -> getName().c_str());
 
+        }
+    }
     return( handled );
 }
 
