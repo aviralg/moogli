@@ -20,10 +20,6 @@ set -e
 case "$1" in
     remove|upgrade|deconfigure)
 
-	if [ -d /usr/lib/moogli ]; then
-            rm -R /usr/lib/moogli
-	fi
-
         if [ -f /etc/moogli/installed_files.txt ]; then
             # Delete the files first. This leaves the directory in their place.
             # Ideally we must remove the top-most directory.
@@ -46,10 +42,6 @@ case "$1" in
 
         fi
 
-        if [ -d /usr/share/moogli ]; then
-            rm -R /usr/share/moogli
-        fi
-        
         if [ -d /etc/moogli ]; then
             rm -R /etc/moogli
         fi

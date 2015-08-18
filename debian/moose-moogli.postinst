@@ -21,11 +21,11 @@ set -e
 case "$1" in
     configure)
         mkdir -p /etc/moogli
-        tar xvf /usr/share/moogli/moogli-1.0.tar.gz -C /tmp
+        tar xvf /usr/share/moogli/moogli-1.0.0.tar.gz -C /tmp
         (
-            cd /tmp/moogli-1.0
+            cd /tmp/moogli-1.0.0
             python setup.py install --record=/etc/moogli/installed_files.txt 
-            rm -rf /tmp/moogli-1.0
+            rm -rf /tmp/moogli-1.0.0
         )
     ;;
 
