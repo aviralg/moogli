@@ -6,7 +6,7 @@ Build-Depends: debhelper, cdbs, devscripts, cmake, python-qt4-dev, libopensceneg
 Standards-Version: 3.9.5
 Homepage: http://moogli.ncbs.res.in
 
-Package: moose-moogli
+Package: moogli
 Architecture: any
 Depends: ${shlibs:Depends}, python-qt4-gl, python-sip, libqt4-gui, openscenegraph, moose-gui
 Suggests: moose-python

@@ -1,14 +1,14 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: moogli
-Source: http://moogli.ncbs.res.in
+Source: https://github.com/BhallaLab/moogli
 
 Files: *
-Copyright: 2014-15 Aviral Goel
+Copyright: 2014-15 Aviral Goel <aviralg@ncbs.res.in>
 
 License: LGPL-3.0+
 
 Files: debian/*
-Copyright: 2014 Aviral Goel <aviralg@ncbs.res.in>
+Copyright: 2015 Dilawar Singh <dilawars@ncbs.res.in>
 License: LGPL-3.0+
 
 License: LGPL-3.0+
