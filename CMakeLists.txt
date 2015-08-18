@@ -1,6 +1,8 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 # setup SIP variables
 PROJECT(moogli)
+
+SET(MOOGLI_VERSION "1.0.0")
 SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 SET(PROJECT_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -127,6 +129,7 @@ FILE(MAKE_DIRECTORY ${MOOGLI_TEMP_DIR})
 FILE(COPY ${PROJECT_SOURCE_DIR}/ DESTINATION ${MOOGLI_TEMP_DIR}
     PATTERN "_temp_moogli" EXCLUDE
     )
+
 ADD_CUSTOM_COMMAND(TARGET _moogli POST_BUILD
     # dont use cmake copy_directory. It goes nuts on recursive copying.
     COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/_moogli.so ${MOOGLI_TEMP_DIR}
@@ -135,4 +138,9 @@ ADD_CUSTOM_COMMAND(TARGET _moogli POST_BUILD
     WORKING_DIRECTORY ${MOOGLI_TEMP_DIR}
     COMMENT "Generating MOOGLI source distribution in ${MOOGLI_DIST_DIR}"
     VERBATIM
+    )
+
+# Install the source distribution.
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/moogli-${MOOGLI_VERSION}.tar.gz
+    DESTINATION share/moogli
     )

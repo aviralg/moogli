@@ -34,7 +34,7 @@ from distutils.core import setup
 cwd_ = os.getcwd()
 
 setup( name             =   'moogli'
-     , version          =   '1.0'
+     , version          =   '1.0.0'
      , author           =   'Aviral Goel'
      , author_email     =   'aviralg@ncbs.res.in'
      , maintainer       =   'Aviral Goel'
