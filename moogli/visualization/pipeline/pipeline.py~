@@ -1,0 +1,362 @@
+from abc import ABCMeta, abstractmethod
+
+class PipelineElement():
+    """Some Documentation
+    """
+    __metaclass__ = ABCMeta
+
+    def __init__(self):
+        self.tick = -1
+        self._sources = set()
+        self._sinks = set()
+
+    @property
+    def tick(self):
+        return self._tick
+
+    @tick.setter
+    def tick(self, value):
+        self._tick = value
+
+    def _sink(self, element):
+        self._sinks.add(element)
+        element._sources.add(self)
+
+    def _unsink(self, element):
+        self._sinks.remove(element)
+        element._sources.remove(self)
+
+    def _sink_all(self, elements):
+        map(self._sink, elements)
+
+    def _unsink_all(self, elements):
+        map(self._unsink, element)
+
+    def _sinks(self):
+        return tuple(self._sinks)
+
+    def _source(self, element):
+        self._sources.add(element)
+        element._sinks.add(self)
+
+    def _unsource(self, element):
+        self._sources.remove(element)
+        element._sinks.remove(self)
+
+    def _sinks(self):
+        return tuple(self._sinks)
+
+    def _source_all(self, elements):
+        map(self._source, elements)
+
+    def _unsource_all(self, elements):
+        map(self._unsource, elements)
+
+    def _sources(self):
+        return tuple(self._sources)
+
+    @abstractmethod
+    def rewind(self):
+        pass
+
+    @abstractmethod
+    def reinit(self):
+        pass
+
+# SimulationData ->
+#    simulation_variable / visid1 - value
+#                        / visid2 - value
+#                        / visid3 - value
+
+# VisualizationData ->
+#     visualization_variable
+
+
+class Data(dict):
+    def __init__(self, *args):
+        super(self, Data).__init__(*args)
+
+    def register(self, variable):
+        self.setdefault(variable, {})
+
+    def unregister(self, variable):
+        return self.pop(variable)
+
+    def assign(self, variable, visualizable, value):
+        if variable not in self:
+            raise KeyError("register variable before using")
+        else:
+            self[variable][visualizable] = value
+
+    def obtain(self, variable, visualizable):
+        return self[variable][visualizable]
+
+
+class SimulationData(Data):
+    def __init__(self):
+        super(self, Data).__init__()
+
+    def set(self, variable, visualizable, value):
+        self.[simulation_variable][visualizable] = value
+
+    def get(self, simulation_variable, visualizable):
+        return self._data[simulation_variable][visualizable]
+
+    def clear(self):
+        for simulation_variable in self._data:
+            self._data[simulation_variable] = {}
+
+
+class VisualizationData(Data):
+    def __init__(self):
+        super(self, Data).__init__()
+
+    
+
+class VisualizationEnvironment(QWidget):
+    def __init__(self):
+        self.pipelines = {}
+
+    def producers(self):
+        return tuple(self._pipelines.keys())
+
+    def mediators(self):
+        result = set()
+        for producer in self._pipelines:
+            for mediator in self._pipelines[producer]:
+                result.add(mediator)
+        return tuple(result)
+
+    def consumers(self):
+        result = set()
+        for producer in self._pipelines:
+            for mediator in self._pipelines[producer]:
+                for consumer in self._pipeline[producer][mediator]:
+                    result.add(consumer)
+        return tuple(result)
+
+    @property
+    def pipelines(self):
+        result = []
+        for producer in self._pipelines:
+            for mediator in self._pipelines[producer]:
+                for consumer in self._pipeline[producer][mediator]:
+                    result.append((producer, mediator, consumer))
+        return result
+
+    @pipelines.setter
+    def pipelines(self, values):
+        for value in values: self.connect(*value)
+
+    def connect(producer, mediator, consumer):
+        self._pipelines[producer] = self._pipelines.get(producer, {})
+        self._pipelines[producer][mediator] = self._pipelines[producer].get(mediator,set())
+        self._pipelines[producer][mediator].add(consumer)
+
+    def disconnect(producer, mediator = None, consumer = None):
+        if mediator is None and consumer is None:
+            del self._pipelines[producer]
+        elif mediator is not None and consumer is None:
+            del self._pipelines[producer][mediator]
+        elif mediator is not None and consumer is not None:
+            self._pipelines[producer][mediator].remove(consumer)
+        elif mediator is None and consumer is not None:
+            for (mediator, consumers) in self._pipelines[producer].items():
+                if consumer in consumers:
+                    consumers.remove(consumer)
+
+
+
+    def produce(self):
+        for producer in self.producers:
+            producer.tick = self.tick
+            producer.produce()
+
+        for producer in self.pipelines.keys():
+            mediators = self.pipelines[producer].keys()
+            for mediator in mediators:
+                mediator.input.update(producer.output)
+
+    def mediate(self):
+        for mediator in self.mediators:
+            mediator.tick = self.tick
+            mediator.mediate()
+
+        for producer in self.pipelines.keys():
+            mediators = self.pipelines[producer].keys()
+            for mediator in mediators:
+                consumers = self.pipelines[producer][mediator]
+                for consumer in consumers:
+                    consumer.input.update(mediator.output)
+
+    def consume(self):
+        for consumer in self.consumers:
+            consumer.tick = self.tick
+            consumer.consume()
+
+    def advance():
+        self.tick = self.tick + 1
+        self.advance_producers()
+        self.stream_producer_output()
+        self.advance_mediators()
+        self.stream_mediator_output()
+        self.advance_consumers()
+
+
+class MediationRule:
+    def __init__( self
+                , simulation_variable
+                , visualization_variable
+                , normalizer
+                , mapper
+                ):
+        self._simulation_variable    = simulation_variable
+        self._visualization_variable = visualization_variable
+        self.normalizer              = normalizer
+        self.mapper                  = mapper
+        self._history                = {}
+
+    @property
+    def simulation_variable(self):
+        return self._simulation_variable
+
+    @property
+    def visualization_variable(self):
+        return self._visualization_variable
+
+    @property
+    def normalizer(self):
+        return self._normalizer
+
+    @normalizer.setter
+    def normalizer(self, value):
+        self.__normalizer = self._normalizer = value
+        if value is None: self.__normalizer = identity
+
+    @property
+    def mapper(self):
+        return self._mapper
+
+    @mapper.setter
+    def mapper(self, value):
+        self.__mapper = self._mapper = value
+        if value is None: self.__mapper = identity
+
+    # @property
+    # def thresholder(self):
+    #     return self._thresholder
+
+    # @thresholder.setter
+    # def thresholder(self, value):
+    #     self._thresholder = value
+
+    @property
+    def downsampler(self):
+        return self._downsampler
+
+    @downsampler.setter
+    def downsampler(self, value):
+        self.__downsampler = self._downsampler = value
+        if self.__downsampler is None:
+            self.__downsampler = Downsampler.identity()
+
+
+    def rewind(self):
+        self._history = {}
+
+    def reset(self):
+        self._history = {}
+
+    def __call__(visualizable, value):
+
+
+class Downsampler:
+    def __init__(self, factor, method):
+        self.
+
+    def __call__(self, values):
+        pass
+
+
+class SimulationDataProducer(Producer):
+
+    def __init__(self, ):
+
+
+
+    def produce(self):
+
+
+    pass
+
+class NsdfSimulationDataProducer(SimulationDataProducer):
+    pass
+
+class MooseDataProducer
+
+
+
+
+class Mediator:
+    __metaclass__ = ABCMeta
+
+    def __init__(self):
+        self._buffer = []
+
+    def mediate()
+    def peek(self):
+        pass
+
+    def pop(self):
+        pass
+
+    def push(self):
+        pass
+
+    def rewind(self):
+        pass
+
+    def reinit(self):
+        pass
+
+    def clear
+
+        pass
+    def mediate():
+        pass
+
+
+RADIUS
+LENGTH
+COLOR
+
+class SimulationData():
+    pass
+
+class VisualizationData():
+
+
+class Consumer():
+    def __init__(self):
+        pass
+
+    def consume(self, tick, time):
+        pass
+
+
+
+class SimulationDataProducer(Producer):
+    def __init__(self):
+        Producer.__init__()
+
+    def produce(self, tick, time):
+        self.tick
+
+    def rewind(self, tick = 0):
+        pass
+
+    def reinit(self):
+        pass
+
+    def tick(self):
+        return self._tick
