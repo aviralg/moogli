@@ -1,0 +1,76 @@
+from .pipeline import PipelineElement
+
+class Mediator(PipelineElement):
+    __metaclass__ = ABCMeta
+
+    def __init__(self):
+        super(Mediator, self).__init__()
+        self._consumers = set()
+        self._input     = None
+        self._output    = None
+
+    @property
+    def input(self):
+        return self._input
+
+    @input.setter
+    def input(self, value):
+        self._input = value
+
+    @property
+    def output(self):
+        return self._output
+
+    @output.setter
+    def output(self, value):
+        self._output = value
+
+    @abstractmethod
+    def mediate(self):
+        pass
+
+    def connect(self, consumer):
+        self._consumers.add(consumer)
+        consumer._mediators.add(self)
+
+    def disconnect(self, consumer = None):
+        if consumer is None:
+            for consumer in self._consumers:
+                consumer._mediators.remove(self)
+            self._consumers.clear()
+        else:
+            self._consumers.remove(consumer)
+            consumer._mediators.remove(self)
+
+
+class SimulationDataMediator(Mediator):
+    def __init__( self
+                , simulation_variable
+                , visualization_variable
+                , default_parameter
+                , normalizer
+                , mapper
+                ):
+        super(SimulationDataMediator, self).__init__()
+        self.output = {}
+
+    def mediate(self):
+        for source in self._sources:
+            data = source.input.get(simulation_variable. {}).items()
+            for (visualizable, value) in data:
+                self._mediate(visualizable, value)
+
+    def _mediate(self, visualizable, value):
+        old_param = self._parameters.get( visualizable
+                                        , self.default_parameter
+                                        )
+        new_param = self.normalizer(visualizable, value, old_param)
+        self._parameters[visualizable] = new_param
+        self.output[visualizable] = self.mapper(visualizable, new_param)
+
+    def rewind(self):
+        self.output = {}
+
+    def reinit(self):
+        self._parameters = {}
+        self._output     = {}
