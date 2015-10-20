@@ -37,6 +37,9 @@ public:
     Neuron *
     get(const std::string & id) const;
 
+    bool
+    write(const std::string & filename) const;
+
     // void
     // catmull_rom_smoothen( uint axial_segments
     //                     , uint radial_segments

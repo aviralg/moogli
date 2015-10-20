@@ -119,6 +119,11 @@ SphereMesh::operator()( Vec3f        center
                       )
 {
     Geometry * geometry = new Geometry();
+    Vec4Array * colors = new Vec4Array();
+    colors -> push_back(color); //color);
+    geometry -> setColorArray(colors);
+    geometry -> setColorBinding( osg::Geometry::BIND_OVERALL );
+ 
     operator()( center
               , radius
               , geometry
@@ -159,8 +164,5 @@ SphereMesh::operator()( Vec3f        center
     geometry -> setNormalArray(normals);
     geometry -> setNormalBinding(Geometry::BIND_PER_VERTEX);
     geometry -> addPrimitiveSet(indices);
-    Vec4Array * colors = new Vec4Array();
-    colors -> push_back(color); //color);
-    geometry -> setColorArray(colors);
     geometry -> setColorBinding( osg::Geometry::BIND_OVERALL );
 }

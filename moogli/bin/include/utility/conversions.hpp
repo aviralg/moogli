@@ -31,6 +31,9 @@ vec4f_to_pysequence(const osg::Vec4f & color);
 std::pair<int, int>
 pysequence_to_int_pair(PyObject * sequence);
 
+std::pair<float, float>
+pysequence_to_float_pair(PyObject * sequence);
+
 std::vector<osg::Vec4f>
 pysequence_to_vec4f_vector(PyObject * sequence);
 

@@ -1,6 +1,6 @@
 #include "mesh/CylinderMesh.hpp"
 #include <osgUtil/SmoothingVisitor>
-
+// http://www.bencloward.com/tutorials_normal_maps2.shtml
 CylinderMesh::CylinderMesh()
 { }
 

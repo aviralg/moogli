@@ -19,6 +19,9 @@ public:
 
     Visualizable(const char * id);
 
+    bool
+    write(const std::string & filename) const;
+
     void
     set_color(const osg::Vec4f & color, int index = -1);
 

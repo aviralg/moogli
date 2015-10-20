@@ -102,7 +102,8 @@ define_macros = []
 undef_macros = []
 
 moogli = Extension(name="moogli.core._moogli",
-                   sources=["moogli/bin/src/core/Network.cpp",
+                   sources=["moogli/bin/src/core/CoordinateSystem.cpp",
+                            "moogli/bin/src/core/Network.cpp",
                             "moogli/bin/src/core/Visualizable.cpp",
                             "moogli/bin/src/core/Neuron.cpp",
                             "moogli/bin/src/core/ElectricalCompartment.cpp",
@@ -116,6 +117,7 @@ moogli = Extension(name="moogli.core._moogli",
                             "moogli/bin/src/utility/globals.cpp",
                             "moogli/bin/src/utility/conversions.cpp",
                             "moogli/bin/src/utility/numerics.cpp",
+                            "moogli/bin/src/callbacks/CaptureView.cpp",
                             "moogli/bin/moc/NetworkViewer.moc.cpp",
                             "moogli/bin/sip/moogli.sip"],
                    include_dirs=include_dirs,

@@ -1,14 +1,14 @@
 build: clean
-	python setup.py -L/home/aviral/OpenSceneGraph-3.2.1-rc2/build/lib build
+	python setup.py build
 
 install:
-	python setup.py -L/home/aviral/OpenSceneGraph-3.2.1-rc2/build/lib install
+	python setup.py install
 
 develop:
-	python setup.py -L/home/aviral/OpenSceneGraph-3.2.1-rc2/build/lib develop
+	python setup.py develop
 
 undevelop:
-	python setup.py -L/home/aviral/OpenSceneGraph-3.2.1-rc2/build/lib develop --uninstall
+	python setup.py develop --uninstall
 
 register-test:
 	python setup.py register -r pypitest

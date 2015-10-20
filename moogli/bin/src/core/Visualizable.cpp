@@ -115,3 +115,12 @@ Visualizable::set_color(const Vec4f & color, int index)
         }
     }
 }
+
+bool
+Visualizable::write(const std::string & filename) const
+{
+    return osgDB::writeNodeFile( *node
+                               , filename
+                               );
+}
+
