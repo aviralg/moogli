@@ -1,5 +1,6 @@
 #include "view/NetworkViewer.hpp"
 
+
 NetworkViewer::NetworkViewer(Network* network, QWidget* parent,
     const QGLWidget* share_widget, Qt::WindowFlags f)
     : network(network)
@@ -122,33 +123,48 @@ NetworkViewer::NetworkViewer(Network* network, QWidget* parent,
     material->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE);
     material->setAlpha(osg::Material::FRONT_AND_BACK, 1.0);
     material->setShininess(osg::Material::FRONT_AND_BACK, 128.0);
-    material->setAmbient(osg::Material::FRONT_AND_BACK,
-        osg::Vec4(1.0, 1.0, 1.0, 1.0));
-    material->setDiffuse(osg::Material::FRONT_AND_BACK,
-        osg::Vec4(1.0, 1.0, 1.0, 1.0));
-    // material->setColorMode(osg::Material::EMISSION);
-    // material->setEmission(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0,
-    // 1.0, 1.0));
-    // material->setShininess(osg::Material::FRONT_AND_BACK, 128.0);
-    // material->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0,
-    // 1.0, 1.0));
-    // material->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0,
-    // 1.0, 1.0));
+    material->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 1.0, 1.0));
+    material->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 1.0, 1.0));
 
-    ///stateSet->setAttributeAndModes(material, osg::StateAttribute::ON);
-    ///stateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
-    ///stateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
-    ///stateSet->setMode(GL_ALPHA_TEST,
-    ///    osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE); // just added this now
+    // material->setColorMode(osg::Material::EMISSION);
+    // material->setEmission(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 1.0, 1.0));
+    // material->setShininess(osg::Material::FRONT_AND_BACK, 128.0);
+    // material->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 1.0, 1.0));
+    // material->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 1.0, 1.0));
+
+   //    stateSet->setAttributeAndModes(material, osg::StateAttribute::ON);
+    //    stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    stateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
+    stateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
+    //    stateSet->setMode(GL_ALPHA_TEST, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE); // just added this now
     // as a test but still
     // no luck
     osg::ShadeModel* shade_model = new osg::ShadeModel(osg::ShadeModel::SMOOTH);
-////stateSet->setAttributeAndModes(shade_model, osg::StateAttribute::ON);
-////stateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+    //    stateSet->setAttributeAndModes(shade_model, osg::StateAttribute::ON);
+    stateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     _previous_width = this->width();
     _previous_height = this->height();
-    add_view(0, 0, this->width(), this->height());
-    add_view(0, 0, this->width() / 5, this->height() / 5);
+    add_view( "main"
+            , new osg::Viewport( this -> x()
+                               , this -> y()
+                               , this -> width() // 1366
+                               , this -> height() // 768
+                               )
+            );
+
+    // add_view( "commoner"
+    //         , new osg::Viewport( this -> width() / 2
+    //                                , this -> y()
+    //                                , this -> width() / 2 // 1366
+    //                                , this -> height()// 768
+    //                                )
+    //         );
+
+
+
+
+    //    add_view(0, 0, this->width(), this->height());
+    // add_view(0, 0, this->width() / 5, this->height() / 5);
     // add_view(this -> width()/2, 0, this -> width()/2, this -> height());
     //_viewer -> addCamera(create_hud_camera(0, 0, this -> width(), this -> height()))
     _viewer->setThreadingModel(osgViewer::CompositeViewer::SingleThreaded);
@@ -164,6 +180,7 @@ NetworkViewer::NetworkViewer(Network* network, QWidget* parent,
     // graphics window switch viewports properly.
     this->setMouseTracking(true);
     const osg::BoundingSphere& bs = network->node->getBound();
+
     up_distance = bs.radius() * 0.01;
     down_distance = bs.radius() * 0.01;
     left_distance = bs.radius() * 0.01;
@@ -177,59 +194,520 @@ NetworkViewer::NetworkViewer(Network* network, QWidget* parent,
 
 
 
-    osgViewer::Viewer::Windows windows;
-    _viewer -> getWindows(windows);
+    // osgViewer::Viewer::Windows windows;
+    // _viewer -> getWindows(windows);
 
-    osg::Camera* hud_camera = create_hud_camera(0, this -> width(), 0, this -> height());
+    // osg::Camera* hud_camera = create_hud_camera(0, this -> width(), 0, this -> height());
 
     // set up cameras to render on the first window available.
    //, _graphics_window -> getTraits() -> height
     //                         );
 
-    osgViewer::ViewerBase::Views views;
-    _viewer -> getViews(views);
+    ///osgViewer::ViewerBase::Views views;
+    ///_viewer -> getViews(views);
 
-    hud_camera -> setGraphicsContext(_graphics_window);
-    hud_camera -> setViewport(views[0] -> getCamera() -> getViewport());
-    views[0] -> addSlave(hud_camera, false);
+    ///hud_camera -> setGraphicsContext(_graphics_window);
+    ///hud_camera -> setViewport(views[0] -> getCamera() -> getViewport());
+    ///views[0] -> addSlave(hud_camera, false);
 
     // osgViewer::View* hud_view = new osgViewer::View;
     // hud_view->setCamera(hud_camera);
     // _hud_view = hud_view;
     // _viewer -> addView(hud_view);
-}
-
-
-void
-add_slave_hud_camera(osg::Camera * camera, osgViewer::View * view)
-{
-    osg::Camera * hud_camera = create_hud_camera(view -> getCamera() -> getViewport());
-    hud_camera -> setGraphicsContext(_graphics_window);
-    hud_camera -> setViewport(views[0] -> getCamera() -> getViewport());
-    views -> addSlave(hud_camera, false);
-
-
-    camera ->
 
 }
 
-void
-create_billboard()
+
+
+
+//     osg::Geode* geode = new osg::Geode();
+
+//     std::string timesFont("/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-B.ttf");
+
+//   // turn lighting off for the text and disable depth test to ensure it's always ontop.
+//     osg::StateSet* stateset = geode->getOrCreateStateSet();
+//     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+
+//     osg::Vec3 position(150.0f,800.0f,0.0f);
+//     osg::Vec3 delta(0.0f,-120.0f,0.0f);
+
+//   {
+//       osgText::Text* text = new  osgText::Text;
+//       geode->addDrawable( text );
+
+//       text->setFont(timesFont);
+//       text->setPosition(position);
+//       text->setText("Sample Text");
+
+//       position += delta;
+//   }
+//   network -> node -> addChild(geode);
+//   camera -> addChild(geode);
+
+//   osgSim::ScalarBar * geode1 = new osgSim::ScalarBar;
+//   osgSim::ScalarBar::TextProperties tp;
+//   tp._fontFile = "/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-B.ttf";
+//   geode1->setTextProperties(tp);
+//   osg::StateSet * stateset1 = geode1->getOrCreateStateSet();
+//   stateset1->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+//   stateset1->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+//   stateset1->setRenderBinDetails(11, "RenderBin");
+
+//   osg::MatrixTransform * modelview = new osg::MatrixTransform;
+//   modelview->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+//   osg::Matrixd matrix( osg::Matrixd::scale(1000,1000,1000)
+//                      * osg::Matrixd::translate(120,10,0)
+//                      ); // I've played with these values a lot and it seems to work, but I have no idea why
+//   modelview->setMatrix(matrix);
+//   modelview->addChild(geode1);
+//   // camera -> addChild(modelview);
+//   return camera;
+// }
+
+
+osg::Billboard *
+NetworkViewer::create_billboard()
 {
-  
+    return new osg::Billboard();
 }
 
-void
-add_billboard(osg::Billboard * billboard, osgViewer::View * view)
+/*
+osg::Billboard *
+create_billboard(const osg::Billboard::Mode & rotation_mode, const osg::Vec3f & rotation_axis, const osg::Vec3f & front_face_normal)
 {
-  
+    osg::Billboard * billboard = new Billboard();
+    billboard -> setMode(rotation_mode);
+    billboard -> setAxis(rotation_axis);
+    billboard -> setNormal(front_face_normal);
+    return billboard;
+}
+*/
+
+
+// osg::Geode *
+// axis( const osg::Vec3f & center
+//     , const float radius
+//     , const float height
+//     , const osg::Vec3f & direction
+//     , const osg::Vec4f & color
+//     , const std::string label
+//     )
+// {
+//   osg::Geode * geode = new Geode();
+//   osg::Cylinder * axis = new osg::Cylinder(center , radius, height);
+//   osg::Quat rotation;
+//   rotation.makeRotate(osg::Z_AXIS , direction);
+//   axis -> setRotation(rotation);
+//   osg::ShapeDrawable * shape  = new osg::ShapeDrawable(axis);
+//   shape -> setColor(color);
+//   osgText::Text* text = new osgText::Text;
+//   std::string timesfont("/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-B.ttf");
+//   osg::Vec3 position(center + osg::Vec3f(radius / 2.0f, 0.0f, 0.0f));
+//   text -> setFont(timesfont);
+//   text -> setPosition(position);
+//   text -> setColor(osg::Vec4f(1.0f, 0.0f, 0.0f, 1.0f));
+//   text -> setText("X");
+//   text -> setCharacterSize(20.0f);
+//   text -> setAxisAlignment(osgText::TextBase::SCREEN);
+//   geode -> addDrawable(text);
+//   return geode;
+// }
+
+osg::Geode *
+NetworkViewer::coordinate_system( const Vec3f & center
+                                , const float length
+                                , const float radius
+                                )
+{
+
+    float cone_length = length / 5.0f;
+    osg::Geode * geode = new osg::Geode();
+
+    osg::Cylinder * x_axis = new osg::Cylinder(center + osg::X_AXIS * length / 2.0f, radius, length);
+    osg::Cone     * x_cone = new osg::Cone(center + osg::X_AXIS * length , 2 * radius, cone_length);
+    osg::Quat x_direction; x_direction.makeRotate(osg::Z_AXIS , osg::X_AXIS);
+    x_axis -> setRotation(x_direction);
+    x_cone -> setRotation(x_direction);
+    osg::ShapeDrawable * x_axis_shape = new osg::ShapeDrawable(x_axis);
+    osg::ShapeDrawable * x_cone_shape = new osg::ShapeDrawable(x_cone);
+    x_axis_shape -> setColor(osg::Vec4f(1.0f, 0.0f, 0.0f, 1.0f));
+    x_cone_shape -> setColor(osg::Vec4f(1.0f, 0.0f, 0.0f, 1.0f));
+    geode -> addDrawable(x_axis_shape);
+    geode -> addDrawable(x_cone_shape);
+
+    osg::Cylinder * y_axis = new osg::Cylinder(center + osg::Y_AXIS * length / 2.0f, radius, length);
+    osg::Cone     * y_cone = new osg::Cone(center + osg::Y_AXIS * length , 2 * radius, cone_length);
+    osg::Quat y_direction; y_direction.makeRotate(osg::Z_AXIS, osg::Y_AXIS);
+    y_axis -> setRotation(y_direction);
+    y_cone -> setRotation(y_direction);
+    osg::ShapeDrawable * y_axis_shape = new osg::ShapeDrawable(y_axis);
+    osg::ShapeDrawable * y_cone_shape = new osg::ShapeDrawable(y_cone);
+    y_axis_shape -> setColor(osg::Vec4f(0.0f, 1.0f, 0.0f, 1.0f));
+    y_cone_shape -> setColor(osg::Vec4f(0.0f, 1.0f, 0.0f, 1.0f));
+    geode -> addDrawable(y_axis_shape);
+    geode -> addDrawable(y_cone_shape);
+
+    osg::Cylinder * z_axis = new osg::Cylinder(center + osg::Z_AXIS * length / 2.0f, radius, length);
+    osg::Cone     * z_cone = new osg::Cone(center + osg::Z_AXIS * length, 2 * radius, cone_length);
+    // osg::Quat z_direction; z_direction.makeRotate(z_axis -> getRotation(), osg::Z_AXIS);
+    // z_axis -> setRotation(z_direction);
+    osg::ShapeDrawable * z_axis_shape = new osg::ShapeDrawable(z_axis);
+    osg::ShapeDrawable * z_cone_shape = new osg::ShapeDrawable(z_cone);
+    z_axis_shape -> setColor(osg::Vec4f(0.0f, 0.0f, 1.0f, 1.0f));
+    z_cone_shape -> setColor(osg::Vec4f(0.0f, 0.0f, 1.0f, 1.0f));
+    geode -> addDrawable(z_axis_shape);
+    geode -> addDrawable(z_cone_shape);
+
+    {
+      osgText::Text* text = new osgText::Text;
+      std::string timesfont("/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-B.ttf");
+      osg::Vec3 position(center + osg::Vec3f(length + cone_length, 0.0f, 0.0f));
+      text -> setFont(timesfont);
+      text -> setPosition(position);
+      text -> setColor(osg::Vec4f(1.0f, 0.0f, 0.0f, 1.0f));
+      text -> setText("X");
+      text -> setCharacterSize(radius * 5.0f);
+      text -> setAxisAlignment(osgText::TextBase::SCREEN);
+      geode -> addDrawable(text);
+    }
+    {
+      osgText::Text* text = new osgText::Text;
+      std::string timesfont("/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-B.ttf");
+      osg::Vec3 position(center + osg::Vec3f(0.0f, length + cone_length, 0.0f));
+      text -> setFont(timesfont);
+      text -> setPosition(position);
+      text -> setColor(osg::Vec4f(0.0f, 1.0f, 0.0f, 1.0f));
+      text -> setText("Y");
+      text -> setCharacterSize(radius * 5.0f);
+      text -> setAxisAlignment(osgText::TextBase::SCREEN);
+      geode -> addDrawable(text);
+    }
+    {
+      osgText::Text* text = new osgText::Text;
+      std::string timesfont("/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-B.ttf");
+      osg::Vec3 position(center + osg::Vec3f(0.0f, 0.0f, length + cone_length));
+      text -> setFont(timesfont);
+      text -> setPosition(position);
+      text -> setColor(osg::Vec4f(0.0f, 0.0f, 1.0f, 1.0f));
+      text -> setText("Z");
+      text -> setCharacterSize(radius * 5.0f);
+      text -> setAxisAlignment(osgText::TextBase::SCREEN);
+      geode -> addDrawable(text);
+    }
+ 
+    return geode;
+    // CylinderMesh cylinder_mesh;
+    // osg::Geode * coordinates = new osg::Geode();
+    // osg::Geometry * px_axis = new osg::Geometry();
+    // height = height * 4;
+    // cylinder_mesh( center + osg::Vec3f(1.0f, 0.0f, 0.0f) * height / 4.0f
+    //              , radius / 16.0f
+    //              , radius / 16.0f
+    //              , height / 2.0f
+    //              , osg::Vec3f(1.0f, 0.0f, 0.0f)
+    //              , px_axis
+    //              , 20
+    //              , osg::Vec4f(1.0f, 0.0f, 0.0f, 1.0f)
+    //              );
+    // osg::Geometry * nx_axis = new osg::Geometry();
+    // cylinder_mesh( center + osg::Vec3f(-1.0f, 0.0f, 0.0f) * height / 4.0f
+    //              , radius / 16.0f
+    //              , radius / 16.0f
+    //              , height / 2.0f
+    //              , osg::Vec3f(-1.0f, 0.0f, 0.0f)
+    //              , nx_axis
+    //              , 20
+    //              , osg::Vec4f(1.0f, 0.0f, 0.0f, 0.5f)
+    //              );
+
+    // osg::Geometry * py_axis = new osg::Geometry();
+    // cylinder_mesh( center + osg::Vec3f(0.0f, 1.0f, 0.0f) * height / 4.0f
+    //              , radius / 16.0f
+    //              , radius / 16.0f
+    //              , height / 2.0f
+    //              , osg::Vec3f(0.0f, 1.0f, 0.0f)
+    //              , py_axis
+    //              , 20
+    //              , osg::Vec4f(0.0f, 1.0f, 0.0f, 1.0f)
+    //              );
+    // osg::Geometry * ny_axis = new osg::Geometry();
+    // cylinder_mesh( center + osg::Vec3f(0.0f, -1.0f, 0.0f) * height / 4.0f
+    //              , radius / 16.0f
+    //              , radius / 16.0f
+    //              , height / 2.0f
+    //              , osg::Vec3f(0.0f, -1.0f, 0.0f)
+    //              , ny_axis
+    //              , 20
+    //              , osg::Vec4f(0.0f, 1.0f, 0.0f, 0.5f)
+    //              );
+
+    // osg::Geometry * pz_axis = new osg::Geometry();
+    // cylinder_mesh( center + osg::Vec3f(0.0f, 0.0f, 1.0f) * height / 4.0f
+    //              , radius / 16.0f
+    //              , radius / 16.0f
+    //              , height / 2.0f
+    //              , osg::Vec3f(0.0f, 0.0f, 1.0f)
+    //              , pz_axis
+    //              , 20
+    //              , osg::Vec4f(0.0f, 0.0f, 1.0f, 1.0f)
+    //              );
+    // osg::Geometry * nz_axis = new osg::Geometry();
+    // cylinder_mesh( center + osg::Vec3f(0.0f, 0.0f, -1.0f) * height / 4.0f
+    //              , radius / 16.0f
+    //              , radius / 16.0f
+    //              , height / 2.0f
+    //              , osg::Vec3f(0.0f, 0.0f, -1.0f)
+    //              , nz_axis
+    //              , 20
+    //              , osg::Vec4f(0.0f, 0.0f, 1.0f, 0.5f)
+    //              );
+
+    // osg::Geometry * pn_axis = new osg::Geometry();
+    // cylinder_mesh( center + direction * height / 4.0f
+    //              , radius / 16.0f
+    //              , radius / 16.0f
+    //              , height / 2.0f
+    //              , direction
+    //              , pn_axis
+    //              , 20
+    //              , osg::Vec4f(1.0f, 1.0f, 0.0f, 1.0f)
+    //              );
+    // osg::Geometry * nn_axis = new osg::Geometry();
+    // cylinder_mesh( center -direction * height / 4.0f
+    //              , radius / 16.0f
+    //              , radius / 16.0f
+    //              , height / 2.0f
+    //              , -direction
+    //              , nn_axis
+    //              , 20
+    //              , osg::Vec4f(1.0f, 1.0f, 0.0f, 0.5f)
+    //              );
+
+    // coordinates -> addDrawable(px_axis);
+    // coordinates -> addDrawable(py_axis);
+    // coordinates -> addDrawable(pz_axis);
+    // coordinates -> addDrawable(pn_axis);
+    // coordinates -> addDrawable(nx_axis);
+    // coordinates -> addDrawable(ny_axis);
+    // coordinates -> addDrawable(nz_axis);
+    // coordinates -> addDrawable(nn_axis);
+
+    // return coordinates;
 }
 
-void
-add_view(osgViewer::View * view, )
+
+osg::MatrixTransform *
+NetworkViewer::create_scene_data()
 {
-    create_view
-    
+  osg::MatrixTransform * scene_data = new MatrixTransform();
+  scene_data -> addChild(network -> node);
+  osg::Billboard * billboard = create_billboard();
+  scene_data -> addChild(billboard);
+  osg::Geode * geode = new Geode();
+  scene_data -> addChild(geode);
+  {
+     osgText::FadeText* text = new osgText::FadeText;
+     std::string timesfont("/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-B.ttf");
+     osg::Vec3 position(0.0f,0.0f,0.0f);
+     text -> setFont(timesfont);
+     text -> setPosition(position);
+     text -> setText("Sample Text");
+     text -> setCharacterSize(30.0f);
+     text -> setAxisAlignment(osgText::TextBase::SCREEN);
+     text -> setFadeSpeed(0.001);
+     //geode -> addDrawable(text);
+  }
+  {
+       osgText::Text* text = new osgText::Text;
+       std::string timesfont("/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-B.ttf");
+       osg::Vec3 position(100.0f,0.0f,0.0f);
+       text -> setFont(timesfont);
+       text -> setPosition(position);
+       text -> setText("Sample Text");
+       text -> setCharacterSize(30.0f);
+       text -> setAxisAlignment(osgText::TextBase::SCREEN);
+       //geode -> addDrawable(text);
+  }
+  {
+    osgText::Text3D* text = new osgText::Text3D;
+    std::string timesfont("/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-B.ttf");
+    osg::Vec3 position(100.0f,100.0f,0.0f);
+    text -> setFont(timesfont);
+    text -> setPosition(position);
+    text -> setText("Sample Text");
+    text -> setCharacterSize(30.0f);
+    text -> setCharacterDepth(10.0f);
+    //text -> setAxisAlignment(osgText::TextBase::XY_PLANE);
+    text -> setAxisAlignment(osgText::TextBase::SCREEN);
+    text -> setAutoRotateToScreen(true);
+    //geode -> addDrawable(text);
+
+
+
+
+  }
+  {
+    const osg::BoundingSphere& bs = network->node->getBound();
+    float radius = bs.radius();
+    osg::Geode * geode = new osg::Geode();
+    osg::InfinitePlane * plane = new osg::InfinitePlane();
+    plane -> set(osg::Vec3f(1.0f, 0.0f, 0.0f), bs.center());
+    osg::ShapeDrawable * plane_shape = new osg::ShapeDrawable(plane);
+    plane_shape -> setColor(osg::Vec4f(1.0f, 0.0f, 0.0f, 1.0f));
+    geode -> addDrawable(plane_shape);
+    scene_data -> addChild(geode);
+  }
+  //billboard -> setMode(osg::Billboard::POINT_ROT_WORLD);
+  billboard -> setNormal(osg::Vec3f(1.0f, -1.0f, 0.0f));
+  return scene_data;
+}
+
+osg::Camera *
+NetworkViewer::create_master_camera( osg::Viewport * viewport
+                                   , osg::Vec4f clear_color
+                                   , double fovy
+                                   , double z_near
+                                   , double z_far
+                                   )
+{
+  osg::Camera * camera = new osg::Camera();
+  camera -> setViewport(viewport);
+  camera -> setProjectionMatrixAsPerspective( fovy
+                                            , viewport -> aspectRatio()
+                                            , z_near
+                                            , z_far
+                                            );
+  camera -> setClearColor(clear_color);
+  camera -> setGraphicsContext(_graphics_window);
+  camera -> getOrCreateStateSet() -> setGlobalDefaults();
+  camera -> setPostDrawCallback(new CaptureView());
+  return camera;
+}
+
+osg::Camera*
+NetworkViewer::create_hud_camera(osg::Viewport * viewport)
+{
+    osg::Camera * camera = new osg::Camera;
+
+    // set the projection matrix
+    camera -> setProjectionMatrix(osg::Matrix::ortho2D( 0 //viewport -> x()
+                                                      , viewport -> width()
+                                                      , 0 // viewport -> y()
+                                                      , viewport -> height()
+                                                      )
+                                 );
+    // set the view matrix
+    camera -> setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+    camera -> setViewMatrix(osg::Matrix::identity());
+
+    // only clear the depth buffer
+    camera -> setClearMask(GL_DEPTH_BUFFER_BIT);
+
+    // draw subgraph after main camera view.
+    camera -> setRenderOrder(osg::Camera::POST_RENDER);
+
+    // we don't want the camera to grab event focus from the viewers main camera(s).
+    camera -> setAllowEventFocus(false);
+    camera -> setGraphicsContext(_graphics_window);
+    camera -> setViewport(viewport);
+    return camera;
+}
+
+
+osgViewer::View *
+NetworkViewer::create_view( const char * id
+                          , osg::Viewport * viewport
+                          , osg::Camera * master_camera
+                          , osg::Camera * hud_camera
+                          , osg::MatrixTransform * scene_data
+                          , osgGA::StandardManipulator * camera_manipulator
+                          )
+{
+    osgViewer::View* view = new osgViewer::View();
+    view -> setName(id);
+    view -> setCamera(master_camera);
+    view -> addSlave(hud_camera, false);
+    view -> setSceneData(scene_data);
+    view -> setCameraManipulator(camera_manipulator);
+    view -> setLightingMode(osg::View::HEADLIGHT);
+    view -> addEventHandler(new osgViewer::ScreenCaptureHandler());
+    return view;
+}
+
+osgViewer::View *
+NetworkViewer::add_view( const char * id
+        , osg::Viewport * viewport
+        , osg::Vec4f clear_color
+        , osgGA::StandardManipulator * camera_manipulator
+        , double fovy
+        , double z_near
+        , double z_far
+        )
+{
+  osgViewer::View * view = create_view( id
+                                  , viewport
+                                  , create_master_camera( viewport
+                                                        , clear_color
+                                                        , fovy
+                                                        , z_near
+                                                        , z_far
+                                                        )
+                                  , create_hud_camera(viewport)
+                                  , create_scene_data()
+                                  , camera_manipulator
+                                  );
+  // https://groups.google.com/forum/#!searchin/osg-users/move$20with$20camera/osg-users/HxSTSSOS-fE/HeqYeqrezPkJ
+  // https://groups.google.com/forum/#!searchin/osg-users/move$20with$20camera/osg-users/jowv_ou9dWs/A214Wy35JKgJ
+  // https://groups.google.com/forum/#!searchin/osg-users/move$20with$20camera/osg-users/RbxhdyeBVpU/OC2VprlSF4oJ
+  // https://groups.google.com/forum/#!searchin/osg-users/move$20with$20camera/osg-users/O-G5Vy2TBxo/r828XByPrHgJ
+  osg::Camera * camera = new osg::Camera();
+  camera -> setViewport(viewport);
+  camera -> setProjectionMatrixAsPerspective( fovy
+                                            , viewport -> aspectRatio()
+                                            , z_near
+                                            , z_far
+                                            );
+  //camera -> setClearColor(clear_color);
+  camera -> setGraphicsContext(_graphics_window);
+  camera -> getOrCreateStateSet() -> setGlobalDefaults();
+  camera -> setPostDrawCallback(new CaptureView());
+  // camera -> setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+  // camera -> setViewMatrix(osg::Matrix::identity());
+  // only clear the depth buffer
+  // camera -> setClearMask(GL_DEPTH_BUFFER_BIT);
+
+  // draw subgraph after main camera view.
+  camera -> setRenderOrder(osg::Camera::POST_RENDER);
+
+  // we don't want the camera to grab event focus from the viewers main camera(s).
+  camera -> setAllowEventFocus(false);
+  const osg::BoundingSphere& bs = network->node->getBound();
+  float radius = bs.radius();
+  osg::Vec3f center = bs.center();
+  // scene_data -> addChild(coordinate_system(center, radius));
+
+  // osg::AutoTransform * absolute_node = new osg::Transform();
+  // absolute_node -> setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+  // //absolute_node -> setViewMatrix(osg::Matrix::identity());
+  // absolute_node -> addChild(coordinate_system(center, radius));
+  // //scene_data -> addChild(absolute_node);
+
+  CoordinateSystem * system = new CoordinateSystem();
+  system -> setStateSet( network -> node -> getOrCreateStateSet());
+
+  system -> getStateSet() -> setMode(GL_BLEND, osg::StateAttribute::ON);
+  system -> camera = view -> getCamera();
+  system -> addChild(coordinate_system(osg::Vec3f(0.0f, 0.0f, 0.0f), 50.0f, 2.5f));
+  static_cast<osg::MatrixTransform *>(view -> getSceneData()) -> addChild(system);
+
+
+  //view -> addSlave(camera, true);
+
+  camera -> addChild(coordinate_system(osg::Vec3f(0.0f, 0.0f, 0.0f), 50.0f, 2.5f));
+  _viewer -> addView(view);
+  _views[id] = view;
+  return view;
+
 }
 
 osgText::Text *
@@ -244,21 +722,21 @@ NetworkViewer::create_two_d_texts( const char * id
                           //   character_height
                           //   character_aspect_ratio
                           // )
-    {
-        osg::Geode* geode = new osg::Geode();
+{
+    osg::Geode* geode = new osg::Geode();
 
-        std::string font("/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-B.ttf");
+    std::string font("/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-B.ttf");
 
-        // turn lighting off for the text and disable depth test to ensure it's always ontop.
-        osg::StateSet* stateset = geode->getOrCreateStateSet();
-        stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-        osgText::Text* text = new  osgText::Text;
-        geode->addDrawable(text);
-        text->setFont(font);
-        text->setPosition(position);
-        text->setText(content);
-        _two_d_texts[id] = geode;
-    }
+    // turn lighting off for the text and disable depth test to ensure it's always ontop.
+    osg::StateSet* stateset = geode->getOrCreateStateSet();
+    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+    osgText::Text* text = new  osgText::Text;
+    geode->addDrawable(text);
+    text->setFont(font);
+    text->setPosition(position);
+    text->setText(content);
+    _two_d_texts[id] = geode;
+}
 
     // bool
     // NetworkViewer::show_text_2D()
@@ -299,111 +777,114 @@ NetworkViewer::create_two_d_texts( const char * id
 
     // void NetworkViewer::remove_text() {}
 
-    void NetworkViewer::set_background_color(const osg::Vec4f& color)
-    {
-        _viewer->getView(0)->getCamera()->setClearColor(color);
-    }
+void
+NetworkViewer::capture( const std::string & viewer_id
+                      , const std::string & filename
+                      , const std::string & extension
+                      , unsigned long frame_count
+                      )
+{
+    CaptureView * capture_view = static_cast<CaptureView *>(_views[viewer_id] -> getCamera() -> getPostDrawCallback());
+    capture_view -> start_capture(filename, extension, frame_count);
+    return;
+    osgViewer::ScreenCaptureHandler * handler = static_cast<osgViewer::ScreenCaptureHandler *>(_views[viewer_id] -> getEventHandlers().front().get());
+    handler -> setFramesToCapture(frame_count);
+    handler -> setCaptureOperation(new osgViewer::ScreenCaptureHandler::WriteToFile(filename, extension));
+    handler -> startCapture();
+}
 
+void
+NetworkViewer::set_background_color(const osg::Vec4f& color)
+{
+    _viewer->getView(0)->getCamera()->setClearColor(color);
+}
 
-    bool
-    NetworkViewer::create_color_bar( const char * id
-                                , const char * title
-                                , float min_scalar
-                                , float max_scalar
-                                , std::vector< osg::Vec4 > colors
-                                , int num_colors
-                                , int num_labels
-                                , float angle//osgSim::ScalarBar::Orientation orientation
-                                , float aspect_ratio
-                                , float width
-                                , osg::Vec3f position
-                                , osg::Vec4 label_color
-                                , const char * label_font_file
-                                , std::pair<int, int> label_font_resolution
-                                , float label_character_size
-                                )
-    {
+bool
+NetworkViewer::create_color_bar( const char * id
+                               , const char * title
+                               , std::pair<float, float> scalar_range
+                               , std::vector< osg::Vec4 > colors
+                               , int num_colors
+                               , int num_labels
+                               , float angle//osgSim::ScalarBar::Orientation orientation
+                               , std::pair<float, float> dimensions
+                               , osg::Vec3f position
+                               , osg::Vec4 label_color
+                               , const char * label_font_file
+                               , std::pair<int, int> label_font_resolution
+                               , float label_character_size
+                               )
+{
     std::cerr << num_colors << std::endl;
     std::cerr << num_labels << std::endl;
     std::cerr << colors[1][0] << ", " << colors[1][1] << ", " << colors[1][2] << ", " << colors[1][3] << std::endl;
     std::cerr << position[0] << ", " << position[1] << ", " << position[2] << std::endl;
-
-    osgSim::ScalarBar * geode1 = new osgSim::ScalarBar( num_colors
-                                                        , num_labels
-                                                        , new osgSim::ColorRange( min_scalar
-                                                                                , max_scalar
-                                                                                , colors
-                                                                                )
-                                                        , title
-                                                        , osgSim::ScalarBar::HORIZONTAL
-                                                        , aspect_ratio
-                                                        );
 
     osgSim::ScalarBar::TextProperties text_properties;
     text_properties._fontFile = label_font_file;
     text_properties._fontResolution = label_font_resolution;
     text_properties._characterSize = label_character_size;
     text_properties._color = label_color;
+    float length = dimensions.first;
+    float breadth = dimensions.second;
+    osgSim::ScalarBar * scalar_bar = new osgSim::ScalarBar( num_colors
+                                                          , num_labels
+                                                          , new osgSim::ColorRange( scalar_range.first
+                                                                                  , scalar_range.second
+                                                                                  , colors
+                                                                                  )
+                                                          , title
+                                                          , osgSim::ScalarBar::HORIZONTAL
+                                                          , breadth / length
+                                                          );
 
-    geode1 -> setWidth(width);
-    geode1->setTextProperties(text_properties);
-    osg::StateSet * stateset1 = geode1->getOrCreateStateSet();
-    stateset1->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-    stateset1->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
-    stateset1->setRenderBinDetails(11, "RenderBin");
+    //    scalar_bar -> setPosition(position);
+    scalar_bar -> setWidth(length);
+    scalar_bar -> setTextProperties(text_properties);
 
-    osg::MatrixTransform * modelview = new osg::MatrixTransform;
-    modelview->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
-    osg::Matrixd matrix1( osg::Matrixd::scale(1000,1000,1000)
-                        * osg::Matrixd::translate(position[0], position[1], position[2])
-                        ); // I've played with these values a lot and it seems to work, but I have no idea why
+    osg::StateSet * stateset = scalar_bar -> getOrCreateStateSet();
+    stateset -> setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    stateset -> setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);
+    stateset -> setRenderBinDetails(11, "RenderBin");
 
-    modelview -> setMatrix(osg::Matrixd::rotate(angle, 0.0, 0.0, 1.0) * matrix1);
-    //modelview->setMatrix(matrix1);
-        modelview->addChild(geode1);
-
-    _scalar_bars[id] = modelview;
+    const BoundingBox & bounding_box = scalar_bar -> getBoundingBox();
+    length = bounding_box.xMax() - bounding_box.xMin();
+    breadth = bounding_box.yMax() - bounding_box.yMin();
+    float cosangle = cos(angle);
+    float sinangle = sin(angle);
+    osg::PositionAttitudeTransform * pat_transform = new osg::PositionAttitudeTransform();
+    pat_transform -> setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+    pat_transform -> setPosition( position
+                                - osg::Vec3f( length * cosangle / 2.0f - breadth * sinangle / 2.0f
+                                            , length * sinangle / 2.0f + breadth * cosangle / 2.0f
+                                            , 0.0f
+                                            )
+                                );
+    osg::Quat orientation;
+    orientation.makeRotate(angle, 0.0, 0.0, 1.0);
+    pat_transform -> setAttitude(orientation);
+    //   etMatrix( osg::Matrixd::rotate(angle, 0.0, 0.0, 1.0)
+    //                              * osg::Matrixd::translate(                                                           )
+    //                              );
+    pat_transform -> addChild(scalar_bar);
+    _scalar_bars[id] = pat_transform;
     return true;
-
-    osg::ref_ptr<osgSim::ScalarBar> scalar_bar( new osgSim::ScalarBar( num_colors
-                                                                        , num_labels
-                                                                        , new osgSim::ColorRange( min_scalar
-                                                                                                , max_scalar
-                                                                                                , colors
-                                                                                                )
-                                                                        , title
-                                                                        , osgSim::ScalarBar::HORIZONTAL
-                                                                        , aspect_ratio
-                                                                        )
-                                                );
-        //scalar_bar -> setPosition(position);
-        // scalar_bar -> setWidth(width);
-        scalar_bar -> setTextProperties(text_properties);
-        osg::StateSet * stateset = scalar_bar -> getOrCreateStateSet();
-        stateset -> setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-        stateset -> setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);
-        stateset -> setRenderBinDetails(11, "RenderBin");
+}
 
 
-        osg::MatrixTransform * matrix_transform = new osg::MatrixTransform;
-        matrix_transform -> setReferenceFrame(osg::Transform::ABSOLUTE_RF);
-        osg::Matrixd matrix( osg::Matrixd::scale(1000,1000,1000)
-                            * osg::Matrixd::translate(position[0], position[1], position[2])
-                        ); // I've played with these values a lot and it seems to work, but I have no idea why
-        matrix_transform -> setMatrix(matrix);
-        matrix_transform -> addChild(scalar_bar.get());
-        _scalar_bars[id] = matrix_transform;
-        return true;
-        // auto search = _scalar_bars.find(id);
+// void
+// resize_color_bar(osg::PositionAttitudeTransform * pat_transform)
+// {
+//     osg::Vec3f position = pat_transform -> getPosition();
+//     osg::Quat orientation = pat_transform -> getAttitude();
+//     float angle;
+//     osg::Vec3f axis;
+//     orientation.getRotate(angle, axis);
+//     osg::ScalarBar * scalar_bar = pat_transform -> getChild(0);
+//     float length = scalar_bar -> getWidth();
+//     float breadth = length * scalar_bar -> getAspectRatio();
 
-
-        // if (search != _scalar_bars.end()) { return false; }
-        // _scalar_bars[id] = scalar_bar;
-
-        // return true;
-    }
-
-
+// }
 
     osg::Camera *
     NetworkViewer::get_hud_camera(unsigned int view_index)
@@ -439,6 +920,15 @@ NetworkViewer::create_two_d_texts( const char * id
         return hud_camera -> removeChild((search -> second).get());
     }
 
+// bool
+// resize_color_bar( osg::MatrixTransform * matrix_transform
+//                 , osg::Viewport * old_viewport
+//                 , osg::Viewport * new_viewport
+//                 )
+// {
+    
+// }
+
     bool
     NetworkViewer::show_color_bar( const char * id
                                 , unsigned int view_index
@@ -457,6 +947,11 @@ NetworkViewer::create_two_d_texts( const char * id
         // modelview->addChild(geode1);
 
         views[0] -> getSlave(0)._camera -> addChild(_scalar_bars[id].get());
+        std::cerr << "Viewport Size" << std::endl;
+        std::cerr << views[0] -> getSlave(0)._camera -> getViewport() -> x() << std::endl;
+        std::cerr << views[0] -> getSlave(0)._camera -> getViewport() -> y() << std::endl;
+        std::cerr << views[0] -> getSlave(0)._camera -> getViewport() -> width() << std::endl;
+        std::cerr << views[0] -> getSlave(0)._camera -> getViewport() -> height() << std::endl;
         return true;
         _hud_view -> getCamera() -> addChild(_scalar_bars[id].get());
         return true;
@@ -475,26 +970,6 @@ NetworkViewer::create_two_d_texts( const char * id
         // return true;
         auto search = _scalar_bars.find(id);
         if (search == _scalar_bars.end()) { return false; }
-        std::cerr << "Reaching Here";
-        osg::Camera * hud_camera = create_hud_camera(0, 0, 1024, 768);//get_hud_camera(view_index);
-        std::cerr << "Reaching here too";
-        std::cerr << "HUD Camera " << hud_camera;
-
-        //views[view_index] -> getSceneData() -> asGroup() -> addChild(_scalar_bars[id].get());
-        //if (hud_camera -> containsNode(_scalar_bars[id].get())) { return true; }
-        std::cerr << "Attaching color bar" << std::endl;
-        hud_camera->addChild(_scalar_bars[id].get());
-
-        views[0] -> addSlave(hud_camera, false);
-        return true;
-        osg::Group * group = new osg::Group();
-        // osg::Billboard * billboard = new osg::Billboard();
-        // billboard -> addDrawable(search -> second.get());
-        group -> addChild(hud_camera);
-        group -> addChild(network -> node.get());
-        views[0] -> setSceneData(group);
-
-        //views[0] -> getSceneData() -> asGroup() -> addChild(hud_camera);
         return true;
     }
 
@@ -573,107 +1048,67 @@ NetworkViewer::create_two_d_texts( const char * id
     void NetworkViewer::split_horizontally(unsigned int view_index,
         unsigned int width_factor)
     {
-        float aspect_ratio = static_cast<float>(this->width()) / static_cast<float>(this->height());
-        osgViewer::View* parent_view = _viewer->getView(view_index);
-        osg::Camera* parent_camera = parent_view->getCamera();
-        osg::Viewport* parent_viewport = parent_camera->getViewport();
-        int new_parent_width = parent_viewport->width() * (width_factor - 1) / width_factor;
-        add_view(parent_viewport->x() + new_parent_width, parent_viewport->y(),
-            parent_viewport->width() - new_parent_width,
-            parent_viewport->height());
-        parent_camera->setViewport(parent_viewport->x(), parent_viewport->y(),
-            new_parent_width, parent_viewport->height());
-        parent_camera->setProjectionMatrixAsPerspective(30.f, static_cast<float>(new_parent_width) / static_cast<float>(parent_viewport->height()),
-            1.0f, 10000.0f);
+      return;
+        // float aspect_ratio = static_cast<float>(this->width()) / static_cast<float>(this->height());
+        // osgViewer::View* parent_view = _viewer->getView(view_index);
+        // osg::Camera* parent_camera = parent_view->getCamera();
+        // osg::Viewport* parent_viewport = parent_camera->getViewport();
+        // int new_parent_width = parent_viewport->width() * (width_factor - 1) / width_factor;
+        // add_view(parent_viewport->x() + new_parent_width, parent_viewport->y(),
+        //     parent_viewport->width() - new_parent_width,
+        //     parent_viewport->height());
+        // parent_camera->setViewport(parent_viewport->x(), parent_viewport->y(),
+        //     new_parent_width, parent_viewport->height());
+        // parent_camera->setProjectionMatrixAsPerspective(30.f, static_cast<float>(new_parent_width) / static_cast<float>(parent_viewport->height()),
+        //     1.0f, 10000.0f);
     }
 
     void NetworkViewer::split_vertically( unsigned int view_index
                                         , unsigned int height_factor
                                         )
     {
-        float aspect_ratio = static_cast<float>(this->width()) / static_cast<float>(this->height());
-        osgViewer::View* parent_view = _viewer->getView(view_index);
-        osg::Camera* parent_camera = parent_view->getCamera();
-        osg::Viewport* parent_viewport = parent_camera->getViewport();
+      return;
+    //     float aspect_ratio = static_cast<float>(this->width()) / static_cast<float>(this->height());
+    //     osgViewer::View* parent_view = _viewer->getView(view_index);
+    //     osg::Camera* parent_camera = parent_view->getCamera();
+    //     osg::Viewport* parent_viewport = parent_camera->getViewport();
 
-        // std::cout << "parent x      => "    << parent_viewport -> x() << std::endl;
-        // std::cout << "parent y      => "    << parent_viewport -> y() << std::endl;
-        // std::cout << "parent width  => "    << parent_viewport -> width() <<
-        // std::endl;
-        // std::cout << "parent height => "    << parent_viewport -> height() <<
-        // std::endl;
+    //     // std::cout << "parent x      => "    << parent_viewport -> x() << std::endl;
+    //     // std::cout << "parent y      => "    << parent_viewport -> y() << std::endl;
+    //     // std::cout << "parent width  => "    << parent_viewport -> width() <<
+    //     // std::endl;
+    //     // std::cout << "parent height => "    << parent_viewport -> height() <<
+    //     // std::endl;
 
-        int new_parent_height = parent_viewport->height() * (height_factor - 1) / height_factor;
-        add_view(parent_viewport->x(), parent_viewport->y() + new_parent_height,
-            parent_viewport->width(),
-            parent_viewport->height() - new_parent_height);
+    //     int new_parent_height = parent_viewport->height() * (height_factor - 1) / height_factor;
+    //     add_view(parent_viewport->x(), parent_viewport->y() + new_parent_height,
+    //         parent_viewport->width(),
+    //         parent_viewport->height() - new_parent_height);
 
-        // std::cout << "child x      => "    << parent_viewport -> x() << std::endl;
-        // std::cout << "child y      => "    << parent_viewport -> y() +
-        // new_parent_height << std::endl;
-        // std::cout << "child width  => "    << parent_viewport -> width() <<
-        // std::endl;
-        // std::cout << "child height => "    << parent_viewport -> height() -
-        // new_parent_height << std::endl;
+    //     // std::cout << "child x      => "    << parent_viewport -> x() << std::endl;
+    //     // std::cout << "child y      => "    << parent_viewport -> y() +
+    //     // new_parent_height << std::endl;
+    //     // std::cout << "child width  => "    << parent_viewport -> width() <<
+    //     // std::endl;
+    //     // std::cout << "child height => "    << parent_viewport -> height() -
+    //     // new_parent_height << std::endl;
 
-        parent_camera->setViewport(parent_viewport->x(), parent_viewport->y(),
-            parent_viewport->width(), new_parent_height);
-        // std::cout << "parent2 x      => "    << parent_viewport -> x() <<
-        // std::endl;
-        // std::cout << "parent2 y      => "    << parent_viewport -> y() <<
-        // std::endl;
-        // std::cout << "parent2 width  => "    << parent_viewport -> width() <<
-        // std::endl;
-        // std::cout << "parent2 height => "    << new_parent_height << std::endl;
+    //     parent_camera->setViewport(parent_viewport->x(), parent_viewport->y(),
+    //         parent_viewport->width(), new_parent_height);
+    //     // std::cout << "parent2 x      => "    << parent_viewport -> x() <<
+    //     // std::endl;
+    //     // std::cout << "parent2 y      => "    << parent_viewport -> y() <<
+    //     // std::endl;
+    //     // std::cout << "parent2 width  => "    << parent_viewport -> width() <<
+    //     // std::endl;
+    //     // std::cout << "parent2 height => "    << new_parent_height << std::endl;
 
-        parent_camera->setProjectionMatrixAsPerspective(
-            30.0f, static_cast<float>(parent_viewport->width()) / static_cast<float>(new_parent_height),
-            1.0f, 10000.0f);
+    //     parent_camera->setProjectionMatrixAsPerspective(
+    //         30.0f, static_cast<float>(parent_viewport->width()) / static_cast<float>(new_parent_height),
+    //         1.0f, 10000.0f);
+    //
     }
 
-
-void
-NetworkViewer::add_view( int x
-                          , int y
-                          , int width
-                          , int height
-                          )
-{
-
-    float aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
-    osg::Camera * camera = new osg::Camera;
-    camera->setViewport(x, y, width, height);
-    camera->setClearColor(osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f));
-    camera->setProjectionMatrixAsPerspective(30.f, aspect_ratio, 1.0f, 10000.0f);
-    // camera -> getGraphicsContext() -> getTrait() ->
-    camera->setGraphicsContext(_graphics_window);
-    osg::StateSet* stateset = camera->getOrCreateStateSet();
-    stateset->setGlobalDefaults();
-    // camera -> insertChild(1, create_billboard());
-    //std::cerr << "Camera ka 0th bachha" << camera -> getChild(0) << std::endl;
-    osgViewer::View* view = new osgViewer::View();
-    view -> setCamera(camera);
-    // view -> addSlave(create_hud_camera(x, y, width, height));
-    view -> setSceneData(network->node.get());
-    // view->addEventHandler( new osgViewer::StatsHandler );
-    // std::cerr << "Camera ka 0th bachha" << view -> getCamera() -> getChild(0) << std::endl;
-    view -> setCameraManipulator(new osgGA::TrackballManipulator());
-    // std::cerr << "Camera ka 0th bachha" << view -> getCamera() -> getChild(0) << std::endl;
-    _viewer -> addView(view);
-    view -> setLightingMode(osg::View::HEADLIGHT);
-    // osg::Light * light = view -> getLight();
-    // light->setDiffuse( osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f) );
-    // light->setAmbient( osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f) );
-
-    unsigned int index = _viewer->getNumViews() - 1;
-
-    // std::cerr << "Camera ka 0th bachha" << view -> getCamera() -> getChild(0) << std::endl;
-    // auto* capture_handler = new MorphologyCaptureHandler(
-    //     dynamic_cast<osgViewer::ScreenCaptureHandler::CaptureOperation
-    //     *>(capture_operation)
-    //                                                            );
-    // view -> addEventHandler(new GeometrySelector());
-}
 
 NetworkViewer::~NetworkViewer() {}
 
@@ -690,14 +1125,115 @@ void NetworkViewer::paintEvent(QPaintEvent* /* paintEvent */)
 
 void NetworkViewer::paintGL() { _viewer->frame(); }
 
+osg::Viewport *
+NetworkViewer::compute_viewport( osg::Viewport * viewport
+                                 , int width
+                                 , int height
+                                 )
+{
+    return new osg::Viewport( static_cast<int>(viewport -> x() * width * 1.0f / _previous_width)
+                            , static_cast<int>(viewport -> y() * height * 1.0f / _previous_height)
+                            , static_cast<int>(viewport -> width() * width * 1.0f / _previous_width)
+                            , static_cast<int>(viewport -> height() * height * 1.0f / _previous_height)
+                            );
+
+}
+
+void
+NetworkViewer::set_master_camera_viewport( osg::Camera * camera
+                                         , osg::Viewport * viewport
+                                         )
+{
+    double fovy;
+    double aspect_ratio;
+    double z_near;
+    double z_far;
+    camera -> getProjectionMatrixAsPerspective( fovy
+                                              , aspect_ratio
+                                              , z_near
+                                              , z_far
+                                              );
+    camera -> setProjectionMatrixAsPerspective( fovy
+                                              , viewport -> aspectRatio()
+                                              , z_near
+                                              , z_far
+                                              );
+    camera -> setViewport(viewport);
+}
+
+void
+NetworkViewer::set_hud_camera_viewport( osg::Camera * camera
+                                      , osg::Viewport * viewport
+                                      )
+{
+    camera -> setProjectionMatrix(osg::Matrix::ortho2D( 0 //viewport -> x()
+                                                      , viewport -> width()
+                                                      , 0 // viewport -> y()
+                                                      , viewport -> height()
+                                                      )
+                                 );
+    camera -> setViewport(viewport);
+}
+
+osg::Camera *
+NetworkViewer::get_hud_camera(osgViewer::View * view)
+{
+    return view -> getSlave(0)._camera.get();
+}
+
+void
+NetworkViewer::set_viewport( const char * view_id
+                           , osg::Viewport * viewport
+                           )
+{
+    set_viewport( _views[view_id].get()
+                , viewport
+                );
+}
+
+void
+NetworkViewer::set_viewport( osgViewer::View * view
+                           , osg::Viewport * viewport
+                           )
+{
+    osg::Camera * master_camera = view -> getCamera();
+    osg::Camera * hud_camera = get_hud_camera(view);
+    set_master_camera_viewport(master_camera, viewport);
+    set_hud_camera_viewport(hud_camera, viewport);
+}
+
+void
+NetworkViewer::resize_views(int width, int height)
+{
+  osgViewer::ViewerBase::Views views;
+  _viewer->getViews(views);
+  for(osgViewer::View * view : views)
+  {
+      set_viewport( view
+                  , compute_viewport( view -> getCamera() -> getViewport()
+                                    , width
+                                    , height
+                                    )
+                  );
+  }
+}
+
+
 void NetworkViewer::resizeGL(int width, int height)
 {
     this->getEventQueue()->windowResize(this->x(), this->y(), width, height);
     _graphics_window->resized(this->x(), this->y(), width, height);
+    std::cerr << "Resized !!" << std::endl;
+    std::cerr << this -> x() << std::endl;
+    std::cerr << this -> y() << std::endl;
+    std::cerr << this -> width() << std::endl;
+    std::cerr << this -> height() << std::endl;
+    //resize_views(width, height);
     this->onResize(width, height);
 }
 
-unsigned int NetworkViewer::_get_view_index_with_focus()
+unsigned int
+NetworkViewer::_get_view_index_with_focus()
 {
     osgViewer::ViewerBase::Views views;
     osgViewer::View* view = _viewer->getViewWithFocus();
@@ -908,79 +1444,7 @@ void NetworkViewer::keyPressEvent(QKeyEvent* event)
 // {
 // }
 
-osg::Camera*
-NetworkViewer::create_hud_camera( int x
-                                , int y
-                                , int width
-                                , int height
-                                )
-{
-    osg::Camera * camera = new osg::Camera;
 
-  // set the projection matrix
-    std::cerr << this -> x() << std::endl;
-    std::cerr << this -> y() << std::endl;
-    std::cerr << this -> width() << std::endl;
-    std::cerr << this -> height() << std::endl;
-    camera -> setProjectionMatrix(osg::Matrix::ortho2D(0, 1280, 0, 1024));
-    // set the view matrix
-    camera -> setReferenceFrame(osg::Transform::ABSOLUTE_RF);
-    camera -> setViewMatrix(osg::Matrix::identity());
-
-    // only clear the depth buffer
-    camera -> setClearMask(GL_DEPTH_BUFFER_BIT);
-
-    // draw subgraph after main camera view.
-    camera -> setRenderOrder(osg::Camera::POST_RENDER);
-
-    // we don't want the camera to grab event focus from the viewers main camera(s).
-    camera -> setAllowEventFocus(false);
-    // camera -> setGraphicsContext(_graphics_window);
-    // camera -> setViewport(0, 0, this -> width(), this -> height());
-
-    osg::Geode* geode = new osg::Geode();
-
-    std::string timesFont("/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-B.ttf");
-
-  // turn lighting off for the text and disable depth test to ensure it's always ontop.
-    osg::StateSet* stateset = geode->getOrCreateStateSet();
-    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-
-    osg::Vec3 position(150.0f,800.0f,0.0f);
-    osg::Vec3 delta(0.0f,-120.0f,0.0f);
-
-  {
-      osgText::Text* text = new  osgText::Text;
-      geode->addDrawable( text );
-
-      text->setFont(timesFont);
-      text->setPosition(position);
-      text->setText("Sample Text");
-
-      position += delta;
-  }
-  network -> node -> addChild(geode);
-  camera -> addChild(geode);
-
-  osgSim::ScalarBar * geode1 = new osgSim::ScalarBar;
-  osgSim::ScalarBar::TextProperties tp;
-  tp._fontFile = "/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-B.ttf";
-  geode1->setTextProperties(tp);
-  osg::StateSet * stateset1 = geode1->getOrCreateStateSet();
-  stateset1->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-  stateset1->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
-  stateset1->setRenderBinDetails(11, "RenderBin");
-
-  osg::MatrixTransform * modelview = new osg::MatrixTransform;
-  modelview->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
-  osg::Matrixd matrix( osg::Matrixd::scale(1000,1000,1000)
-                     * osg::Matrixd::translate(120,10,0)
-                     ); // I've played with these values a lot and it seems to work, but I have no idea why
-  modelview->setMatrix(matrix);
-  modelview->addChild(geode1);
-  // camera -> addChild(modelview);
-  return camera;
-}
 
 osg::Projection *
 NetworkViewer::create_heads_up_display(int x, int y, int width, int height, osg::Node * node)
@@ -1021,14 +1485,6 @@ NetworkViewer::create_heads_up_display(int x, int y, int width, int height, osg:
 //     camera -> setViewMatrix(osg::Matrix::identity());
 //     return camera;
 // }
-
-osg::Billboard *
-NetworkViewer::create_billboard()
-{
-  osg::ref_ptr<osg::Billboard> billboard(new osg::Billboard());
-
-  return billboard.release();
-}
 
 
 void NetworkViewer::home(unsigned int index)
@@ -1177,13 +1633,16 @@ void NetworkViewer::pitch(double angle, unsigned int index)
     osg::Vec3d side;
     double distance;
     _get_transformation(index, eye, center, distance, up, look, side);
-    Quat rotation = Quat(-angle, side);
+    Quat rotation = Quat(-angle, side);//osg::X_AXIS);//side);
     Vec3f rotated_up = rotation * up;
     rotated_up.normalize();
     Vec3f rotated_look = rotation * look;
     rotated_look.normalize();
-    _set_transformation(index, center - rotated_look * distance, center,
-        rotated_up);
+    _set_transformation( index
+                       , center - rotated_look * distance
+                       , center
+                       , rotated_up
+                       );
 }
 
 void NetworkViewer::yaw(double angle, unsigned int index)

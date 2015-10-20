@@ -1,3 +1,9 @@
+osg::Vec3f FACE_NORMAL(osg::Vec3f x, osg::Vec3f y, osg::Vec3f z)
+{
+  return (y - x) ^ (z - y);
+}
+
+
 void
 compute_triangles( osg::Geometry * G
                  , size_t axial_segments
@@ -67,10 +73,338 @@ compute_normals( osg::Geometry * G
                , size_t radial_segments
                )
 {
+    osg::Vec3Array * V = static_cast<osg::Vec3Array *>( G -> getVertexArray() );
+    osg::Vec3Array * N = static_cast<osg::Vec3Array *>( G -> getNormalArray() );
+    size_t row, col;
+//     for(size_t row = 0; row < axial_segments; ++row)
+//     {
+//         for(size_t col = 0; col < radial_segments / 2; ++col)
+//         {
+//             size_t current_index    = row * radial_segments + col;
+//             size_t opposite_index   = current_index + radial_segments / 2;
+//             (*normals)[current_index] = (*vertices)[current_index]
+//                                       - (*vertices)[opposite_index];
+//             (*normals)[current_index].normalize();
+//             (*normals)[opposite_index] = (*normals)[current_index] * -1.0f;
+//         }
+//     }
+//
+    size_t current_index;
+    ushort a;
+    ushort b;
+    ushort e;
+    ushort d;
+    ushort c;
+    ushort f;
+    ushort g;
+    ushort h;
+    ushort i;
+
+
+    /*****************************************
+        d---------------c---------------f
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        a---------------b---------------e
+
+      ***************************************/
+      row = 0;
+      col = 0;
+
+      b = row * radial_segments;
+      e = b + 1;
+      a = b + radial_segments - 1;
+      d = a + radial_segments;
+      c = b + radial_segments;
+      f = e + radial_segments;
+      (*N)[b] = FACE_NORMAL((*V)[a], (*V)[b], (*V)[d])
+              + FACE_NORMAL((*V)[d], (*V)[b], (*V)[c])
+              + FACE_NORMAL((*V)[b], (*V)[e], (*V)[c]);
+      (*N)[b].normalize();
+ 
+      for(col = 1; col < radial_segments - 1; ++col)
+      {
+            /*************************************
+
+        d---------------c---------------f
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        a---------------b---------------e
+
+            ***************************************/
+            b = row * radial_segments + col;
+            a = b - 1;
+            e = b + 1;
+            d = a + radial_segments;
+            c = b + radial_segments;
+            f = e + radial_segments;
+            // std::cerr << a <<" " << b << " " << c << " " << d << std::endl;
+            (*N)[b] = FACE_NORMAL((*V)[a], (*V)[b], (*V)[d])
+                    + FACE_NORMAL((*V)[d], (*V)[b], (*V)[c])
+                    + FACE_NORMAL((*V)[b], (*V)[e], (*V)[c]);
+            (*N)[b].normalize();
+        }
+
+      /*************************************
+        d---------------c---------------f
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        a---------------b---------------e
+      ***************************************/
+
+
+      b = row * radial_segments + col;
+      e = row * radial_segments;
+      a = b - 1;
+      d = a + radial_segments;
+      c = b + radial_segments;
+      f = e + radial_segments;
+      (*N)[b] = FACE_NORMAL((*V)[a], (*V)[b], (*V)[d])
+              + FACE_NORMAL((*V)[d], (*V)[b], (*V)[c])
+              + FACE_NORMAL((*V)[b], (*V)[e], (*V)[c]);
+      (*N)[b].normalize();
+ 
+
+    for(row = 1; row < axial_segments - 1; ++row)
+    {
+
+      /*************************************
+        d---------------c---------------f
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        a---------------b---------------e
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        g---------------h---------------i
+
+      ***************************************/
+
+      col = 0;
+
+      b = row * radial_segments;
+      e = b + 1;
+      a = b + radial_segments - 1;
+      d = a + radial_segments;
+      c = b + radial_segments;
+      f = e + radial_segments;
+      g = a - radial_segments;
+      h = b - radial_segments;
+      i = e - radial_segments;
+      (*N)[b] = FACE_NORMAL((*V)[a], (*V)[b], (*V)[d])
+              + FACE_NORMAL((*V)[d], (*V)[b], (*V)[c])
+              + FACE_NORMAL((*V)[h], (*V)[i], (*V)[b])
+              + FACE_NORMAL((*V)[b], (*V)[i], (*V)[e])
+              + FACE_NORMAL((*V)[a], (*V)[h], (*V)[b])
+              + FACE_NORMAL((*V)[b], (*V)[e], (*V)[c]);
+      (*N)[b].normalize();
+ 
+      for(col = 1; col < radial_segments - 1; ++col)
+      {
+            /*************************************
+
+            d---------------c---------------f
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            a---------------b---------------e
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            g---------------h---------------i
+
+            ***************************************/
+            b = row * radial_segments + col;
+            a = b - 1;
+            e = b + 1;
+            d = a + radial_segments;
+            c = b + radial_segments;
+            f = e + radial_segments;
+            g = a - radial_segments;
+            h = b - radial_segments;
+            i = e - radial_segments;
+            // std::cerr << a <<" " << b << " " << c << " " << d << std::endl;
+            (*N)[b] = FACE_NORMAL((*V)[a], (*V)[b], (*V)[d])
+                                + FACE_NORMAL((*V)[d], (*V)[b], (*V)[c])
+                                + FACE_NORMAL((*V)[h], (*V)[i], (*V)[b])
+                                + FACE_NORMAL((*V)[b], (*V)[i], (*V)[e])
+                                + FACE_NORMAL((*V)[a], (*V)[h], (*V)[b])
+                                + FACE_NORMAL((*V)[b], (*V)[e], (*V)[c]);
+            (*N)[b].normalize();
+        }
+
+      /*************************************
+        d---------------c---------------f
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        a---------------b---------------e
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        g---------------h---------------i
+
+      ***************************************/
+
+
+      b = row * radial_segments + col;
+      e = row * radial_segments;
+      a = b - 1;
+      d = a + radial_segments;
+      c = b + radial_segments;
+      f = e + radial_segments;
+      g = a - radial_segments;
+      h = b - radial_segments;
+      i = e - radial_segments;
+      (*N)[b] = FACE_NORMAL((*V)[a], (*V)[b], (*V)[d])
+              + FACE_NORMAL((*V)[d], (*V)[b], (*V)[c])
+              + FACE_NORMAL((*V)[h], (*V)[i], (*V)[b])
+              + FACE_NORMAL((*V)[b], (*V)[i], (*V)[e])
+              + FACE_NORMAL((*V)[a], (*V)[h], (*V)[b])
+              + FACE_NORMAL((*V)[b], (*V)[e], (*V)[c]);
+      (*N)[b].normalize();
+ 
+    }
+
+      /*************************************
+        a---------------b---------------e
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        g---------------h---------------i
+
+      ***************************************/
+
+      col = 0;
+
+      b = row * radial_segments;
+      e = b + 1;
+      a = b + radial_segments - 1;
+      g = a - radial_segments;
+      h = b - radial_segments;
+      i = e - radial_segments;
+      (*N)[b] = FACE_NORMAL((*V)[h], (*V)[i], (*V)[b])
+              + FACE_NORMAL((*V)[b], (*V)[i], (*V)[e])
+              + FACE_NORMAL((*V)[a], (*V)[h], (*V)[b]);
+      (*N)[b].normalize();
+ 
+      for(col = 1; col < radial_segments - 1; ++col)
+      {
+            /*************************************
+
+            a---------------b---------------e
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            g---------------h---------------i
+
+            ***************************************/
+            b = row * radial_segments + col;
+            a = b - 1;
+            e = b + 1;
+            g = a - radial_segments;
+            h = b - radial_segments;
+            i = e - radial_segments;
+            // std::cerr << a <<" " << b << " " << c << " " << d << std::endl;
+            (*N)[b] = FACE_NORMAL((*V)[h], (*V)[i], (*V)[b])
+                    + FACE_NORMAL((*V)[b], (*V)[i], (*V)[e])
+              + FACE_NORMAL((*V)[a], (*V)[h], (*V)[b]);
+            (*N)[b].normalize();
+        }
+
+      /*************************************
+        a---------------b---------------e
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        |               |               |
+        g---------------h---------------i
+
+      ***************************************/
+
+
+      b = row * radial_segments + col;
+      e = row * radial_segments;
+      a = b - 1;
+      g = a - radial_segments;
+      h = b - radial_segments;
+      i = e - radial_segments;
+      (*N)[b] = FACE_NORMAL((*V)[h], (*V)[i], (*V)[b])
+              + FACE_NORMAL((*V)[b], (*V)[i], (*V)[e])
+        + FACE_NORMAL((*V)[a], (*V)[h], (*V)[b]);
+      (*N)[b].normalize();
+
+
+    return;
+
+    /*
+
+      ⊗--------⊙
+      ⍿         ⍿
+      ⍿         ⍿
+      ⍿         ⍿
+      ⍿         ⍿
+      ⊙--------⊙
+      ⊙
+      ⚝
+
+
+
+      index = axial_segments * i + j
+
+    (i    , j - 1) - - - - - (i    , j    ) - - - - - (i    , j + 1)
+          |                        |                        |
+          |                        |                        |
+          |                        |                        |
+          |                        |                        |
+          |                        |                        |
+          |                        |                        |
+    (i + 1, j - 1) - - - - - (i + 1, j     ) - - - - - (i + 1, j + 1)
+
+    */
+
     // RECORD_ERROR("BEGIN");
     osg::Vec3Array * vertices = static_cast<osg::Vec3Array *>( G -> getVertexArray() );
     osg::Vec3Array * normals = static_cast<osg::Vec3Array *>( G -> getNormalArray() );
-    size_t row, col;
     for(size_t row = 0; row < axial_segments; ++row)
     {
         for(size_t col = 0; col < radial_segments / 2; ++col)
@@ -127,9 +461,9 @@ catmull_rom_point( const osg::Vec3f & P0
     float a = (t - knot_factor_10) / (knot_factor_21);
     osg::Vec3f B21 = B2 - B1;
     (*vertices)[index].set( B21.x() * a + B1.x()
-         , B21.y() * a + B1.y()
-         , B21.z() * a + B1.z()
-         );
+                          , B21.y() * a + B1.y()
+                          , B21.z() * a + B1.z()
+                          );
 
     // std::cerr << (*vertices)[index].x() << std::endl;
     // std::cerr << (*vertices)[index].y() << std::endl;
@@ -443,6 +777,7 @@ twist( osg::Geometry * G0
     roton.makeRotate(D0, D1);
     std::cerr << "Angle between direction vectors -> " << acos(D0 * D1) * 180.0 / osg::PI << std::endl;
     float a = acos(D0 * D1);
+    //if (a >= osg::PI / 2.0) { a = a - osg::PI / 2.0; }
     if(a < osg::PI / 2.0f)
     {
         for(uint i = 0; i < radial_segments; ++i)
@@ -457,11 +792,12 @@ twist( osg::Geometry * G0
     }
     else
     {
+        osg::Quat roton2(osg::PI / 2.0f, D1);
         for(uint i = 0, j = radial_segments; i < radial_segments; ++i, j = j - 1)
         {
             V1[central_segment_index + (j % radial_segments)] = roton
-                                          * ((V0[central_segment_index + i] - C0) * factor)
-                                          + C1;
+                                                              * ((V0[central_segment_index + i] - C0) * factor)
+                                                              + C1;
         }
     }
     return;

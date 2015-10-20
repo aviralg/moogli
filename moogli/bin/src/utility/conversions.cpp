@@ -126,6 +126,15 @@ pysequence_to_int_pair(PyObject * sequence)
     return std::make_pair(x, y);
 }
 
+std::pair<float, float>
+pysequence_to_float_pair(PyObject * sequence)
+{
+  float x = static_cast<float>(PyFloat_AS_DOUBLE(PySequence_GetItem(sequence, 0)));
+  float y = static_cast<float>(PyFloat_AS_DOUBLE(PySequence_GetItem(sequence, 1)));
+  return std::make_pair(x, y);
+}
+
+
 std::vector<osg::Vec4f>
 pysequence_to_vec4f_vector(PyObject * sequence)
 {

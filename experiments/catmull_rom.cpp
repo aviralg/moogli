@@ -45,7 +45,7 @@ catmull_rom_point( const osg::Vec3f & P0
 inline float
 catmull_rom_knot_factor(const osg::Vec3f & P, float alpha)
 {
-    return pow(P.length2(), alpha);
+  return pow(P.length2(), alpha);
 }
 
 inline void
@@ -104,9 +104,10 @@ Even number of segments (6)
 =============================================================
 
 
-t_delta = (t2 - t1) / (axial_segments - 1)
+tdelta = (t2 - t1) / (axial_segments - 1)
 LR -> (axial_segments - 1) / 2 to axial_segments - 2
 RL -> 1 to (axial_segments - 1) / 2
+
 */
 
 
@@ -305,20 +306,77 @@ compute_normals( osg::Geometry * G
                , size_t radial_segments
                )
 {
-    osg::Vec3Array * vertices = static_cast<osg::Vec3Array *>( G -> getVertexArray() );
-    osg::Vec3Array * normals = static_cast<osg::Vec3Array *>( G -> getNormalArray() );
+    osg::Vec3Array * V = static_cast<osg::Vec3Array *>( G -> getVertexArray() );
+    osg::Vec3Array * N = static_cast<osg::Vec3Array *>( G -> getNormalArray() );
     size_t row, col;
-    for(size_t row = 0; row < axial_segments; ++row)
+//     for(size_t row = 0; row < axial_segments; ++row)
+//     {
+//         for(size_t col = 0; col < radial_segments / 2; ++col)
+//         {
+//             size_t current_index    = row * radial_segments + col;
+//             size_t opposite_index   = current_index + radial_segments / 2;
+//             (*normals)[current_index] = (*vertices)[current_index]
+//                                       - (*vertices)[opposite_index];
+//             (*normals)[current_index].normalize();
+//             (*normals)[opposite_index] = (*normals)[current_index] * -1.0f;
+//         }
+//     }
+//
+    ushort a;
+    ushort b;
+    ushort e;
+    ushort d;
+    ushort c;
+    ushort f;
+    ushort g;
+    ushort h;
+    ushort i;
+
+    for(row = 1; row < axial_segments - 1; ++row)
     {
-        for(size_t col = 0; col < radial_segments / 2; ++col)
+        for(col = 1; col < radial_segments - 1; ++col)
         {
+            /*************************************
+
+            d---------------c---------------f
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            a---------------b---------------e
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            |               |               |
+            g---------------h---------------i
+
+            ***************************************/
+            a = row * radial_segments + col;
+            b = a + 1;
+            e = a + 2;
+            d = a + radial_segments;
+            c = d + 1;
+            f = c + 1;
+            g = a - radial_segments;
+            h = g + 1;
+            i = h + 1;
+            // std::cerr << a <<" " << b << " " << c << " " << d << std::endl;
             size_t current_index    = row * radial_segments + col;
-            size_t opposite_index   = current_index + radial_segments / 2;
-            (*normals)[current_index] = (*vertices)[current_index]
-                                      - (*vertices)[opposite_index];
-            (*normals)[current_index].normalize();
-            (*normals)[opposite_index] = (*normals)[current_index] * -1.0f;
+            (*N)[current_index] = FACE_NORMAL((*V)[a], (*V)[b], (*V)[d])
+                                + FACE_NORMAL((*V)[d], (*V)[b], (*V)[c])
+                                + FACE_NORMAL((*V)[h], (*V)[i], (*V)[b])
+                                + FACE_NORMAL((*V)[b], (*V)[i], (*V)[e])
+                                + FACE_NORMAL((*V)[a], (*V)[h], (*V)[b])
+                                + FACE_NORMAL((*V)[b], (*V)[e], (*V)[c])
+            (*N)[current_index].normalize();
         }
+        // (*I)[triangle_index - 1]     = (row + 1) * radial_segments;
+        // (*I)[triangle_index - 2]     = row       * radial_segments;
+        // (*I)[triangle_index - 5]     = row       * radial_segments;
     }
 }
 

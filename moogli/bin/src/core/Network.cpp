@@ -68,6 +68,14 @@ Network::get(const std::string & id) const
     return iter -> second;
 }
 
+bool
+Network::write(const std::string & filename) const
+{
+    return osgDB::writeNodeFile( *node
+                               , filename
+                               );
+}
+
 // void
 // Network::catmull_rom_smoothen( uint axial_segments
 //                              , uint radial_segments

@@ -52,6 +52,7 @@ Neuron::detach(ElectricalCompartment * electrical_compartment)
     return true;
 }
 
+
 // ElectricalCompartment *
 // Neuron::root()
 // {
@@ -65,18 +66,31 @@ Neuron::detach(ElectricalCompartment * electrical_compartment)
 //     RECORD_ERROR("Root compartment not found for neuron '" + id + "'");
 // }
 
+/*
+Identify root compartment. This is the one with no parent. Draw this as a nice sphere.
 
+*/
 // void
 // Neuron::catmull_rom_smoothen( uint axial_segments
 //                             , uint radial_segments
 //                             )
 // {
-
-//     ElectricalCompartment * root_compartment = root();
-
-//     for(auto & electrical_compartment_pair : electrical_compartment_map)
+//     // ElectricalCompartment * root_compartment = root();
+//     std::vector<ElectricalCompartment *> compartments(electrical_compartment_map.size());
+//     size_t read_index = 0;
+//     size_t write_index = 0;
+//     compartments[write_index] = root();
+//     ++write_index;
+//     while(read_index < write_index)
 //     {
-//         electrical_compartment_pair.second -> neuron = nullptr;
+//         ElectricalCompartment * parent = compartments[read_index];
+//         ++read_index;
+//         for(auto & electrical_compartment_pair : parent -> children)
+//         {
+//           compartments[write_index] = electrical_compartment_pair.second;
+//           ++write_index;
+//         }
+//         parent -> catmull_rom_smoothen(axial_segments, radial_segments);
 //     }
 // }
 

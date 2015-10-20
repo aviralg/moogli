@@ -34,10 +34,15 @@
 #include <osg/Vec4d>
 #include <osg/ref_ptr>
 #include <osgViewer/Viewer>
+#include <osgText/FadeText>
+#include <osg/Plane>
 #include <osg/MatrixTransform>
+#include <osg/AutoTransform>
+#include <osg/PositionAttitudeTransform>
 #include <osg/DisplaySettings>
 #include <osg/ShapeDrawable>
 #include <osg/StateSet>
+#include <osg/LineWidth>
 #include <osgText/Text3D>
 #include <osgGA/EventQueue>
 #include <osgUtil/IntersectionVisitor>
@@ -53,6 +58,11 @@
 #include <osgQt/GraphicsWindowQt>
 
 #include <osgGA/TrackballManipulator>
+#include <osgGA/FirstPersonManipulator>
+#include <osgGA/OrbitManipulator>
+#include <osgGA/FlightManipulator>
+#include <osgGA/NodeTrackerManipulator>
+#include <osgGA/TerrainManipulator>
 
 #include <osg/ShadeModel>
 #include <osg/Material>

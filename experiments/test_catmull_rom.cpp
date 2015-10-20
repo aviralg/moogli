@@ -32,6 +32,21 @@
 #include "utility/record.hpp"
 #include "catmull_rom.hpp"
 #include "handlers/GeometrySelector.hpp"
+#include <cmath>
+uint runs = 0;
+float
+vector_angle(osg::Vec3f a, osg::Vec3f b, osg::Vec3f c)
+{
+  osg::Vec3f V0(b - a); V0.normalize();
+  osg::Vec3f V1(c - b); V1.normalize();
+  return acos((V0 * V1));
+}
+
+osg::Vec3f convert(osg::Vec4f v)
+{
+  return osg::Vec3f(v.x(), v.y(), v.z());
+}
+
 
 Ring ring;
 
@@ -41,6 +56,7 @@ coordinate_system(const osg::Vec3f & center, float height, const osg::Vec3f & di
     CylinderMesh cylinder_mesh;
     osg::Geode * coordinates = new osg::Geode();
     osg::Geometry * px_axis = new osg::Geometry();
+    height = height * 4;
     cylinder_mesh( center + osg::Vec3f(1.0f, 0.0f, 0.0f) * height / 4.0f
                  , radius / 16.0f
                  , radius / 16.0f
@@ -239,7 +255,7 @@ old_main(int argc, char * argv[])
     osg::Geode * geode = new osg::Geode();
     osg::Geometry * G0, *G1, *G2, *G3, *G4, *G5, *G6;
     uint radial_segments = 20;
-    uint axial_segments  = 10;
+    uint axial_segments  = 30;
 
     // G0 = create_geometry_ring( osg::Vec3f(161.6, -75.57, -9.635)
     //                          , osg::Vec3f(161.7, -76.36, -9.625)
@@ -413,17 +429,20 @@ catmull_rom_segment()
     points -> push_back(osg::Vec4f(162.4, -80.29, -9.573, 6.85));
     points -> push_back(osg::Vec4f(162.5, -81.08, -9.563, 6.181));
     points -> push_back(osg::Vec4f(162.7, -81.86, -9.553, 5.439));
-    points -> push_back(osg::Vec4f( 162.8, -82.65, -9.543, 4.634));
-    points -> push_back(osg::Vec4f( 162.9, -83.44, -9.533, 3.774));
-    points -> push_back(osg::Vec4f( 163.1, -84.22, -9.522, 3.365));
-    points -> push_back(osg::Vec4f( 163.2, -85.01, -9.512, 3.365));
-    points -> push_back(osg::Vec4f( 163.3, -85.8 ,-9.502 ,3.365));
-    points -> push_back(osg::Vec4f( 163.5, -86.58, -9.492, 3.365));
+    points -> push_back(osg::Vec4f(162.8, -82.65, -9.543, 4.634));
+    points -> push_back(osg::Vec4f(162.9, -83.44, -9.533, 3.774));
+    points -> push_back(osg::Vec4f(163.1, -84.22, -9.522, 3.365));
+    points -> push_back(osg::Vec4f(163.2, -85.01, -9.512, 3.365));
+    points -> push_back(osg::Vec4f(163.3, -85.8 ,-9.502 ,3.365));
+    points -> push_back(osg::Vec4f(163.5, -86.58, -9.492, 3.365));
     points -> push_back(osg::Vec4f(163.4, -86.0, -9.499, 1.24));
-    points -> push_back(osg::Vec4f(164.2, -87.9, -9.499, 0.59));
-    points -> push_back(osg::Vec4f(164.5, -89.03, -9.499, 0.415));
-    points -> push_back(osg::Vec4f(164.6, -90.4, -9.499, 0.415));
-    points -> push_back(osg::Vec4f(164.8, -91.61, -9.499, 0.415));
+    // 15 - 14 = -0.1, 0.58, -0.007
+    //points -> push_back(osg::Vec4f(164.2, -87.9, -9.499, 0.59));
+    // 16 - 15 = 0.8, -1.9, 0.0
+    // points -> push_back(osg::Vec4f(164.5, -89.03, -9.499, 0.415));
+    // points -> push_back(osg::Vec4f(164.6, -90.4, -9.499, 0.415));
+    // points -> push_back(osg::Vec4f(164.8, -91.61, -9.499, 0.415));
+    /*
     points -> push_back(osg::Vec4f(164.7, -93.04, -9.499, 0.415));
     points -> push_back(osg::Vec4f(164.6, -94.71, -9.929, 0.415));
     points -> push_back(osg::Vec4f(164.7, -96.33, -9.929, 0.415));
@@ -650,13 +669,12 @@ catmull_rom_segment()
     points -> push_back(osg::Vec4f( 268.3, -234.9, -9.799, 0.175));
     points -> push_back(osg::Vec4f( 269.9, -234.8, -9.799, 0.175));
     points -> push_back(osg::Vec4f( 270.9, -235.1, -9.799, 0.175));
-
+    */
     // points -> push_back(osg::Vec4f( 272.0, -235.2, -10.51, 0.175));
     // points -> push_back(osg::Vec4f( 273.4, -236.4, -10.66, 0.175));
     // points -> push_back(osg::Vec4f( 274.5, -237.1, -10.66, 0.175));
     // points -> push_back(osg::Vec4f( 275.3, -237.6, -11.34, 0.175));
     // points -> push_back(osg::Vec4f( 276.2, -237.7, -11.34, 0.175));
-
 
     // points -> push_back(osg::Vec4f( 276.5, -238.0, -11.34, 0.175));
     // points -> push_back(osg::Vec4f( 277.2, -239.0, -11.34, 0.175));
@@ -884,7 +902,6 @@ catmull_rom_segment()
                            , radial_segments
                            )
                      );
-
     for(uint i = 5; i < points -> size(); ++i)
     {
         osg::Vec3f parent_proximal  = osg::Vec3f( (*points)[i - 2][0]
@@ -895,14 +912,100 @@ catmull_rom_segment()
                                                 , (*points)[i - 1][1]
                                                 , (*points)[i - 1][2]
                                                 );
+        osg::Vec3f child_proximal   = parent_distal;
         osg::Vec3f child_distal     = osg::Vec3f( (*points)[i][0]
                                                 , (*points)[i][1]
                                                 , (*points)[i][2]
                                                 );
+        float r0 = (*points)[i - 2][3];
+        float r1 = (*points)[i - 1][3];
+        float r2 = (*points)[i    ][3];
+        osg::Vec3f parent_direction = parent_distal - parent_proximal;
+        float parent_length = parent_direction.normalize();
+        osg::Vec3f child_direction  = child_distal  - child_proximal;
+        float child_length = child_direction.normalize();
+
+        float angle = acos(parent_direction * child_direction);
+        //osg::notify(osg::DEBUG) << "Angle between " << i - 2 << ", " << i - 1 << ", " << i << " is " << angle;
+        float diff = osg::PI / 12.0f;
+        if(angle >= osg::PI/2.0f) // - diff && angle <= osg::PI/2.0 + diff)
+        {
+            RECORD_ERROR("Reaching here because angle is " + std::to_string(angle * 180.0 / osg::PI));
+            osg::Vec3f plane_normal = parent_direction ^ child_direction; plane_normal.normalize();
+            osg::Vec3f D0 = osg::Quat(angle / 3.0f, plane_normal) * parent_direction; D0.normalize();
+            osg::Vec3f D1 = osg::Quat(2 * angle / 3.0f, plane_normal) * parent_direction; D1.normalize();
+            std::cerr << "Checking angle => " << acos(parent_direction * D0) << std::endl;
+            std::cerr << "Checking angle => " << acos(D0 * D1) << std::endl;
+            std::cerr << "Checking angle => " << acos(D1 * child_direction) << std::endl;
+
+            osg::Vec3f temp = osg::Quat(angle, plane_normal) * parent_direction; temp.normalize();
+            std::cerr << "D0 " <<  D0.x() << ", " << D0.y() << ", " << D0.z() << std::endl;
+            std::cerr << "D1 " << D1.x() << ", " << D1.y() << ", " << D1.z() << std::endl;
+            std::cerr << temp.x() << ", " << temp.y() << ", " << temp.z() << std::endl;
+            std::cerr << "Child Direction " << child_direction.x() << ", " << child_direction.y() << ", " << child_direction.z() << std::endl;
+            osg::Vec3f C0;
+            osg::Vec3f C1;
+            if(parent_length < child_length)
+            {
+                C0 = (parent_proximal + parent_distal) / 2.0f;
+                C1 = child_proximal + child_direction * parent_length / 2.0f;
+            }
+            else
+            {
+                C1 = (child_proximal + child_distal) / 2.0f;
+                C0 = parent_distal - parent_direction * child_length / 2.0f;
+            }
+           // Point of intersection between ->
+            // P = C0 + t * D0
+            // P = C1 + u * D1
+            // C0 X D1 + t * D0 X D1 = C1 X D1
+            // t = ||(C1 - C0) X D1|| / ||D0 X D1||
+
+            osg::Vec3f numerator = (C1 - C0) ^ D1;
+            osg::Vec3f denominator = D0 ^ D1;
+            float n = numerator.length();
+            float d = denominator.length();
+            float t = n / d;
+            osg::Vec3f C01 = C0 + D0 * t;
+
+          // osg::Vec4f C01( (C0.x() * D1.x() - C1.x() * D0.x()) / (D1.x() - D0.x())
+          //               , (C0.y() * D1.y() - C1.y() * D0.y()) / (D1.y() - D0.y())
+          //               , (C0.z() * D1.z() - C1.z() * D0.z()) / (D1.z() - D0.z())
+          //               , r1
+          //               );
+          osg::Vec3f DTemp = C1 - C01; DTemp.normalize();
+          std::cerr << "DTemp " << DTemp.x() << ", " << DTemp.y() << ", " << DTemp.z() << std::endl;
+          std::cerr << "Sin angle between them => " << vector_angle(parent_proximal, C0, C01) * 180.0 / osg::PI << std::endl;
+          std::cerr << "Another angle " << acos((C01 - C0) * D1 / (C01 - C0).length()) * 180.0 / osg::PI << std::endl;
+          std::cerr << "Sin angle between them => " << vector_angle(C0, C01, C1) * 180.0 / osg::PI << std::endl;
+          std::cerr << "Sin angle between them => " << vector_angle(C01, C1, child_distal) * 180.0 / osg::PI << std::endl;
+          RECORD_ERROR("Hmmm!");
+          points -> insert(points -> begin() + i - 1, osg::Vec4f(C0, r0));
+          points -> insert(points -> begin() + i    , osg::Vec4f(C01, r1));
+          (*points)[i + 1] = osg::Vec4f(C1, r2);
+          RECORD_ERROR("Waaat ??");
+          std::cerr << (*points)[i - 2].x() << ","<< (*points)[i - 2].y() << ","<< (*points)[i - 2].z() << ","<< (*points)[i - 2].w() << std::endl;
+          std::cerr << (*points)[i - 1].x() << ","<< (*points)[i - 1].y() << ","<< (*points)[i - 1].z() << ","<< (*points)[i - 1].w() << std::endl;
+          std::cerr << (*points)[i    ].x() << ","<< (*points)[i    ].y() << ","<< (*points)[i    ].z() << ","<< (*points)[i    ].w() << std::endl;
+          std::cerr << (*points)[i + 1].x() << ","<< (*points)[i + 1].y() << ","<< (*points)[i + 1].z() << ","<< (*points)[i + 1].w() << std::endl;
+          std::cerr << (*points)[i + 2].x() << ","<< (*points)[i + 2].y() << ","<< (*points)[i + 2].z() << ","<< (*points)[i + 2].w() << std::endl;
+
+          osg::Vec3f L0 = convert((*points)[i - 1] - (*points)[i - 2]);
+          osg::Vec3f L1 = convert((*points)[i    ] - (*points)[i - 1]);
+          osg::Vec3f L2 = convert((*points)[i + 1] - (*points)[i    ]);
+          osg::Vec3f L3 = convert((*points)[i + 2] - (*points)[i + 1]);
+
+          std::cerr << "A10 => " << acos(L0 * L1 / L0.length() / L1.length()) * 180.0 / osg::PI << std::endl;
+          std::cerr << "A21 => " << acos(L1 * L2 / L1.length() / L2.length()) * 180.0 / osg::PI << std::endl;
+          std::cerr << "A32 => " << acos(L3 * L2 / L3.length() / L2.length()) * 180.0 / osg::PI << std::endl;
+          i = i - 1;
+          ++runs;
+          continue;
+        }
+        //if(test == 3) { exit(0); }
         osg::Vec3f center = (parent_distal + child_distal) / 2.0f;
         osg::Vec3f direction = (parent_distal - child_distal);
         float height = direction.normalize();
-
         G4 = create_geometry_ring( parent_distal
                                  , child_distal
                                  , (*points)[i][3]
@@ -930,14 +1033,14 @@ catmull_rom_segment()
                                        , axial_segments
                                        , radial_segments
                                        );
-        // group -> addChild( mark( G4
-        //                        , (*points)[i][3]
-        //                        , axial_segments
-        //                        , radial_segments
-        //                        )
-        //                  );
+        group -> addChild( mark( G4
+                               , (*points)[i][3]
+                               , axial_segments
+                               , radial_segments
+                               )
+                         );
 
-        // group -> addChild(coordinate_system(center, height, direction, (*points)[i][3]));
+        //group -> addChild(coordinate_system(center, height, direction, (*points)[i][3]));
 
         geode -> addDrawable(G2);
         G0 = G1;
@@ -1099,7 +1202,7 @@ int main(int argc, char const *argv[])
 {
     osg::Group * group = catmull_rom_segment();
     osgViewer::Viewer viewer;
-/*
+
     osg::StateSet* stateSet = group -> getOrCreateStateSet();
     osg::Material* material = new osg::Material;
 
@@ -1108,7 +1211,7 @@ int main(int argc, char const *argv[])
                       , 1.0
                       );
     material->setShininess( osg::Material::FRONT_AND_BACK
-                          , 128.0
+                          , 10.0
                           );
     material->setAmbient( osg::Material::FRONT_AND_BACK
                         , osg::Vec4(1.0, 1.0, 1.0, 1.0)
@@ -1118,14 +1221,12 @@ int main(int argc, char const *argv[])
                         );
     material->setColorMode( osg::Material::EMISSION);
     material->setEmission( osg::Material::FRONT_AND_BACK
-                         , osg::Vec4(1.0, 1.0, 1.0, 0.5)
+                         , osg::Vec4(0.01, 0.01, 0.01, 0.1)
                          );
-*/
     // material->setShininess(osg::Material::FRONT_AND_BACK, 128.0);
     // material->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 1.0, 1.0));
     // material->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 1.0, 1.0));
 
-/*
     stateSet -> setAttributeAndModes( material, osg::StateAttribute::ON );
     stateSet -> setMode( GL_DEPTH_TEST, osg::StateAttribute::ON );
     stateSet -> setMode( GL_BLEND, osg::StateAttribute::ON );
@@ -1135,7 +1236,7 @@ int main(int argc, char const *argv[])
     stateSet -> setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
 
 
-
+    /*
     add_lighting(group);
 */
     viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
@@ -1147,5 +1248,6 @@ int main(int argc, char const *argv[])
     viewer.addEventHandler(new GeometrySelector());
     viewer.realize();
     viewer.run();
+    std::cerr << "Ran => " << runs << std::endl;
     return 0;
 }

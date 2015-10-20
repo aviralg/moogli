@@ -175,6 +175,8 @@ public:
     unsigned int
     representation_count();
 
+    bool
+    write(const char * filename);
 
     // double r
     // {
@@ -375,6 +377,9 @@ public:
                                        );
         }
     %End
+
+    bool
+    write(const char * filename);
 
     SIP_PYOBJECT
     __str__() const;
@@ -782,14 +787,12 @@ public:
     SIP_PYOBJECT
     create_color_bar( const char * id
                     , const char * title
-                    , float min_scalar
-                    , float max_scalar
+                    , PyObject * scalar_range
                     , PyObject * colors
                     , int num_colors
                     , int num_labels
                     , float angle
-                    , float aspect_ratio
-                    , float width
+                    , PyObject * size
                     , PyObject * position
                     , PyObject * label_color
                     , const char * label_font_file
@@ -799,19 +802,17 @@ public:
     %MethodCode
         bool result = sipCpp -> create_color_bar( a0
                                                 , a1
-                                                , a2
-                                                , a3
-                                                , pysequence_to_vec4f_vector(a4)
+                                                , pysequence_to_float_pair(a2)
+                                                , pysequence_to_vec4f_vector(a3)
+                                                , a4
                                                 , a5
                                                 , a6
-                                                , a7
-                                                , a8
-                                                , a9
-                                                , pysequence_to_vec3f(a10)
-                                                , pysequence_to_vec4f(a11)
+                                                , pysequence_to_float_pair(a7)
+                                                , pysequence_to_vec3f(a8)
+                                                , pysequence_to_vec4f(a9)
+                                                , a10
+                                                , pysequence_to_int_pair(a11)
                                                 , a12
-                                                , pysequence_to_int_pair(a13)
-                                                , a14
                                                 );
         sipRes = PyBool_FromLong(result);
     %End
@@ -828,11 +829,36 @@ public:
 
 
     void
-    add_view( int x
-            , int y
-            , int width
-            , int height
+    add_view( const char * id
+            , PyObject * viewport
+            , PyObject * background_color
+            , int camera_manipulator_id = 5 
+            , float fovy = 30.0f
+            , float z_near = 1.0f
+            , float z_far = 10000.0f
             );
+    %MethodCode
+      std::vector<osgGA::StandardManipulator *> standard_manipulators = { new osgGA::FirstPersonManipulator()
+                                                                        , new osgGA::FlightManipulator()
+                                                                        , new osgGA::OrbitManipulator()
+                                                                        , new osgGA::NodeTrackerManipulator()
+                                                                        , new osgGA::TerrainManipulator()
+                                                                        , new osgGA::TrackballManipulator()
+                                                                        };
+      sipCpp -> add_view( a0
+                        , new osg::Viewport( static_cast<int>(PyLong_AsUnsignedLong(PySequence_GetItem(a1, 0)))
+                                           , static_cast<int>(PyLong_AsUnsignedLong(PySequence_GetItem(a1, 1)))
+                                           , static_cast<int>(PyLong_AsUnsignedLong(PySequence_GetItem(a1, 2)))
+                                           , static_cast<int>(PyLong_AsUnsignedLong(PySequence_GetItem(a1, 3)))
+                                           )
+                        , pysequence_to_vec4f(a2)
+                        , standard_manipulators[a3]
+                        , a4
+                        , a5
+                        , a6
+                        );
+    %End
+
 
     void
     split_horizontally( unsigned int view_index   = 0
@@ -893,6 +919,14 @@ public:
     yaw( double angle
        , unsigned int index = 0
        );
+
+    void
+    capture( const char * viewer_id
+           , const char * filename
+           , const char * extension
+           , unsigned long frame_count
+           );
+
 
     // void
     // capture_continuous_toggle(unsigned int index);

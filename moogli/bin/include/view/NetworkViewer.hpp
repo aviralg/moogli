@@ -5,9 +5,12 @@
 #include "utility/constants.hpp"
 #include "core/Network.hpp"
 #include "handlers/GeometrySelector.hpp"
+#include "callbacks/CaptureView.hpp"
+#include "core/CoordinateSystem.hpp"
 
 using namespace std;
 
+const osg::Vec4f WHITE(1.0f, 1.0f, 1.0f, 1.0f);
 class NetworkViewer : public QGLWidget
 {
   Q_OBJECT
@@ -36,21 +39,45 @@ public:
     void
     set_background_color(const osg::Vec4f & color);
 
-    void
-    add_view( int x
-            , int y
-            , int width
-            , int height
-            );
+    osg::Billboard *
+    create_billboard();
 
-    osg::Projection *
-    create_heads_up_display( int x
-                           , int y
-                           , int width
-                           , int height
-                           , osg::Node * node
-                           );
+    osg::MatrixTransform *
+    create_scene_data();
 
+    osg::Camera *
+    create_master_camera( osg::Viewport * viewport
+                        , osg::Vec4f clear_color = WHITE
+                        , double fovy = 30.0f
+                        , double z_near = 1.0f
+                        , double z_far = 10000.0f
+                        );
+
+
+    osg::Camera*
+    create_hud_camera(osg::Viewport * viewport);
+
+    osgViewer::View *
+    create_view( const char * id
+               , osg::Viewport * viewport
+               , osg::Camera * master_camera
+               , osg::Camera * hud_camera
+               , osg::MatrixTransform * scene_data
+                 , osgGA::StandardManipulator * camera_manipulator = new osgGA::TrackballManipulator()
+               );
+
+  osg::Projection *
+  create_heads_up_display(int x, int y, int width, int height, osg::Node * node);
+
+  osgViewer::View *
+    add_view( const char * id
+            , osg::Viewport * viewport
+            , osg::Vec4f clear_color = WHITE
+            , osgGA::StandardManipulator * camera_manipulator = new osgGA::TrackballManipulator()
+            , double fovy = 30.0
+            , double z_near = 1.0
+            , double z_far = 10000.0
+              );
 
     void
     split_horizontally( unsigned int view_index   = 0
@@ -112,18 +139,21 @@ public:
        , unsigned int index = 0
        );
 
+    osg::Geode *
+    coordinate_system( const osg::Vec3f & center
+                     , const float length
+                     , const float radius
+                     );
 
     bool
     create_color_bar( const char * id
                     , const char * title
-                    , float min_scalar
-                    , float max_scalar
+                    , std::pair<float, float> scalar_range
                     , std::vector< osg::Vec4 > colors
                     , int num_colors
                     , int num_labels
-                    , float angle
-                    , float aspect_ratio
-                    , float width
+                    , float angle//osgSim::ScalarBar::Orientation orientation
+                    , std::pair<float, float> dimensions
                     , osg::Vec3f position
                     , osg::Vec4 label_color
                     , const char * label_font_file
@@ -137,18 +167,40 @@ public:
                       , const osg::Vec3 position
                       );
 
-    osg::Camera*
-    create_hud_camera( int x
-                     , int y
-                     , int width
-                     , int height
-                     );
-
-    osg::Billboard *
-    create_billboard();
-
     osg::Camera *
     get_hud_camera(unsigned int view_index);
+
+
+    osg::Viewport *
+    compute_viewport( osg::Viewport * viewport
+                    , int width
+                    , int height
+                    );
+
+    void
+    set_master_camera_viewport( osg::Camera * camera
+                              , osg::Viewport * viewport
+                              );
+
+    void
+    set_hud_camera_viewport( osg::Camera * camera
+                           , osg::Viewport * viewport
+                           );
+    osg::Camera *
+    get_hud_camera(osgViewer::View * view);
+
+    void
+    set_viewport( const char * view_id
+                , osg::Viewport * viewport
+                );
+
+    void
+    set_viewport( osgViewer::View * view
+                , osg::Viewport * viewport
+                );
+
+    void
+    resize_views(int width, int height);
 
     osg::Billboard *
     get_billboard(unsigned int view_index);
@@ -162,6 +214,12 @@ public:
     show_color_bar( const char * id
                   , unsigned int view_index
                   );
+    void
+    capture( const std::string & viewer_id
+           , const std::string & filename
+           , const std::string & extension
+           , unsigned long frame_count = 1
+           );
 
     // void
     // export(const char * filename);
@@ -247,8 +305,8 @@ private:
     std::unordered_map<std::string, osg::ref_ptr<osgViewer::View> > _hud_views;
     osg::ref_ptr<osg::MatrixTransform> _root;
     osg::ref_ptr<osg::Billboard> _billboard;
-    std::unordered_map<std::string, osg::ref_ptr<osg::MatrixTransform> > _scalar_bars;
-  std::unordered_map<std::string, osg::ref_ptr<osg::Geode> > _two_d_texts;
+    std::unordered_map<std::string, osg::ref_ptr<osg::PositionAttitudeTransform> > _scalar_bars;
+    std::unordered_map<std::string, osg::ref_ptr<osg::Geode> > _two_d_texts;
     std::unordered_map<std::string, osg::ref_ptr<osgText::Text3D> > _three_d_texts;
 };
 
