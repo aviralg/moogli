@@ -1,3 +1,3 @@
-from .network import MooseNetwork
+from .network import read
 
-__all__ = ["MooseNetwork"]
+__all__ = ["read"]

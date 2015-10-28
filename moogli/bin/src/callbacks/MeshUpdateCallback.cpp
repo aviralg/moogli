@@ -1,14 +1,28 @@
 #include "callbacks/MeshUpdateCallback.hpp"
 
-MeshUpdateCallback::MeshUpdateCallback() : UpdateCallback() { }
+MeshUpdateCallback::MeshUpdateCallback(Mesh * mesh): UpdateCallback()
+                                                   , mesh(mesh)
+{
+}
 
 void
 MeshUpdateCallback::update( osg::NodeVisitor *nv
                           , osg::Drawable *drawable
                           )
 {
-    Mesh * mesh = static_cast<Mesh *>(drawable);
-    if(mesh -> allocation_required())   { mesh -> allocate();  }
-    if(mesh -> construction_required()) { mesh -> construct(); }
-    if(mesh -> coloring_required())     { mesh -> color();     }
+    if(mesh -> allocation_required())
+    {
+        mesh -> allocate();
+        mesh -> construct_indices();
+        mesh -> construct_vertices();
+        mesh -> color();
+    }
+    if(mesh -> construction_required())
+    {
+        mesh -> construct_vertices();
+    }
+    if(mesh -> coloring_required())
+    {
+        mesh -> color();
+    }
 }
