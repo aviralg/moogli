@@ -1,5 +1,6 @@
 build: clean
 	python setup.py build
+	cp -rf build/lib.linux-x86_64-2.7/moogli/core/_moogli.so moogli/core/
 
 install:
 	python setup.py install
