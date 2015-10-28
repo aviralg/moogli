@@ -1,126 +1,64 @@
 import PyQt4
-from PyQt4 import *
+from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import Qt
+import math
+import _moogli
 
-from moogli.core import _moogli
+class View(_moogli.MeshView):
+    def __init__(self, id):
+        self._id = id
+        _moogli.MeshView.__init__(self)
+        self._color_bars = set()
+
+    def get_id(self):
+        return self._id
+
+    def attach_color_bar(self, color_bar):
+        if color_bar in self._color_bars: return
+        color_bar.view = self
+        super(View, self).attach_color_bar(color_bar)
+        self._color_bars.add(color_bar)
+
+    def resize(self, width, height):
+        super(View, self).resize(width, height)
+        for color_bar in self._color_bars:
+            color_bar.resize(width, height)
 
 
-class NetworkViewer(_moogli.NetworkViewer):
+
+class Viewer(_moogli.Viewer):
     def __init__( self
-                , network
+                # , parent
+                # , shareWidget
+                # , flags
                 , prelude   = lambda x : x
                 , interlude = lambda x : x
                 , postlude  = lambda x : x
                 , idletime  = 0
                 ):
         PyQt4.QtGui.QApplication.instance().aboutToQuit.connect(self.stop)
-        _moogli.NetworkViewer.__init__(self, network)
+        _moogli.Viewer.__init__(self)
         self.groups     = set()
-        self.network    = network
+        # self.network    = network
         self.prelude    = prelude
         self.interlude  = interlude
         self.postlude   = postlude
         self.idletime   = idletime
         self._done      = False
         self._pause     = False
+        self._views = dict()
+        self._meshes = set()
+        self.roll_angle = math.pi / 36.0
+        self.pitch_angle = math.pi / 36.0
+        self.yaw_angle = math.pi / 36.0
+        self.zoom_factor = 0.10
+        self.forward_distance = 10.0
+        self.backward_distance = 10.0
+        self.left_distance = 10.0
+        self.right_distance = 10.0
+        self.up_distance = 10.0
+        self.down_distance = 10.0
 
-
-
-        self.voxels    = { "base_value"     :   100.0
-                         , "peak_value"     :   200.0
-                         , "base_color"     :   [1.0, 0.0, 0.0, 1.0]
-                         , "peak_color"     :   [0.0, 1.0, 0.0, 1.0]
-                         , "voxels"         :   []
-                         }
-        self.compartments = { "base_value"     :   -0.65
-                            , "peak_value"     :   -0.60
-                            , "base_color"     :   [0.0, 1.0, 0.0, 1.0]
-                            , "peak_color"     :   [0.0, 0.0, 1.0, 1.0]
-                            , "compartments"   :   []
-                            }
-
-        self.neurons    = { "base_value"     :   -0.65
-                            , "peak_value"     :   -0.60
-                            , "base_color"     :   [0.0, 1.0, 0.0, 1.0]
-                            , "peak_color"     :   [0.0, 0.0, 1.0, 1.0]
-                            , "neurons"     :   []
-                            }
-        self.spines    = { "base_value"     :   -0.65
-                            , "peak_value"     :   -0.60
-                            , "base_color"     :   [0.0, 1.0, 0.0, 1.0]
-                            , "peak_color"     :   [0.0, 0.0, 1.0, 1.0]
-                            , "spines"     :   []
-                            }
-        # QtCore.QObject.connect(self, QtCore.SIGNAL('selected(const char *)'), self.printme);
-        self.start()
-
-    def _interpolate_color(self, factor, base_color, peak_color):
-            def interpolate(a, b):
-                return (b - a) * factor + a
-            return map(interpolate, base_color, peak_color)
-
-    def _normalize(self, value, minimum, maximum):
-            result = (value - minimum) / (maximum - minimum)
-            if result < 0.0 : return 0.0
-            if result > 1.0 : return 1.0
-            return result
-
-    def _set_colors( self
-                       , values
-                       , base_value
-                       , peak_value
-                       , base_color
-                       , peak_color
-                       , members
-                       ) :
-            normalized_values = [ self._normalize(value, base_value, peak_value)
-                              for value in values
-                            ]
-            colors = [ self._interpolate_color(normalized_value, base_color, peak_color)
-                       for normalized_value in normalized_values
-                     ]
-            [member.set_color(color) for (member, color) in zip(members, colors)]
-
-    def set_voxel_colors(self, values):
-        self._set_colors( values
-                        , self.voxels["base_value"]
-                        , self.voxels["peak_value"]
-                        , self.voxels["base_color"]
-                        , self.voxels["peak_color"]
-                        , self.voxels["voxels"]
-                        )
-
-    def set_compartment_colors(self, values):
-        self._set_colors( values
-                        , self.compartments["base_value"]
-                        , self.compartments["peak_value"]
-                        , self.compartments["base_color"]
-                        , self.compartments["peak_color"]
-                        , self.compartments["compartments"]
-                        )
-
-    def set_neuron_colors(self, values):
-        self._set_colors( values
-                        , self.neurons["base_value"]
-                        , self.neurons["peak_value"]
-                        , self.neurons["base_color"]
-                        , self.neurons["peak_color"]
-                        , self.neurons["neurons"]
-                        )
-
-    def set_spine_colors(self, values):
-        self._set_colors( values
-                        , self.spines["base_value"]
-                        , self.spines["peak_value"]
-                        , self.spines["base_color"]
-                        , self.spines["peak_color"]
-                        , self.spines["spines"]
-                        )
-
-    def add_group(self, group_id, elements, colormap, normalizer):
-        self.groups[group_id] = { "elements" : elements
-                                , "colormap" : colormap
-                                , "normalizer" : normalizer
-                                }
     def start(self):
         self._done = False
         self.prelude(self)
@@ -144,6 +82,120 @@ class NetworkViewer(_moogli.NetworkViewer):
         if self._done: return
         if self._pause: return
         PyQt4.QtCore.QTimer.singleShot(self.idletime, self.run)
+
+    def resizeEvent(self, event):
+        super(Viewer, self).resizeEvent(event)
+        for view in self._views.values():
+            view.resize(event.size().width(), event.size().height())
+
+    def attach_view(self, view):
+        if view in self._views.values(): return
+        super(Viewer, self).attach_view(view)
+        self._views[view.get_id()] = view
+
+    def detach_view(self, view):
+        if view not in self._views.values(): return
+        super(Viewer, self).detach_view(view)
+        self._views.pop(view.get_id())
+
+    def attach_geometry(self, mesh):
+        if mesh in self._meshes: return
+        super(Viewer, self).attach_geometry(mesh)
+        self._meshes.add(mesh)
+
+    def home(self):
+        [view.home() for view in self._views.values()]
+
+    def forward(self, distance_delta):
+        [view.forward(distance_delta) for view in self._views.values()]
+
+    def backward(self, distance_delta):
+        [view.backward(distance_delta) for view in self._views.values()]
+
+    def left(self, distance_delta):
+        [view.left(distance_delta) for view in self._views.values()]
+
+    def right(self, distance_delta):
+        [view.right(distance_delta) for view in self._views.values()]
+
+    def up(self, distance_delta):
+        [view.up(distance_delta) for view in self._views.values()]
+
+    def down(self, distance_delta):
+        [view.down(distance_delta) for view in self._views.values()]
+
+    def zoom(self, factor):
+        [view.zoom(factor) for view in self._views.values()]
+
+    def roll(self, angle):
+        [view.roll(angle) for view in self._views.values()]
+
+    def pitch(self, angle):
+        [view.pitch(angle) for view in self._views.values()]
+
+    def yaw(self, angle):
+        [view.yaw(angle) for view in self._views.values()]
+
+
+    def keyPressEvent(self, event):
+        #super(Viewer, self).event(event)
+        key = event.key()
+        # modifiers = QtGui.QApplication.keyboardModifiers()
+        control_pressed = event.modifiers() & Qt.ControlModifier == 1
+        shift_pressed = event.modifiers() & Qt.ShiftModifier == 1
+        if key == Qt.Key_Q and control_pressed:
+            QApplication.quit()
+        elif key == Qt.Key_W and control_pressed:
+            QApplication.quit()
+        elif key == Qt.Key_Space:
+            self.home()
+        elif key == Qt.Key_Up:
+            self.up(self.up_distance)
+        elif key == Qt.Key_Down:
+            self.down(self.down_distance)
+        elif key == Qt.Key_Left:
+            self.left(self.left_distance)
+        elif key == Qt.Key_Right:
+            self.right(self.right_distance)
+        elif key == Qt.Key_F:
+            self.forward(self.forward_distance)
+        elif key == Qt.Key_B:
+            self.backward(self.backward_distance)
+        elif key == Qt.Key_Plus:
+            self.zoom(self.zoom_factor)
+        elif key == Qt.Key_Equal:
+            self.zoom(self.zoom_factor)
+        elif key == Qt.Key_Period:
+            self.zoom(self.zoom_factor)
+        elif key == Qt.Key_Greater:
+            self.zoom(self.zoom_factor)
+        elif key == Qt.Key_Minus:
+            self.zoom(-self.zoom_factor)
+        elif key == Qt.Key_Underscore:
+            self.zoom(-self.zoom_factor)
+        elif key == Qt.Key_Comma:
+            self.zoom(-self.zoom_factor)
+        elif key == Qt.Key_Less:
+            self.zoom(-self.zoom_factor)
+        elif key == Qt.Key_R:
+            if shift_pressed:
+                self.roll(-self.roll_angle)
+            else:
+                self.roll(self.roll_angle)
+        elif key == Qt.Key_P:
+            if shift_pressed:
+                self.pitch(-self.pitch_angle)
+            else:
+                self.pitch(self.pitch_angle)
+        elif key == Qt.Key_Y:
+            if shift_pressed:
+                self.yaw(-self.yaw_angle)
+            else:
+                self.yaw(self.yaw_angle)
+
+    def get_view_with_focus(self):
+        view_id = super(Viewer, self).get_view_with_focus()
+        return self._views[view_id]
 
     @QtCore.pyqtSlot(str)
     def printme(self, name):

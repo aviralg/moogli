@@ -520,14 +520,6 @@
 	"buffers":
 	[
 		{
-			"file": "moogli/__init__.py",
-			"settings":
-			{
-				"buffer_size": 165,
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"contents": "from .pipeline import PipelineElement\n\nclass Consumer(PipelineElement):\n    __metaclass__ = ABCMeta\n\n    def __init__(self):\n        super(Consumer, self).__init__()\n        self.input = None\n        self._mediators = set()\n\n    @property\n    def input(self):\n        return self._input\n\n    @input.setter\n    def input(self, value):\n        self._input = value\n\n    @property\n    def mediators(self):\n        return tuple(self._mediators)\n\n    @abstractmethod\n    def consume(self):\n        pass\n\n\n\n\nclass SimulationDataConsumer(Consumer):\n    pass\n",
 			"file": "moogli/pipeline/consumer.py",
 			"file_size": 551,
@@ -535,17 +527,6 @@
 			"settings":
 			{
 				"buffer_size": 550,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"contents": "",
-			"file": "/home/aviral/programming/github/moose/.git/modules/moose-gui/MERGE_MSG",
-			"file_size": -1,
-			"file_write_time": -1,
-			"settings":
-			{
-				"buffer_size": 0,
 				"line_ending": "Unix"
 			}
 		},
@@ -569,14 +550,6 @@
 			}
 		},
 		{
-			"file": "/home/aviral/programming/github-final/moose/.travis.yml",
-			"settings":
-			{
-				"buffer_size": 1555,
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "/home/aviral/programming/github-final/moose/moose-core/.travis.yml",
 			"settings":
 			{
@@ -596,58 +569,74 @@
 			}
 		},
 		{
-			"contents": "Package Control Messages\n========================\n\nPackage Control:\n---------------\n\n  Version 3.1 Release Notes\n  \n  Package Control continues its focus on polish and fixing edge-case bugs. Some\n  of the changes in this version include:\n  \n   - quick panel for Install Package now stays open on Windows with recent\n     versions of ST3, even when focus is lost\n   - new \"downloader_precedence\" setting to allow users to use specific HTTP\n     backend due to network proxy or SSL issues\n   - added Install Local Dependency command for package developers to more\n     easily deal with dependencies during development\n   - improved handling of git/hg package upgrade errors\n   - better handling of locked .sublime-package files on Windows\n   - performance improvements for users with a large number of open windows\n  \n  For package developers, the list of available dependencies has been growing:\n  https://github.com/wbond/package_control_channel/blob/master/repository/dependencies.json\n  Enjoy!\n",
-			"settings":
-			{
-				"buffer_size": 996,
-				"line_ending": "Unix",
-				"name": "Package Control Messages",
-				"scratch": true
-			}
-		},
-		{
 			"file": "setup.py",
 			"settings":
 			{
-				"buffer_size": 6270,
+				"buffer_size": 6653,
 				"line_ending": "Unix"
 			}
 		},
 		{
+			"file": "/home/aviral/programming/paper-model/fig7bcde_6.py",
 			"settings":
 			{
-				"buffer_size": 0,
+				"buffer_size": 38863,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "/home/aviral/programming/Projects/harsha-goose-2/src/goose/widgets/plots/plot.py",
+			"file": "/home/aviral/programming/github-final/moose/moose-examples/snippets/rxdSpineSize.py",
 			"settings":
 			{
-				"buffer_size": 15458,
+				"buffer_size": 10938,
 				"line_ending": "Unix"
 			}
 		},
 		{
+			"file": "/home/aviral/programming/paper-model/test.py",
 			"settings":
 			{
-				"buffer_size": 0,
+				"buffer_size": 38027,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "examples/test.py",
+			"file": "/home/aviral/programming/paper-model/cells_channels/CA1_nochans.morph.xml",
 			"settings":
 			{
-				"buffer_size": 1992,
+				"buffer_size": 598067,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "scripts/moogliviewer",
+			"file": "moogli/core/viewer.py",
 			"settings":
 			{
-				"buffer_size": 1923,
+				"buffer_size": 6594,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "moogli/bin/sip/moogli.sip",
+			"settings":
+			{
+				"buffer_size": 17980,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "moogli/bin/sip/moogli.old.sip",
+			"settings":
+			{
+				"buffer_size": 36769,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "moogli/bin/src/view/Viewer.cpp",
+			"settings":
+			{
+				"buffer_size": 12651,
 				"line_ending": "Unix"
 			}
 		},
@@ -1049,6 +1038,14 @@
 	],
 	"file_history":
 	[
+		"/home/aviral/programming/moogli/moogli/bin/src/mesh/Mesh.cpp",
+		"/home/aviral/programming/moogli/moogli/bin/src/mesh/FrustumMesh.cpp",
+		"/home/aviral/programming/moogli/scripts/moogliviewer",
+		"/home/aviral/programming/moogli/examples/test.py",
+		"/home/aviral/programming/Projects/harsha-goose-2/src/goose/widgets/plots/plot.py",
+		"/home/aviral/programming/github-final/moose/.travis.yml",
+		"/home/aviral/programming/github/moose/.git/modules/moose-gui/MERGE_MSG",
+		"/home/aviral/programming/moogli/moogli/__init__.py",
 		"/home/aviral/st/tmux",
 		"/home/aviral/programming/moogli/examples/file.dat",
 		"/home/aviral/programming/moogli/examples/dump",
@@ -1168,15 +1165,7 @@
 		"/home/aviral/Projects/moogli/moogli/include/mesh/SphereMesh.hpp",
 		"/home/aviral/Desktop/sip-4.16.7/sipgen/sip.h",
 		"/home/aviral/Projects/moogli/moogli/src/core/Sequence.cpp",
-		"/home/aviral/Projects/moogli/moogli/include/core/Sequence.hpp",
-		"/home/aviral/Projects/moogli/docs/doxygen/html/HTML/Y/243.html",
-		"/home/aviral/Projects/moogli/moogli/include/core/Group.hpp",
-		"/home/aviral/Projects/moogli/moogli/src/core/Group.cpp",
-		"/home/aviral/Projects/harsha-goose-2/src/goose/main.py",
-		"/home/aviral/Projects/harsha-goose-2/.git/MERGE_MSG",
-		"/home/aviral/Projects/harsha-goose/src/goose/widgets/nkit/main.py",
-		"/home/aviral/Projects/harsha-goose/src/goose/widgets/kkit/kkit.py",
-		"/home/aviral/Projects/harsha-goose/src/goose/main.py"
+		"/home/aviral/Projects/moogli/moogli/include/core/Sequence.hpp"
 	],
 	"find":
 	{
@@ -1194,6 +1183,7 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"clicked",
 			"\\}",
 			"}",
 			"HDF",
@@ -1320,8 +1310,7 @@
 			"getEventQueue",
 			"resizeGL",
 			"if",
-			"_functionAddVar",
-			"createMorphology"
+			"_functionAddVar"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1349,40 +1338,11 @@
 	"groups":
 	[
 		{
-			"selected": 8,
+			"selected": 4,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "moogli/__init__.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 165,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"history_list_is_closing": true,
-							"syntax": "Packages/Python/Python.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 13,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
 					"file": "moogli/pipeline/consumer.py",
 					"semi_transient": false,
 					"settings":
@@ -1403,34 +1363,6 @@
 							"syntax": "Packages/Python/Python.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 100.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 12,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "/home/aviral/programming/github/moose/.git/modules/moose-gui/MERGE_MSG",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 0,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
@@ -1438,7 +1370,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 1,
 					"file": "/home/aviral/programming/github/moose/moose-core/Makefile",
 					"semi_transient": false,
 					"settings":
@@ -1462,11 +1394,11 @@
 						"translation.y": 6174.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 10,
+					"stack_index": 13,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 2,
 					"file": "/home/aviral/programming/github/moose/.git/MERGE_MSG",
 					"semi_transient": false,
 					"settings":
@@ -1490,39 +1422,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 9,
+					"stack_index": 12,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
-					"file": "/home/aviral/programming/github-final/moose/.travis.yml",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1555,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/YAML/YAML.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 8,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
+					"buffer": 3,
 					"file": "/home/aviral/programming/github-final/moose/moose-core/.travis.yml",
 					"semi_transient": false,
 					"settings":
@@ -1543,14 +1447,14 @@
 							"syntax": "Packages/YAML/YAML.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 777.0,
+						"translation.y": 389.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 8,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 4,
 					"file": "/home/aviral/programming/github-final/moose/.git/modules/moose-core/MERGE_MSG",
 					"semi_transient": false,
 					"settings":
@@ -1574,45 +1478,16 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 996,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								258,
-								258
-							]
-						],
-						"settings":
-						{
-							"auto_indent": false,
-							"syntax": "Packages/Text/Plain text.tmLanguage",
-							"word_wrap": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 141.0,
-						"zoom_level": 1.0
-					},
 					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 9,
+					"buffer": 5,
 					"file": "setup.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6270,
+						"buffer_size": 6653,
 						"regions":
 						{
 						},
@@ -1628,55 +1503,28 @@
 							"history_list_is_closing": true,
 							"syntax": "Packages/Python/Python.tmLanguage"
 						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.x": -0.0,
+						"translation.y": 3927.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 7,
 					"type": "text"
 				},
 				{
-					"buffer": 10,
+					"buffer": 6,
+					"file": "/home/aviral/programming/paper-model/fig7bcde_6.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 0,
+						"buffer_size": 38863,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 11,
-					"file": "/home/aviral/programming/Projects/harsha-goose-2/src/goose/widgets/plots/plot.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 15458,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								435,
-								435
+								9663,
+								9663
 							]
 						],
 						"settings":
@@ -1684,74 +1532,19 @@
 							"syntax": "Packages/Python/Python.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 12,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 0,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 13,
-					"file": "examples/test.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1992,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1571,
-								1573
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 630.0,
+						"translation.y": 4725.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 14,
-					"file": "scripts/moogliviewer",
+					"buffer": 7,
+					"file": "/home/aviral/programming/github-final/moose/moose-examples/snippets/rxdSpineSize.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1923,
+						"buffer_size": 10938,
 						"regions":
 						{
 						},
@@ -1764,18 +1557,185 @@
 						],
 						"settings":
 						{
-							"history_list_is_closing": true,
 							"syntax": "Packages/Python/Python.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 5460.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 26,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 15,
+					"buffer": 8,
+					"file": "/home/aviral/programming/paper-model/test.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 38027,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								10544,
+								10544
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 4347.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "/home/aviral/programming/paper-model/cells_channels/CA1_nochans.morph.xml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 598067,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								58529,
+								58529
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 24518.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "moogli/core/viewer.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6594,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5307,
+								5307
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 2279.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "moogli/bin/sip/moogli.sip",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 17980,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 13167.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"file": "moogli/bin/sip/moogli.old.sip",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 36769,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								36769,
+								36769
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 24906.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "moogli/bin/src/view/Viewer.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 12651,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 693.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 14,
 					"file": "experiments/continuity.cpp",
 					"semi_transient": false,
 					"settings":
@@ -1803,7 +1763,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 16,
+					"buffer": 15,
 					"file": "experiments/segment_continuity.cpp",
 					"semi_transient": false,
 					"settings":
@@ -1831,7 +1791,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 17,
+					"buffer": 16,
 					"file": "experiments/catmull_rom.cpp",
 					"semi_transient": false,
 					"settings":
@@ -1859,7 +1819,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 18,
+					"buffer": 17,
 					"semi_transient": false,
 					"settings":
 					{
@@ -1886,7 +1846,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 19,
+					"buffer": 18,
 					"semi_transient": false,
 					"settings":
 					{
@@ -1913,7 +1873,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 20,
+					"buffer": 19,
 					"semi_transient": false,
 					"settings":
 					{
@@ -1940,7 +1900,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 21,
+					"buffer": 20,
 					"semi_transient": false,
 					"settings":
 					{
@@ -1968,7 +1928,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 22,
+					"buffer": 21,
 					"semi_transient": false,
 					"settings":
 					{
@@ -1995,7 +1955,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 23,
+					"buffer": 22,
 					"semi_transient": false,
 					"settings":
 					{
@@ -2022,7 +1982,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 24,
+					"buffer": 23,
 					"file": "/tmp/libav-11.4/temp.txt",
 					"semi_transient": false,
 					"settings":
@@ -2050,7 +2010,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 25,
+					"buffer": 24,
 					"file": "moogli/parser/csv.py",
 					"semi_transient": false,
 					"settings":
@@ -2078,7 +2038,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 26,
+					"buffer": 25,
 					"semi_transient": false,
 					"settings":
 					{
@@ -2105,7 +2065,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 27,
+					"buffer": 26,
 					"file": "moogli/parser/__init__.py",
 					"semi_transient": false,
 					"settings":
@@ -2129,11 +2089,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 27,
+					"stack_index": 26,
 					"type": "text"
 				},
 				{
-					"buffer": 28,
+					"buffer": 27,
 					"file": "moogli/simulator/moose.py",
 					"semi_transient": false,
 					"settings":
@@ -2158,11 +2118,11 @@
 						"translation.y": 11634.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 28,
+					"stack_index": 27,
 					"type": "text"
 				},
 				{
-					"buffer": 29,
+					"buffer": 28,
 					"semi_transient": false,
 					"settings":
 					{
@@ -2185,11 +2145,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 31,
+					"stack_index": 30,
 					"type": "text"
 				},
 				{
-					"buffer": 30,
+					"buffer": 29,
 					"file": "scripts/moogli_purkinje_simulation_with_rm_and_graph.py",
 					"semi_transient": false,
 					"settings":
@@ -2213,11 +2173,11 @@
 						"translation.y": 4599.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 30,
+					"stack_index": 29,
 					"type": "text"
 				},
 				{
-					"buffer": 31,
+					"buffer": 30,
 					"file": "moogli/parser/swc.py",
 					"semi_transient": false,
 					"settings":
@@ -2241,11 +2201,11 @@
 						"translation.y": 654.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 29,
+					"stack_index": 28,
 					"type": "text"
 				},
 				{
-					"buffer": 32,
+					"buffer": 31,
 					"file": "/home/aviral/Projects/goose",
 					"semi_transient": false,
 					"settings":
@@ -2269,7 +2229,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 32,
+					"stack_index": 31,
 					"type": "text"
 				}
 			]

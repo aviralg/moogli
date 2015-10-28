@@ -20,6 +20,7 @@
 #include <cassert>
 #include <stdexcept>
 #include <algorithm>
+#include <iomanip>
 
 /******************************************************************************/
 /* OSG HEADERS                                                                */
@@ -71,8 +72,12 @@
 #include <osg/StateSet>
 #include <osg/Depth>
 #include <osgFX/Outline>
+#include <osgFX/Cartoon>
+#include <osgFX/Scribe>
+#include <osgFX/SpecularHighlights>
 #include <osgDB/WriteFile>
 #include <osgSim/ScalarBar>
+
 /******************************************************************************/
 /* QT HEADERS                                                                 */
 /******************************************************************************/

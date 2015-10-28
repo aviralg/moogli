@@ -3,301 +3,271 @@
 %Import QtGui/QtGuimod.sip
 %Import QtOpenGL/QtOpenGLmod.sip
 
-// %ModuleCode
-
-// PySequence * ELECTRICAL_COMPARTMENT_COLOR
-// {
-//     %GetCode
-//         sipPy = vec4f_to_pysequence(DEFAULT_ELECTRICAL_COMPARTMENT_COLOR);
-//     %End
-// }
-
-// %End
-
-class Visualizable /Abstract/
+class Vec2i
 {
 %TypeHeaderCode
-#include "core/Visualizable.hpp"
+#include <osg/Vec2i>
+using osg::Vec2i;
 %End
 public:
-    const char * id
-    {
-        %GetCode
-            sipPy = PyString_FromString(sipCpp -> id.c_str());
-        %End
-        %SetCode
-            sipErr = 1;
-            PyErr_SetString( PyExc_AttributeError
-                           , "Cannot change id of object."
-                           );
-        %End
-    };
+    Vec2i();
+ 	  Vec2i(int x, int y);
+    bool 	operator== (const Vec2i &v) const;
+    bool 	operator!= (const Vec2i &v) const;
+    bool 	operator< (const Vec2i &v) const;
+    void 	set(int x, int y);
+    void 	set(const Vec2i &rhs);
+    int x() const;
+    int y() const;
+    int r() const;
+    int g() const;
+    Vec2i	operator* (int rhs) const;
+    Vec2i	operator/ (int rhs) const;
+    Vec2i	operator+ (int rhs) const;
+    Vec2i	operator- (int rhs) const;
+    Vec2i	operator+ (const Vec2i &rhs) const;
+    Vec2i	operator- (const Vec2i &rhs) const;
+    Vec2i	operator* (const Vec2i &rhs) const;
+};
 
-    PyObject * proximal
-    {
-        %GetCode
-            sipPy = PyTuple_New(4);
-            PyTuple_SET_ITEM(sipPy, 0, PyFloat_FromDouble(sipCpp -> proximal[0]));
-            PyTuple_SET_ITEM(sipPy, 1, PyFloat_FromDouble(sipCpp -> proximal[1]));
-            PyTuple_SET_ITEM(sipPy, 2, PyFloat_FromDouble(sipCpp -> proximal[2]));
-            PyTuple_SET_ITEM(sipPy, 3, PyFloat_FromDouble(sipCpp -> proximal[3]));
-        %End
-        %SetCode
-        if(PySequence_Check(sipPy))
-        {
-            if(PySequence_Length(sipPy) == 4)
-            {
-                sipCpp -> proximal[0] = static_cast<float>(PyFloat_AS_DOUBLE(PySequence_ITEM(sipPy, 0)));
-                sipCpp -> proximal[1] = static_cast<float>(PyFloat_AS_DOUBLE(PySequence_ITEM(sipPy, 1)));
-                sipCpp -> proximal[2] = static_cast<float>(PyFloat_AS_DOUBLE(PySequence_ITEM(sipPy, 2)));
-                sipCpp -> proximal[3] = static_cast<float>(PyFloat_AS_DOUBLE(PySequence_ITEM(sipPy, 3)));
-            }
-            else
-            {
-                sipErr = 1;
-                PyErr_SetString( PyExc_IndexError
-                               , "Expected a sequence of size 4, (x, y, z, r)"
-                               );
-            }
-        }
-        else
-        {
-            sipErr = 1;
-            PyErr_SetString( PyExc_TypeError
-                           , "Expected a sequence such as list, tuple or numpy array"
-                           );
-        }
-        %End
-    };
+class Vec2f
+{
+%TypeHeaderCode
+#include <osg/Vec2f>
+using osg::Vec2f;
+%End
+public:
+ 	  Vec2f();
+ 	  Vec2f(float x, float y);
+    bool operator== (const Vec2f &v) const;
+    bool operator!= (const Vec2f &v) const;
+    bool operator< (const Vec2f &v) const;
+    void set(float x, float y);
+    float x() const;
+    float y() const;
+    bool valid() const;
+    bool isNaN() const;
+    float operator* (const Vec2f &rhs) const;
+    const Vec2f	operator* (float rhs) const;
+    const Vec2f	operator/ (float rhs) const;
+    const Vec2f	operator+ (const Vec2f &rhs) const;
+    const Vec2f	operator- (const Vec2f &rhs) const;
+    const Vec2f	operator- () const;
+    float length() const;
+    float length2() const;
+    float normalize();
+};
 
-    PyObject * distal
-    {
-        %GetCode
-            sipPy = PyTuple_New(4);
-            PyTuple_SET_ITEM(sipPy, 0, PyFloat_FromDouble(sipCpp -> distal[0]));
-            PyTuple_SET_ITEM(sipPy, 1, PyFloat_FromDouble(sipCpp -> distal[1]));
-            PyTuple_SET_ITEM(sipPy, 2, PyFloat_FromDouble(sipCpp -> distal[2]));
-            PyTuple_SET_ITEM(sipPy, 3, PyFloat_FromDouble(sipCpp -> distal[3]));
-        %End
-        %SetCode
-        if(PySequence_Check(sipPy))
-        {
-            if(PySequence_Length(sipPy) == 4)
-            {
-                sipCpp -> distal[0] = static_cast<float>(PyFloat_AS_DOUBLE(PySequence_ITEM(sipPy, 0)));
-                sipCpp -> distal[1] = static_cast<float>(PyFloat_AS_DOUBLE(PySequence_ITEM(sipPy, 1)));
-                sipCpp -> distal[2] = static_cast<float>(PyFloat_AS_DOUBLE(PySequence_ITEM(sipPy, 2)));
-                sipCpp -> distal[3] = static_cast<float>(PyFloat_AS_DOUBLE(PySequence_ITEM(sipPy, 3)));
-            }
-            else
-            {
-                sipErr = 1;
-                PyErr_SetString( PyExc_IndexError
-                               , "Expected a sequence of size 4, (x, y, z, r)"
-                               );
-            }
-        }
-        else
-        {
-            sipErr = 1;
-            PyErr_SetString( PyExc_TypeError
-                           , "Expected a sequence such as list, tuple or numpy array"
-                           );
-        }
-        %End
-    };
+class Vec3i
+{
+%TypeHeaderCode
+#include <osg/Vec3i>
+using osg::Vec3i;
+%End
+public:
+    Vec3i();
+ 	  Vec3i(int r, int g, int b);
+    bool operator== (const Vec3i &v) const;
+    bool operator!= (const Vec3i &v) const;
+    bool operator< (const Vec3i &v) const;
+    void set(int r, int g, int b);
+    void set(const Vec3i &rhs);
+    int	x() const;
+    int	y() const;
+    int	z() const;
+    int	r() const;
+    int	g() const;
+    int	b() const;
+    Vec3i	operator* (int rhs) const;
+    Vec3i	operator/ (int rhs) const;
+    Vec3i	operator+ (int rhs) const;
+    Vec3i	operator- (int rhs) const;
+    Vec3i	operator+ (const Vec3i &rhs) const;
+    Vec3i	operator- (const Vec3i &rhs) const;
+    Vec3i	operator* (const Vec3i &rhs) const;
+};
 
-    void
-    set_color(PyObject * color_seq, int index = -1);
-    %MethodCode
-        if(PySequence_Check(a0))
-        {
-            if(PySequence_Length(a0) == 4)
-            {
-                Vec4f color( static_cast<float>(PyFloat_AS_DOUBLE(PySequence_ITEM(a0, 0)))
-                           , static_cast<float>(PyFloat_AS_DOUBLE(PySequence_ITEM(a0, 1)))
-                           , static_cast<float>(PyFloat_AS_DOUBLE(PySequence_ITEM(a0, 2)))
-                           , static_cast<float>(PyFloat_AS_DOUBLE(PySequence_ITEM(a0, 3)))
-                           );
-                sipCpp -> set_color(color, a1);
-            }
-            else
-            {
-                sipError = sipErrorFail;
-                PyErr_SetString( PyExc_IndexError
-                               , "Expected a sequence of size 4,(red, green, blue, alpha)"
-                               );
-            }
-        }
-        else
-        {
-            sipError = sipErrorFail;
-            PyErr_SetString( PyExc_TypeError
-                           , "Expected a sequence such as list, tuple or numpy array"
-                           );
-       }
-    %End
+class Vec3f
+{
+%TypeHeaderCode
+#include <osg/Vec3f>
+using  osg::Vec3f;
+%End
+public:
+    Vec3f();
+    Vec3f(const Vec2f &v2, float z);
+ 	  Vec3f(float x, float y, float z);
+    bool operator== (const Vec3f &v) const;
+    bool operator!= (const Vec3f &v) const;
+    bool operator< (const Vec3f &v) const;
+    void set(float x, float y, float z);
+    void set(const Vec3f &rhs);
+    float x() const;
+    float y() const;
+    float z() const;
+    bool valid() const;
+    bool isNaN () const;
+    float operator* (const Vec3f &rhs) const;
+    const Vec3f operator^ (const Vec3f &rhs) const;
+    const Vec3f	operator* (float rhs) const;
+    const Vec3f operator/ (float rhs) const;
+    const Vec3f operator+ (const Vec3f &rhs) const;
+    const Vec3f operator- (const Vec3f &rhs) const;
+    const Vec3f operator- () const;
+    float length() const;
+    float length2() const;
+    float normalize();
+};
 
-    // PyObject *
-    // get_color(int index = 1);
-    // %MethodCode
-    //     int max_index = static_cast<int>(sipCpp -> node -> getNumChildren());
-    //     if(a0 < max_index)
-    //     {
-    //         Vec4f color = sipCpp -> get_color(a0);
-    //         sipRes = PyTuple_New(4);
-    //         PyTuple_SET_ITEM(sipRes, PyFloat_FromDouble(color[0]), 0)
-    //         PyTuple_SET_ITEM(sipRes, PyFloat_FromDouble(color[1]), 1)
-    //         PyTuple_SET_ITEM(sipRes, PyFloat_FromDouble(color[2]), 2)
-    //         PyTuple_SET_ITEM(sipRes, PyFloat_FromDouble(color[3]), 3)
-    //     }
-    //     else
-    //     {
-    //         sipError = sipErrorFail;
-    //         PyErr_SetString( PyExc_IndexError
-    //                        , ("Expected an index < " + to_string(max_index)).c_str()
-    //                        );
-    //     }
-    // %End
-
-    void
-    hide(int index);
-
-    void
-    show(int index);
-
-    bool
-    visible(int index);
-
-    void
-    add_representation(bool as_sphere = false);
-
-    unsigned int
-    representation_count();
-
-    bool
-    write(const char * filename);
-
-    // double r
-    // {
-    //     %GetCode
-    //         sipPy = PyFloat_FromDouble(sipCpp -> r);
-    //     %End
-    //     %SetCode
-    //         if(PyFloat_Check(sipPy))
-    //         {
-    //             sipCpp -> r = PyFloat_AS_DOUBLE(sipPy);
-    //         }
-    //         else
-    //         {
-    //             sipErr = 1;
-    //             PyErr_SetString( PyExc_TypeError
-    //                            , "Expected a value of type float"
-    //                            );
-    //         }
-    //     %End
-    // };
-
-    // double x
-    // {
-    //     %GetCode
-    //         sipPy = PyFloat_FromDouble(sipCpp -> x);
-    //     %End
-    //     %SetCode
-    //         if(PyFloat_Check(sipPy))
-    //         {
-    //             sipCpp -> x = PyFloat_AS_DOUBLE(sipPy);
-    //         }
-    //         else
-    //         {
-    //             sipErr = 1;
-    //             PyErr_SetString( PyExc_TypeError
-    //                            , "Expected a value of type float"
-    //                            );
-    //         }
-    //     %End
-    // };
-
-
-    // double y
-    // {
-    //     %GetCode
-    //         sipPy = PyFloat_FromDouble(sipCpp -> y);
-    //     %End
-    //     %SetCode
-    //         if(PyFloat_Check(sipPy))
-    //         {
-    //             sipCpp -> y = PyFloat_AS_DOUBLE(sipPy);
-    //         }
-    //         else
-    //         {
-    //             sipErr = 1;
-    //             PyErr_SetString( PyExc_TypeError
-    //                            , "Expected a value of type float"
-    //                            );
-    //         }
-    //     %End
-    // };
-
-    // double x
-    // {
-    //     %GetCode
-    //         sipPy = PyFloat_FromDouble(sipCpp -> z);
-    //     %End
-    //     %SetCode
-    //         if(PyFloat_Check(sipPy))
-    //         {
-    //             sipCpp -> z = PyFloat_AS_DOUBLE(sipPy);
-    //         }
-    //         else
-    //         {
-    //             sipErr = 1;
-    //             PyErr_SetString( PyExc_TypeError
-    //                            , "Expected a value of type float"
-    //                            );
-    //         }
-    //     %End
-    // };
-
-
-    // Visualizable();
-    // virtual const char *
-    // get_id() = 0;//    virtual
-
-    // virtual void
-    // set_radius();
-    /* data */
+class Vec4i
+{
+%TypeHeaderCode
+#include <osg/Vec4i>
+using osg::Vec4i;
+%End
+public:
+    Vec4i();
+ 	  Vec4i(int x, int y, int z, int w);
+    bool operator== (const Vec4i &v) const;
+    bool operator!= (const Vec4i &v) const;
+    bool operator< (const Vec4i &v) const;
+    void set(int x, int y, int z, int w);
+    int x() const;
+    int y() const;
+    int	z() const;
+    int	w() const;
+    int r() const;
+    int	g() const;
+    int	b() const;
+    int	a() const;
+    Vec4i	operator* (int rhs) const;
+    Vec4i	operator/ (int rhs) const;
+    Vec4i	operator+ (int rhs) const;
+    Vec4i	operator- (int rhs) const;
+    Vec4i	operator+ (const Vec4i &rhs) const;
+    Vec4i operator- (const Vec4i &rhs) const;
+    Vec4i	operator* (const Vec4i &rhs) const;
 };
 
 
-class Network
+class Vec4f
 {
 %TypeHeaderCode
-#include "utility/libraries.hpp"
-#include "utility/constants.hpp"
-#include "core/Network.hpp"
-#include "core/Neuron.hpp"
+#include <osg/Vec4f>
+using osg::Vec4f;
+%End
+public:
+ 	  Vec4f();
+ 	  Vec4f(float x, float y, float z, float w);
+ 	  Vec4f(const Vec3f &v3, float w);
+    bool operator== (const Vec4f &v) const;
+    bool operator!= (const Vec4f &v) const;
+    bool operator< (const Vec4f &v) const;
+    void set(float x, float y, float z, float w);
+    float x() const;
+    float y() const;
+    float z() const;
+    float w() const;
+    float r() const;
+    float g() const;
+    float b() const;
+    float a() const;
+    unsigned int asABGR() const;
+    unsigned int asRGBA() const;
+    bool valid() const;
+    bool isNaN() const;
+    float operator* (const Vec4f &rhs) const;
+    Vec4f operator* (float rhs) const;
+    Vec4f operator/ (float rhs) const;
+    Vec4f operator+ (const Vec4f &rhs) const;
+    Vec4f operator- (const Vec4f &rhs) const;
+    const Vec4f operator- () const;
+    float length() const;
+    float length2() const;
+    float normalize();
+};
+
+class Quat
+{
+%TypeHeaderCode
+#include <osg/Quat>
+using namespace osg;
+%End
+public:
+    Quat();
+ 	  Quat(float x, float y, float z, float w);
+ 	  Quat(const Vec4f &v);
+ 	  Quat(float angle, const Vec3f &axis);
+ 	  Quat(float angle1, const Vec3f &axis1, float angle2, const Vec3f &axis2, float angle3, const Vec3f &axis3);
+    bool operator== (const Quat &v) const;
+    bool operator!= (const Quat &v) const;
+    bool operator< (const Quat &v) const;
+    Vec4f asVec4() const;
+    Vec3f asVec3() const;
+    void set(float x, float y, float z, float w);
+    void set(const Vec4f &v);
+    float x() const;
+    float y() const;
+    float z() const;
+    float w() const;
+    bool zeroRotation() const;
+    const Quat operator* (float rhs) const;
+    const Quat operator* (const Quat &rhs) const;
+    Quat operator/ (float rhs) const;
+    const Quat operator/ (const Quat &denom) const;
+    const Quat operator+ (const Quat &rhs) const;
+    const Quat operator- (const Quat &rhs) const;
+    const Quat operator- () const;
+    float length() const;
+    float length2() const;
+    Quat conj() const;
+    const Quat inverse() const;
+    void makeRotate(float angle, float x, float y, float z);
+    void makeRotate(float angle, const Vec3f &vec);
+    void makeRotate(float angle1, const Vec3f &axis1, float angle2, const Vec3f &axis2, float angle3, const Vec3f &axis3);
+    void makeRotate(const Vec3f &vec1, const Vec3f &vec2);
+    Vec3f operator* (const Vec3f &v) const;
+};
+
+
+class Shape /Abstract/ 
+{
+%TypeHeaderCode
+#include "shapes/Shape.hpp"
 %End
 
 public:
+    Shape(const char * id);
 
-    const char * id
-    {
-        %GetCode
-            sipPy = PyString_FromString(sipCpp -> id.c_str());
-        %End
-        %SetCode
-            sipErr = 1;
-            PyErr_SetString( PyExc_AttributeError
-                           , "Cannot change id of object."
-                           );
-        %End
-    };
+    PyObject *
+    id() const;
+    %MethodCode
+        sipRes = PyString_FromString(sipCpp -> id().c_str());
+    %End
 
-    Network(const char * id);
+    // Mesh *
+    // get_parent() const;
 
-    ~Network();
+    // void
+    // set_parent(Mesh * parent /Transfer/);
 
+    // SIP_PYTUPLE
+    // subdivide(unsigned int n) const;
+    // %MethodCode
+    //     sipRes = PyTuple_New(n);
+    //     SIP_SSIZE_T index = 0;
+    //     for(const Mesh * mesh : sipCpp -> subdivide(a0))
+    //     {
+    //         PyTuple_SET_ITEM( sipRes
+    //                         , index
+    //                         , sipConvertFromType( mesh
+    //                                             , sipFindType("Mesh")
+    //                                             , NULL
+    //                                             )
+    //                         );
+    //         index += 1;
+    //     }
+    // %End
     void
     hide();
 
@@ -305,652 +275,571 @@ public:
     show();
 
     bool
-    visible() const;
-
-    void
-    attach(Neuron * neuron /Transfer/);
-    %MethodCode
-        if(!sipCpp -> attach(a0))
-        {
-            sipError = sipErrorFail;
-            PyErr_SetString( PyExc_ValueError
-                           , ("Neuron(" + a0 -> id + ") is already attached to Network(" + sipCpp -> id + ").").c_str()
-                           );
-        }
-    %End
-
-    void
-    detach(Neuron * neuron);
-    %MethodCode
-        if(!sipCpp -> detach(a0))
-        {
-            sipError = sipErrorFail;
-            PyErr_SetString( PyExc_ValueError
-                           , ("Neuron(" + a0 -> id + ") is not attached to Network(" + sipCpp -> id + ").").c_str()
-                           );
-        }
-    %End
-
-    SIP_PYTUPLE
-    neurons() const;
-    %MethodCode
-        sipRes = PyTuple_New(sipCpp -> size());
-        SIP_SSIZE_T index = 0;
-        for ( const auto &neuron_pair : sipCpp -> neuron_map )
-        {
-            PyTuple_SET_ITEM( sipRes
-                            , index
-                            , sipConvertFromType( neuron_pair.second
-                                                , sipFindType("Neuron")
-                                                , NULL
-                                                )
-                            );
-            index += 1;
-        }
-    %End
-
-    SIP_SSIZE_T
-    size() const /__len__/;
-
-    int
-    __contains__(Neuron * neuron) const;
-    %MethodCode
-        return static_cast<int>(sipCpp -> get(a0 -> id) != nullptr);
-    %End
-
-    SIP_PYOBJECT
-    __getitem__(const char * neuron_id) const;
-    %MethodCode
-        Neuron * neuron = sipCpp -> get(a0);
-        if(neuron == nullptr)
-        {
-            sipError = sipErrorFail;
-            PyErr_SetString( PyExc_KeyError
-                           , a0
-                           );
-        }
-        else
-        {
-            sipRes = sipConvertFromType( neuron
-                                       , sipFindType("Neuron")
-                                       , NULL
-                                       );
-        }
-    %End
+    visible();
 
     bool
-    write(const char * filename);
-
-    SIP_PYOBJECT
-    __str__() const;
-    %MethodCode
-        sipRes = PyString_FromString(("Network : " + sipCpp -> id).c_str());
-    %End
-};
-
-
-class Neuron : public Visualizable
-{
-
-%TypeHeaderCode
-#include "utility/libraries.hpp"
-#include "utility/constants.hpp"
-#include "core/ElectricalCompartment.hpp"
-#include "core/Neuron.hpp"
-%End
-
-public:
-
-    const char * network
-    {
-        %GetCode
-            sipPy = sipConvertFromType( sipCpp -> network
-                                      , sipType_Network
-                                      , NULL
-                                      );
-        %End
-        %SetCode
-            sipErr = 1;
-            PyErr_SetString( PyExc_AttributeError
-                           , "Use Network.attach to change the network this neuron belongs to"
-                           );
-        %End
-    };
-
-    Neuron(const char * id);
-    ~Neuron();
-
-    SIP_SSIZE_T
-    size() const /__len__/;
-
-    SIP_PYTUPLE
-    electrical_compartments() const;
-    %MethodCode
-        sipRes = PyTuple_New(sipCpp -> size());
-        SIP_SSIZE_T index = 0;
-        for (const auto &electrical_compartment_pair : sipCpp -> electrical_compartment_map)
-        {
-            PyTuple_SET_ITEM( sipRes
-                            , index
-                            , sipConvertFromType( electrical_compartment_pair.second
-                                                , sipFindType("ElectricalCompartment")
-                                                , NULL
-                                                )
-                            );
-            index += 1;
-        }
-    %End
-
-    int
-    __contains__(ElectricalCompartment * electrical_compartment) const;
-    %MethodCode
-        return static_cast<int>(sipCpp -> get(a0 -> id) != nullptr);
-    %End
-
-    SIP_PYOBJECT
-    __getitem__(const char * electrical_compartment_id) const;
-    %MethodCode
-        ElectricalCompartment * electrical_compartment = sipCpp -> get(std::string(a0));
-        if(electrical_compartment == nullptr)
-        {
-            sipError = sipErrorFail;
-            PyErr_SetString( PyExc_KeyError
-                           , a0
-                           );
-        }
-        else
-        {
-            sipRes = sipConvertFromType( electrical_compartment
-                                       , sipFindType("ElectricalCompartment")
-                                       , NULL
-                                       );
-        }
-    %End
-
-    SIP_PYOBJECT
-    __str__() const;
-    %MethodCode
-        sipRes = PyString_FromString(("Neuron : " + sipCpp -> id).c_str());
-    %End
+    export_geometry(const char * filename, bool with_effects = false) const;
 
     void
-    attach(ElectricalCompartment * electrical_compartment /Transfer/);
-    %MethodCode
-        if(!sipCpp -> attach(a0))
-        {
-            sipError = sipErrorFail;
-            PyErr_SetString( PyExc_ValueError
-                           , ("ElectricalCompartment : " + a0 -> id + " is already attached to Neuron : " + sipCpp -> id).c_str()
-                           );
-        }
-    %End
+    enable_effects();
 
     void
-    detach(ElectricalCompartment * electrical_compartment);
-    %MethodCode
-        if(!sipCpp -> detach(a0))
-        {
-            sipError = sipErrorFail;
-            PyErr_SetString( PyExc_ValueError
-                           , ("ElectricalCompartment : " + a0 -> id + " is not attached to Neuron : " + sipCpp -> id).c_str()
-                           );
-        }
-    %End
-};
-
-
-
-
-class ElectricalCompartment : public Visualizable
-{
-%TypeHeaderCode
-#include "utility/libraries.hpp"
-#include "utility/constants.hpp"
-#include "core/ElectricalCompartment.hpp"
-#include "core/ChemicalCompartment.hpp"
-%End
-
-public:
-
-    SIP_PYOBJECT neuron
-    {
-        %GetCode
-            sipPy = sipConvertFromType( sipCpp -> neuron
-                                      , sipFindType("Neuron")
-                                      , NULL
-                                      );
-        %End
-        %SetCode
-            sipErr = 1;
-            PyErr_SetString( PyExc_AttributeError
-                           , "Use Neuron.attach to change the neuron this electrical compartment belongs to"
-                           );
-        %End
-    };
-
-    SIP_PYOBJECT parent
-    {
-        %GetCode
-            sipPy = sipConvertFromType( sipCpp -> parent
-                                      , sipFindType("ElectricalCompartment")
-                                      , NULL
-                                      );
-        %End
-        %SetCode
-            if(sipCanConvertToType(sipPy, sipFindType("ElectricalCompartment"), SIP_NO_CONVERTORS))
-            {
-                int state = 0;
-                int iserr = 0;
-                ElectricalCompartment * electrical_compartment =
-                    static_cast<ElectricalCompartment *>( sipConvertToType( sipPy
-                                                                          , sipFindType("ElectricalCompartment")
-                                                                          , NULL
-                                                                          , SIP_NO_CONVERTORS
-                                                                          , NULL
-                                                                          , &iserr
-                                                                          )
-                                                        );
-                sipCpp -> set_parent(electrical_compartment);
-            }
-            else
-            {
-                sipErr = 1;
-                PyErr_SetString( PyExc_TypeError
-                               , "Expected a value of type ElectricalCompartment"
-                               );
-            }
-        %End
-    };
-
-    SIP_PYOBJECT children();
-    %MethodCode
-        sipRes = PyTuple_New(sipCpp -> children.size());
-        SIP_SSIZE_T index = 0;
-        for (const auto &electrical_compartment_pair : sipCpp -> children)
-        {
-            PyTuple_SET_ITEM( sipRes
-                            , index
-                            , sipConvertFromType( electrical_compartment_pair.second
-                                                , sipFindType("ElectricalCompartment")
-                                                , NULL
-                                                )
-                            );
-            index += 1;
-        }
-    %End
-
-    ElectricalCompartment(const char * id);
-
-    ~ElectricalCompartment();
-
-    SIP_SSIZE_T
-    size() const /__len__ /;
+    disable_effects();
 
     void
-    attach(ChemicalCompartment * chemical_compartment /Transfer/);
-    %MethodCode
-        if(!sipCpp -> attach(a0))
-        {
-            sipError = sipErrorFail;
-            PyErr_SetString( PyExc_ValueError
-                           , ("ChemicalCompartment : " + a0 -> id + " is already attached to ElectricalCompartment : " + sipCpp -> id).c_str()
-                           );
-        }
-    %End
+    toggle_effects();
 
     void
-    detach(ChemicalCompartment * chemical_compartment);
-    %MethodCode
-        if(!sipCpp -> detach(a0))
-        {
-            sipError = sipErrorFail;
-            PyErr_SetString( PyExc_ValueError
-                           , ("ChemicalCompartment : " + a0 -> id + " is not attached to ElectricalCompartment : " + sipCpp -> id).c_str()
-                           );
-        }
-    %End
+    enable_outline_effect();
 
     void
-    subdivide(PyObject * ids);
-
-    SIP_PYTUPLE
-    chemical_compartments() const;
-    %MethodCode
-        sipRes = PyTuple_New(sipCpp -> size());
-        SIP_SSIZE_T index = 0;
-        for (const auto &chemical_compartment_pair : sipCpp -> chemical_compartment_map)
-        {
-            PyTuple_SET_ITEM( sipRes
-                            , index
-                            , sipConvertFromType( chemical_compartment_pair.second
-                                                , sipType_ChemicalCompartment
-                                                , NULL
-                                                )
-                            );
-            index += 1;
-        }
-    %End
-
-    int
-    __contains__(ChemicalCompartment * chemical_compartment) const;
-    %MethodCode
-        return static_cast<int>(sipCpp -> get(a0 -> id) != nullptr);
-    %End
-
-    SIP_PYOBJECT
-    __getitem__(const char * chemical_compartment_id) const;
-    %MethodCode
-        ChemicalCompartment * chemical_compartment = sipCpp -> get(std::string(a0));
-        if(chemical_compartment == nullptr)
-        {
-            sipError = sipErrorFail;
-            PyErr_SetString( PyExc_KeyError
-                           , a0
-                           );
-        }
-        else
-        {
-            sipRes = sipConvertFromType( chemical_compartment
-                                       , sipType_ChemicalCompartment
-                                       , NULL
-                                       );
-        }
-    %End
-
-    SIP_PYOBJECT
-    __str__() const;
-    %MethodCode
-        sipRes = PyString_FromString(("ElectricalCompartment : " + sipCpp -> id).c_str());
-    %End
-};
-
-class ChemicalCompartment : public Visualizable
-{
-%TypeHeaderCode
-#include "utility/libraries.hpp"
-#include "utility/constants.hpp"
-#include "core/ChemicalCompartment.hpp"
-%End
-
-public:
-
-    SIP_PYOBJECT electrical_compartment
-    {
-        %GetCode
-            sipPy = sipConvertFromType( sipCpp -> electrical_compartment
-                                      , sipFindType("ElectricalCompartment")
-                                      , NULL
-                                      );
-        %End
-        %SetCode
-            sipErr = 1;
-            PyErr_SetString( PyExc_AttributeError
-                           , "Use ElectricalCompartment.attach to change the electrical compartment this chemical compartment belongs to"
-                           );
-        %End
-    };
-
-    ChemicalCompartment(const char * id);
-
-    ~ChemicalCompartment();
-
-    SIP_PYOBJECT
-    __str__() const;
-    %MethodCode
-        sipRes = PyString_FromString(("ChemicalCompartment : " + sipCpp -> id).c_str());
-    %End
-};
-
-class Visualizables
-{
-%TypeHeaderCode
-#include "utility/libraries.hpp"
-#include "utility/conversions.hpp"
-#include "core/Visualizable.hpp"
-#include "core/Visualizables.hpp"
-%End
-
-public:
-
-    Visualizables(const char * id);
-
-    const char *
-    get_id();
-
-    uint
-    add_visualizable(Visualizable * visualizable);
-
-    uint
-    remove_visualizable(PyObject * visualizable);
+    disable_outline_effect();
 
     void
-    set_color(PyObject * color_seq);
-
-    void
-    set_color_mapping( PyObject * value_range
-                     , PyObject * color_range
-                     );
-};
-
-class NetworkViewer : public QGLWidget
-{
-
-%TypeHeaderCode
-#include "utility/libraries.hpp"
-#include "utility/constants.hpp"
-#include "core/Network.hpp"
-#include "view/NetworkViewer.hpp"
-%End
-
-public:
-
-    Network *
-    get_network();
-
-    NetworkViewer( Network * network
-                          , QWidget * parent             = 0
-                          , const QGLWidget* shareWidget = 0
-                          , Qt::WindowFlags f            = 0
-                          );
-
-    void
-    set_background_color(PyObject * color_seq);
-    %MethodCode
-        if(PySequence_Check(a0))
-        {
-            if(PySequence_Length(a0) == 4)
-            {
-                Vec4f color( static_cast<float>(PyFloat_AS_DOUBLE(PySequence_ITEM(a0, 0)))
-                           , static_cast<float>(PyFloat_AS_DOUBLE(PySequence_ITEM(a0, 1)))
-                           , static_cast<float>(PyFloat_AS_DOUBLE(PySequence_ITEM(a0, 2)))
-                           , static_cast<float>(PyFloat_AS_DOUBLE(PySequence_ITEM(a0, 3)))
-                           );
-                sipCpp -> set_background_color(color);
-            }
-            else
-            {
-                sipError = sipErrorFail;
-                PyErr_SetString( PyExc_IndexError
-                               , "Expected a sequence of size 4,(red, green, blue, alpha)"
-                               );
-            }
-        }
-        else
-        {
-            sipError = sipErrorFail;
-            PyErr_SetString( PyExc_TypeError
-                           , "Expected a sequence such as list, tuple or numpy array"
-                           );
-        }
-    %End
-
-    SIP_PYOBJECT
-    create_color_bar( const char * id
-                    , const char * title
-                    , PyObject * scalar_range
-                    , PyObject * colors
-                    , int num_colors
-                    , int num_labels
-                    , float angle
-                    , PyObject * size
-                    , PyObject * position
-                    , PyObject * label_color
-                    , const char * label_font_file
-                    , PyObject * label_font_resolution
-                    , float label_character_size
-                    );
-    %MethodCode
-        bool result = sipCpp -> create_color_bar( a0
-                                                , a1
-                                                , pysequence_to_float_pair(a2)
-                                                , pysequence_to_vec4f_vector(a3)
-                                                , a4
-                                                , a5
-                                                , a6
-                                                , pysequence_to_float_pair(a7)
-                                                , pysequence_to_vec3f(a8)
-                                                , pysequence_to_vec4f(a9)
-                                                , a10
-                                                , pysequence_to_int_pair(a11)
-                                                , a12
-                                                );
-        sipRes = PyBool_FromLong(result);
-    %End
+    toggle_outline_effect();
 
     bool
-    hide_color_bar( const char * id
-                  , unsigned int view_index = 0
-                  );
+    outline_effect_enabled() const;
+
+    void
+    set_outline_effect_line_width(float width);
+
+    float
+    get_outline_effect_line_width() const;
+
+    void
+    set_outline_effect_line_color(const Vec4f & color);
+
+    const Vec4f &
+    get_outline_effect_line_color() const;
+
+    void
+    enable_cartoon_effect();
+
+    void
+    disable_cartoon_effect();
+
+    void
+    toggle_cartoon_effect();
 
     bool
-    show_color_bar( const char * id
-                  , unsigned int view_index = 0
-                  );
-
+    cartoon_effect_enabled() const;
 
     void
-    add_view( const char * id
-            , PyObject * viewport
-            , PyObject * background_color
-            , int camera_manipulator_id = 5 
-            , float fovy = 30.0f
-            , float z_near = 1.0f
-            , float z_far = 10000.0f
-            );
-    %MethodCode
-      std::vector<osgGA::StandardManipulator *> standard_manipulators = { new osgGA::FirstPersonManipulator()
-                                                                        , new osgGA::FlightManipulator()
-                                                                        , new osgGA::OrbitManipulator()
-                                                                        , new osgGA::NodeTrackerManipulator()
-                                                                        , new osgGA::TerrainManipulator()
-                                                                        , new osgGA::TrackballManipulator()
-                                                                        };
-      sipCpp -> add_view( a0
-                        , new osg::Viewport( static_cast<int>(PyLong_AsUnsignedLong(PySequence_GetItem(a1, 0)))
-                                           , static_cast<int>(PyLong_AsUnsignedLong(PySequence_GetItem(a1, 1)))
-                                           , static_cast<int>(PyLong_AsUnsignedLong(PySequence_GetItem(a1, 2)))
-                                           , static_cast<int>(PyLong_AsUnsignedLong(PySequence_GetItem(a1, 3)))
-                                           )
-                        , pysequence_to_vec4f(a2)
-                        , standard_manipulators[a3]
-                        , a4
-                        , a5
-                        , a6
-                        );
-    %End
+    set_cartoon_effect_outline_width(float width);
 
+    float
+    get_cartoon_effect_outline_width() const;
 
     void
-    split_horizontally( unsigned int view_index   = 0
-                      , unsigned int width_factor = 2
-                      );
+    set_cartoon_effect_outline_color(const Vec4f & color);
+
+    const Vec4f &
+    get_cartoon_effect_outline_color() const;
 
     void
-    split_vertically( unsigned int view_index    = 0
-                    , unsigned int height_factor = 2
-                    );
+    enable_wireframe_effect();
 
     void
-    home(unsigned int index = 0);
+    disable_wireframe_effect();
 
     void
-    forward( double distance
-           , unsigned int index = 0
+    toggle_wireframe_effect();
+
+    bool
+    wireframe_effect_enabled() const;
+
+    void
+    set_wireframe_effect_line_width(float width);
+
+    float
+    get_wireframe_effect_line_width() const;
+
+    void
+    set_wireframe_effect_line_color(const Vec4f & color);
+
+    const Vec4f &
+    get_wireframe_effect_line_color() const;
+
+    void
+    enable_specular_highlights_effect();
+
+    void
+    disable_specular_highlights_effect();
+
+    void
+    toggle_specular_highlights_effect();
+
+    bool
+    specular_highlights_effect_enabled() const;
+
+    void
+    set_specular_highlights_effect_exponent(float exponent);
+
+    float
+    get_specular_highlights_effect_exponent() const;
+
+    void
+    get_specular_highlights_effect_color(const Vec4f & color);
+
+    const Vec4f &
+    get_specular_highlights_effect_color() const;
+};
+
+
+class Frustum : public Shape 
+{
+%TypeHeaderCode
+#include "shapes/Frustum.hpp"
+%End
+
+public:
+
+    Frustum(const char * id);
+
+    Frustum( const char * id
+           , const Vec3f & center
+           , const Vec3f & axis
+           , float length
+           , float base_radius
+           , float apex_radius
+           , unsigned int vertices
+           , const Vec4f & base_color
+           , const Vec4f & apex_color
+           );
+
+    Frustum( const char * id
+           , const Vec3f & base
+           , const Vec3f & apex
+           , float base_radius
+           , float apex_radius
+           , unsigned int vertices
+           , const Vec4f & base_color
+           , const Vec4f & apex_color
            );
     void
-    backward( double distance
-            , unsigned int index = 0
-            );
-    void
-    left( double distance
-        , unsigned int index = 0
-        );
-    void
-    right( double distance
-         , unsigned int index = 0
-         );
+    set_geometry( const Vec3f & center
+                , const Vec3f & axis
+                , float length
+                , float base_radius
+                , float apex_radius
+                , unsigned int vertices
+                );
 
     void
-    up( double distance
-      , unsigned int index = 0
-      );
+    set_geometry( const Vec3f & base
+                , const Vec3f & apex
+                , float base_radius
+                , float apex_radius
+                , unsigned int vertices
+                );
 
     void
-    down( double distance
-        , unsigned int index = 0
-        );
-
-    void
-    zoom( double factor
-        , unsigned int index = 0
-        );
-
-    void
-    roll( double angle
-        , unsigned int index = 0
-        );
-
-    void
-    pitch( double angle
-         , unsigned int index = 0
-         );
-
-    void
-    yaw( double angle
-       , unsigned int index = 0
+    set( const Vec3f & center
+       , const Vec3f & axis
+       , float length
+       , float base_radius
+       , float apex_radius
+       , unsigned int vertices
+       , const Vec4f & base_color
+       , const Vec4f & apex_color
        );
 
     void
-    capture( const char * viewer_id
-           , const char * filename
-           , const char * extension
-           , unsigned long frame_count
-           );
+    set( const Vec3f & base
+       , const Vec3f & apex
+       , float base_radius
+       , float apex_radius
+       , unsigned int vertices
+       , const Vec4f & base_color
+       , const Vec4f & apex_color
+       );
 
+    void
+    set_vertices(unsigned int vertices);
 
-    // void
-    // capture_continuous_toggle(unsigned int index);
+    unsigned int
+    get_vertices();
 
-    // void
-    // capture_once(unsigned int index);
+    void
+    set_axis(const Vec3f & axis);
 
-    virtual
-    ~NetworkViewer();
+    Vec3f
+    get_axis() const;
 
-protected:
+    void
+    set_length(const float & length);
 
-    virtual void paintEvent( QPaintEvent* paintEvent );
-    virtual void paintGL();
-    virtual void resizeGL( int width, int height );
+    float
+    get_length() const;
 
-    virtual void keyPressEvent( QKeyEvent* event );
-    virtual void keyReleaseEvent( QKeyEvent* event );
+    void
+    set_center(const Vec3f & center);
 
-    virtual void mouseMoveEvent( QMouseEvent* event );
-    virtual void mousePressEvent( QMouseEvent* event );
-    virtual void mouseReleaseEvent( QMouseEvent* event );
-    virtual void wheelEvent( QWheelEvent* event );
+    Vec3f
+    get_center() const;
 
-    virtual bool event( QEvent* event );
+    void
+    set_apex(const Vec3f & apex);
+
+    Vec3f
+    get_apex() const;
+
+    void
+    set_base(const Vec3f & base);
+
+    Vec3f
+    get_base() const;
+
+    void
+    set_base_radius(const float base_radius);
+
+    float
+    get_base_radius() const;
+
+    void
+    set_apex_radius(const float apex_radius);
+
+    float
+    get_apex_radius() const;
+
+    void
+    set_radii(float base_radius, float apex_radius);
+
+    void
+    set_radius(float radius);
+
+    void
+    set_base_color(const Vec4f & base_color);
+
+    void
+    set_apex_color(const Vec4f & apex_color);
+
+    const Vec4f &
+    get_base_color() const;
+
+    const Vec4f &
+    get_apex_color() const;
+
+    void
+    set_color(const Vec4f & color);
+
+    void
+    set_colors(const Vec4f & base_color, const Vec4f & apex_color);
+
+    void
+    move_apex_by(float dl);
+
+    void
+    move_base_by(float dl);
+
+    void
+    move_apex_along(const Vec3f & direction, float dl);
+
+    void
+    move_base_along(const Vec3f & direction, float dl);
+
+    void
+    move_center_by(const Vec3f & displacement);
+
+    void
+    rotate_axis_along(const Vec3f & rotation_axis, float angle);
+
 };
 
+class Sphere : public Shape 
+{
+%TypeHeaderCode
+#include "shapes/Sphere.hpp"
+%End
+
+public:
+
+    Sphere(const char * id);
+
+    Sphere( const char * id
+          , const Vec3f & center
+          , const float radius
+          , unsigned int vertices
+          , const Vec4f & color
+          );
+
+    void
+    set_geometry( const Vec3f & center
+                , float radius
+                , unsigned int vertices
+                );
+
+    void
+    set( const Vec3f & center
+       , float radius
+       , unsigned int vertices
+       , const Vec4f & color
+       );
+
+    void
+    set_vertices(unsigned int vertices);
+
+    unsigned int
+    get_vertices();
+
+    void
+    set_center(const Vec3f & center);
+
+    Vec3f
+    get_center() const;
+
+    void
+    set_radius(float radius);
+
+    float
+    get_radius() const;
+
+    const Vec4f &
+    get_color() const;
+
+    void
+    set_color(const Vec4f & color);
+
+    void
+    move_center_by(const Vec3f & displacement);
+};
+
+
+class ColorBar
+{
+%TypeHeaderCode
+#include "widgets/ColorBar.hpp"
+%End
+
+public:
+    ColorBar(const char * id);
+
+    // ColorBar( const char * id
+    //         , Vec2f & scalar_range
+    //         , const std::vector<osg::Vec4f> & colors
+    //         , int label_count
+    //         , const char * title
+    //         , const Vec2f & position
+    //         , const Vec2f & size
+    //         , float orientation
+    //         , const char * text_font
+    //         , const osg::Vec2i text_font_resolution
+    //         , float text_character_size
+    //         , const osg::Vec4f & text_color
+    //         );
+
+    void
+    resize();
+
+    void
+    resize(int width, int height);
+
+    void
+    resize(int x, int y, int width, int height);
+
+    void
+    set_parent_viewport(const Vec4i & viewport);
+
+    void
+    set_scalar_range(const Vec2f & scalar_range);
+
+    Vec2f
+    get_scalar_range() const;
+
+    void
+    set_colors(PyObject * colors);
+    %MethodCode
+        unsigned int length = PySequence_Length(a0);
+        unsigned int i;
+        int iserr = 0;
+        int state;
+
+        std::vector<osg::Vec4f> colors(length);
+        for(i = 0; i < length; ++i)
+        {
+            osg::Vec4f * color = static_cast<osg::Vec4f *>(sipConvertToType( PySequence_GetItem(a0, i)
+                                                                           , sipFindType("Vec4f")
+                                                                           , NULL
+                                                                           , SIP_NO_CONVERTORS
+                                                                           , NULL
+                                                                           , &iserr
+                                                                           )
+                                                          );
+            colors[i] = *color;
+        }
+        sipCpp -> set_colors(colors);
+    %End
+
+    void
+    set_label_count(int label_count);
+
+    int
+    get_label_count() const;
+
+    void
+    set_title(const char * title);
+
+    PyObject *
+    get_title () const;
+    %MethodCode
+        sipRes = PyString_FromString(sipCpp -> get_title().c_str());
+    %End
+
+    void
+    set_position(const Vec2f & position);
+
+    const Vec2f &
+    get_position() const;
+
+    void
+    set_size(const Vec2f & size);
+
+    const Vec2f &
+    get_size() const;
+
+    void
+    set_orientation(float orientation);
+
+    float
+    get_orientation() const;
+
+    void
+    set_text_font(const char * font);
+
+    PyObject *
+    get_text_font() const;
+    %MethodCode
+        sipRes = PyString_FromString(sipCpp -> get_text_font().c_str());
+    %End
+
+    void
+    set_text_font_resolution(const Vec2i & font_resolution);
+
+    Vec2i
+    get_text_font_resolution() const;
+
+    void
+    set_text_character_size(float character_size);
+
+    float
+    get_text_character_size() const;
+
+    void
+    set_text_color(const Vec4f & color);
+
+    const Vec4f &
+    get_text_color() const;
+
+    void
+    set_label_formatting_precision(unsigned int precision);
+
+    unsigned int
+    get_label_formatting_precision() const;
+};
+
+class MeshView 
+{
+%TypeHeaderCode
+#include "view/View.hpp"
+%End
+
+public:
+    MeshView();
+
+    void
+    set_position(const Vec2f & position);
+
+    const Vec2f &
+    get_position() const;
+
+    void
+    set_size(const Vec2f & size);
+
+    const Vec2f &
+    get_size() const;
+
+    void
+    set_background_color(const Vec4f & background_color);
+
+    const Vec4f &
+    get_background_color();
+
+    void
+    resize(int width, int height);
+
+    void
+    attach_color_bar(ColorBar * color_bar);
+
+    void
+    detach_color_bar(ColorBar * color_bar);
+
+    void
+    home();
+
+    void
+    forward(double distance_delta);
+
+    void
+    backward(double distance_delta);
+
+    void
+    left(double distance_delta);
+
+    void
+    right(double distance_delta);
+
+    void
+    up(double distance_delta);
+
+    void
+    down(double distance_delta);
+
+    void
+    zoom(double factor);
+
+    void
+    roll(double angle);
+
+    void
+    pitch(double angle);
+
+    void
+    yaw(double angle);
+
+};
+
+
+
+class Viewer : public QGLWidget
+{
+%TypeHeaderCode
+#include "view/Viewer.hpp"
+%End
+
+public:
+
+    Viewer( QWidget * parent = nullptr
+          , const QGLWidget * share_widget = nullptr
+          , Qt::WindowFlags f = 0
+          );
+
+    PyObject *
+    get_view_with_focus();
+    %MethodCode
+        sipRes = PyString_FromString(sipCpp -> get_view_with_focus() -> getName().c_str());
+    %End
+
+    void
+    detach_view(MeshView * mesh_view);
+ 
+    void
+    attach_view(MeshView * mesh_view);
+
+    void
+    attach_shape(Shape * shape);
+
+    void
+    detach_shape(Shape * shape);
+
+};
