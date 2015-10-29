@@ -18,27 +18,50 @@ ColorBar::LabelFormatter::get_precision() const
 }
 
 
-ColorBar::ColorBar(const std::string & id): ColorBar( id
-                                                    , osg::Vec2f(0.0 , 1.0)
-                                                    , { osg::Vec4f(1.0f, 0.0f, 0.0f, 1.0f)
-                                                      , osg::Vec4f(1.0f, 0.5f, 0.0f, 1.0f)
-                                                      , osg::Vec4f(1.0f, 1.0f, 0.0f, 1.0f)
-                                                      , osg::Vec4f(0.0f, 1.0f, 0.0f, 1.0f)
-                                                      , osg::Vec4f(0.0f, 0.0f, 1.0f, 1.0f)
-                                                      , osg::Vec4f(75.0f / 255.0f, 0.0f, 130.0f / 255.0f, 1.0f)
-                                                      , osg::Vec4f(139.0f / 255.0f, 0.0f, 1.0f, 1.0f)
-                                                      }
-                                                    , 7
-                                                    , "Rainbow Color Map"
-                                                    , osg::Vec2f(0.0, 0.0)
-                                                    , osg::Vec2f(0.25, 0.25)
-                                                    , 0.0
-                                                    , ""
-                                                    , osg::Vec2i(40, 40)
-                                                    , 0.0
-                                                    , osg::Vec4f(1.0f, 1.0f, 1.0f, 1.0f)
-                                                    )
-{ }
+ColorBar::ColorBar(const std::string & id): id(id)
+                                          , scalar_bar( new osgSim::ScalarBar( 7
+                                                                             , 7
+                                                                             , new osgSim::ColorRange( 0.0
+                                                                                                     , 1.0
+                                                                                                     , { osg::Vec4f(1.0f, 0.0f, 0.0f, 1.0f)
+                                                                                                       , osg::Vec4f(1.0f, 0.5f, 0.0f, 1.0f)
+                                                                                                       , osg::Vec4f(1.0f, 1.0f, 0.0f, 1.0f)
+                                                                                                       , osg::Vec4f(0.0f, 1.0f, 0.0f, 1.0f)
+                                                                                                       , osg::Vec4f(0.0f, 0.0f, 1.0f, 1.0f)
+                                                                                                       , osg::Vec4f(75.0f / 255.0f, 0.0f, 130.0f / 255.0f, 1.0f)
+                                                                                                       , osg::Vec4f(139.0f / 255.0f, 0.0f, 1.0f, 1.0f)
+                                                                                                       }
+                                                                                                     )
+                                                                             , "Rainbow Color Map"
+                                                                             , osgSim::ScalarBar::HORIZONTAL
+                                                                             , 1.0
+                                                                             )
+                                                        )
+                                          , _position(osg::Vec2f(0.0, 0.0))
+                                          , _size(osg::Vec2f(0.25, 0.25))
+                                          , _orientation(0.0)
+                                          , root(new osg::PositionAttitudeTransform())
+                                          , _parent_viewport(osg::Vec4i(0, 0, 100, 100))
+
+{
+  scalar_bar -> setName(id);
+  root -> setName(id);
+  osgSim::ScalarBar::TextProperties text_properties;
+  text_properties._fontFile = "";
+  text_properties._fontResolution = std::make_pair<int, int>(40, 40);
+  text_properties._characterSize = 0.0;
+  text_properties._color = osg::Vec4f(0.0f, 0.0f, 0.0f, 1.0f);
+  scalar_bar -> setTextProperties(text_properties);
+
+  osg::StateSet * stateset = scalar_bar -> getOrCreateStateSet();
+  stateset -> setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+  stateset -> setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);
+  stateset -> setRenderBinDetails(11, "RenderBin");
+
+  root -> setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+  root -> addChild(scalar_bar.get());
+  resize();
+}
 
 
 ColorBar::ColorBar( const std::string & id
@@ -72,7 +95,7 @@ ColorBar::ColorBar( const std::string & id
     root -> setName(id);
     osgSim::ScalarBar::TextProperties text_properties;
     text_properties._fontFile = text_font;
-    text_properties._fontResolution = std::make_pair<int , int>(text_font_resolution.x(), text_font_resolution.y());
+    text_properties._fontResolution = std::make_pair<int, int>(text_font_resolution.x(), text_font_resolution.y());
     text_properties._characterSize = text_character_size;
     text_properties._color = text_color;
     scalar_bar -> setTextProperties(text_properties);
@@ -86,6 +109,7 @@ ColorBar::ColorBar( const std::string & id
     root -> addChild(scalar_bar.get());
     resize();
 }
+
 
 void
 ColorBar::resize()
