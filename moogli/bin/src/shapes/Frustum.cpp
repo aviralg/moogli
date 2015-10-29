@@ -1,16 +1,22 @@
 #include "shapes/Frustum.hpp"
 
-Frustum::Frustum(const string & id) : Frustum( id
-                                            , osg::Vec3f(0.0f, 0.0f, 0.0f)
-                                            , osg::Z_AXIS
-                                            , 10.0f
-                                            , 5.0f
-                                            , 2.0f
-                                            , 4
-                                            , osg::Vec4f(1.0f, 0.0f, 0.0f, 1.0f)
-                                            , osg::Vec4f(0.0f, 0.0f, 1.0f, 1.0f)
-                                            )
-{ }
+Frustum::Frustum(const string & id) : Shape(id)
+{
+    set( osg::Vec3f(0.0f, 0.0f, 0.0f),
+         osg::Z_AXIS,
+         10.0f,
+         5.0f,
+         2.0f,
+         10,
+         osg::Vec4f(1.0f, 0.0f, 0.0f, 1.0f),
+         osg::Vec4f(0.0f, 0.0f, 1.0f, 1.0f)
+       );
+    allocate();
+    construct_indices();
+    construct_vertices();
+    this -> color();
+}
+
 
 Frustum::Frustum( const string & id
             , const osg::Vec3f & center
