@@ -50,7 +50,7 @@ here = os.path.dirname(__file__)
 # list of object files to be passed to the linker.
 # These files must not have extensions, as the default extension
 # for the compiler is used.
-os.environ["CC"]="clang++"
+os.environ["CC"]="g++"
 extra_objects = []
 
 # list of libraries to link against
