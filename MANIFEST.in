@@ -1,4 +1,4 @@
 include requirements.txt
 recursive-include moogli/include *.hpp
 include README.rst
-include moose/core/_moose.so
+include moogli/core/_moogli.so
