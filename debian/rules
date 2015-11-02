@@ -1,0 +1,14 @@
+#!/usr/bin/make -f
+
+
+%:
+	dh "$@" --parallel
+
+override_dh_auto_install:
+	# Distable python install
+	python setup.py install --root=debian/moogli --install-layout=deb \
+	    --install-lib=/usr/share/moogli \
+	    --install-script=/usr/share/moogli
+
+override_dh_auto_build:
+
