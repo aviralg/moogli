@@ -80,7 +80,7 @@ ADD_LIBRARY(_moogli SHARED
 
 # Set MOOGLI paths if they are not already set.
 IF(NOT MOOGLI_BUILD_PATH)
-    SET(MOOGLI_BUILD_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+    SET(MOOGLI_BUILD_PATH ${CMAKE_CURRENT_BINARY_DIR})
     FILE(MAKE_DIRECTORY ${MOOGLI_BUILD_PATH})
 ENDIF()
 
@@ -126,13 +126,14 @@ endif()
 # cmake_modules/setup.py file. This is a Hack and should have been avoided.
 SET(MOOGLI_TEMP_DIR ${CMAKE_CURRENT_BINARY_DIR}/_temp_moogli)
 FILE(MAKE_DIRECTORY ${MOOGLI_TEMP_DIR})
+
+# dont use cmake copy_directory. It goes nuts on recursive copying.
 FILE(COPY ${PROJECT_SOURCE_DIR}/ DESTINATION ${MOOGLI_TEMP_DIR}
     PATTERN "_temp_moogli" EXCLUDE
     )
 
 ADD_CUSTOM_COMMAND(TARGET _moogli POST_BUILD
-    # dont use cmake copy_directory. It goes nuts on recursive copying.
-    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/_moogli.so ${MOOGLI_TEMP_DIR}
+    COMMAND ${CMAKE_COMMAND} -E copy ${MOOGLI_BUILD_PATH}/_moogli.so ${CMAKE_CURRENT_SOURCE_DIR}/moogli/core
     COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/cmake_modules/setup.py ${MOOGLI_TEMP_DIR}/setup.py
     COMMAND ${PYTHON_EXECUTABLE} setup.py sdist --dist-dir ${MOOGLI_DIST_DIR}
     WORKING_DIRECTORY ${MOOGLI_TEMP_DIR}

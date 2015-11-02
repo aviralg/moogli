@@ -29,7 +29,7 @@ __email__            = "dilawars@ncbs.res.in"
 __status__           = "Development"
 
 import os
-from distutils.core import setup
+from distutils.core import setup, Extension
  
 cwd_ = os.getcwd()
 
@@ -54,7 +54,13 @@ setup( name             =   'moogli'
                             , 'Programming Language :: C++'
                             ]
      , license          =   'GPLv3'
-     , packages         =   [ 'moogli' ]
-     , package_dir      =   { 'moogli' : '.' }
-     , package_data     =   { 'moogli' : [ '_moogli.so' ] }
+     , packages         =   [ 'moogli'
+                                , 'moogli.extensions'
+                                , 'moogli.geometry'
+                                , 'moogli.simulator'
+                                , 'moogli.visualization'
+                                , 'moogli.widgets'
+                            ]
+
+     , package_data     =   { 'moogli' : [ 'core/_moogli.so' ] }
      )
