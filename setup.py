@@ -168,11 +168,14 @@ setup(name='moogli',
                    'Topic :: Scientific/Engineering'],
       license='GPLv2',
       requires=requires,
-      packages=["moogli",
+      packages=[ 
+                "moogli",
                 "moogli.core",
+                "moogli.widgets",
                 "moogli.extensions",
                 "moogli.visualization",
-                "moogli.visualization.pipeline"],
+                "moogli.visualization.pipeline"
+                ],
       ext_modules=[moogli],
       cmdclass={'build_ext': sipdistutils.build_ext},
       entry_points={'console_scripts': ['moogli = moogli.console.main.main']})

@@ -10,6 +10,7 @@ import widgets
 # import constants
 # import visualization
 import extensions
+from main import *
 
 __all__ = ["core",
            "utilities",
@@ -24,3 +25,4 @@ __all__ = ["core",
   #         "constants",
   #         "visualization",
   #        "extensions"]
+
