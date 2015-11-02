@@ -29,6 +29,7 @@ import sipdistutils
 import sys
 import os
 
+
 qcfg = pyqtconfig.Configuration()
 qcfg.pyqt_sip_flags
 remaining = sys.argv[1:]
@@ -96,10 +97,10 @@ include_dirs = ["/usr/include/qt4/",
                 "./moogli/bin/include/"]
 
 # Add some more search paths.
-for x, ds, fs in os.walk('/usr/local/Frameworks'):
+for x, ds, fs in os.walk('/usr/local/Cellar/qt/'):
     for d in ds:
-        if "Qt" in d[:2]:
-            include_dirs.append(os.path.join(d, "Headers"))
+        if "Headers" in d:
+            include_dirs.append(os.path.join(x, d))
 
 # define pre-processor macros
 define_macros = []
