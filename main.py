@@ -1,3 +1,5 @@
+import _moogli
+
 """
 class Visualizer(MorphologyViewer):
 
@@ -70,8 +72,6 @@ if __name__ == "__main__":
 DISTAL          = 0
 AVERAGED        = 1
 PROXIMAL_DISTAL = 2
-
-from core import _moogli
 
 
 def read_morphology_from_moose(name = "", path = "", radius = DISTAL):

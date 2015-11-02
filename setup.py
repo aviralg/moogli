@@ -33,7 +33,7 @@ qcfg = pyqtconfig.Configuration()
 qcfg.pyqt_sip_flags
 remaining = sys.argv[1:]
 sys.argv = [sys.argv[0],
-            'build_ext',
+            'build_ext', 
             '--sip-opts=-I{} -e -g {}'.format(qcfg.pyqt_sip_dir,
                                               qcfg.pyqt_sip_flags)]
 sys.argv.extend(remaining)
@@ -101,7 +101,7 @@ define_macros = []
 # undefine pre-processor macros
 undef_macros = []
 
-moogli = Extension(name="moogli.core._moogli",
+moogli = Extension(name="_moogli",
                    sources=[
                        # "moogli/bin/src/core/CoordinateSystem.cpp",
                        #      "moogli/bin/src/core/Network.cpp",
