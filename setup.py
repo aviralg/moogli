@@ -28,6 +28,7 @@ from PyQt4 import pyqtconfig
 import sipdistutils
 import sys
 import os
+from sys import platform as _platform
 
 
 qcfg = pyqtconfig.Configuration()
@@ -51,7 +52,12 @@ here = os.path.dirname(__file__)
 # list of object files to be passed to the linker.
 # These files must not have extensions, as the default extension
 # for the compiler is used.
-os.environ["CC"]="g++"
+
+if _platform == "darwin":
+    pass
+else:
+    os.environ["CC"]="g++"
+
 extra_objects = []
 
 # list of libraries to link against
@@ -80,7 +86,7 @@ runtime_library_dirs = []
 
 # additional command line options for the compiler command line
 extra_compile_args = ["-O3",
-                      "-std=c++0x",
+                      "-std=c++11",
                       "-Wno-reorder",
                       "-Wno-overloaded-virtual"]
 
