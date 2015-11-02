@@ -102,6 +102,9 @@ for x, ds, fs in os.walk('/usr/local/Cellar/qt/'):
         if "Headers" in d:
             include_dirs.append(os.path.join(x, d))
 
+print include_dirs 
+quit()
+
 # define pre-processor macros
 define_macros = []
 
