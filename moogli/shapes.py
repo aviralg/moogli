@@ -1,7 +1,7 @@
-import moogli.core._moogli
+from core import _moogli
 import collections
 
-class Frustum(moogli.core._moogli.Frustum):
+class Frustum(_moogli.Frustum):
     def subdivide(self, n, ids=None):
         if ids is None:
             ids = [self.id() + "[" + str(i) + "]" for i in range(n)]
@@ -47,7 +47,7 @@ class Frustum(moogli.core._moogli.Frustum):
         pass
 
 
-class Sphere(moogli.core._moogli.Sphere):
+class Sphere(_moogli.Sphere):
 
     @classmethod
     def sequence(cls):
