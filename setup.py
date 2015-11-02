@@ -1,40 +1,130 @@
-# This file is part of MOOSE simulator: http://moose.ncbs.res.in.
+#!/usr/bin/env python
 
-# MOOSE is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# MOOSE is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# You should have received a copy of the GNU General Public License
-# along with MOOSE.  If not, see <http://www.gnu.org/licenses/>.
-
-
-"""setup-moogli.py: 
-
-    Script to install moogli extension.
-
-"""
-    
-__author__           = "Dilawar Singh"
-__copyright__        = "Copyright 2013, Dilawar Singh and NCBS Bangalore"
-__credits__          = ["NCBS Bangalore"]
-__license__          = "GNU GPL"
-__version__          = "1.0.0"
-__maintainer__       = "Dilawar Singh"
-__email__            = "dilawars@ncbs.res.in"
-__status__           = "Development"
-
+from distutils.core import setup, Extension
+import sipdistutils
+from PyQt4 import pyqtconfig
+import sys
 import os
-from distutils.core import setup
- 
-cwd_ = os.getcwd()
+
+qcfg = pyqtconfig.Configuration()
+qcfg.pyqt_sip_flags
+remaining = sys.argv[1:]
+sys.argv = [ sys.argv[0]
+           , 'build_ext'
+           , '--sip-opts=-I{} -e -g {}'.format(qcfg.pyqt_sip_dir, qcfg.pyqt_sip_flags)
+           ]
+sys.argv.extend(remaining)
+# print('###{}'.format(sys.argv))
+
+
+os.environ["CC"]="g++"
+
+# print(sys.argv)
+# RESOURCES -
+# https://docs.python.org/2.7/distutils/apiref.html?highlight=setup#distutils.core.setup
+# http://pyqt.sourceforge.net/Docs/sip4/distutils.html#ref-distutils
+# https://wiki.python.org/moin/EmbedingPyQtTutorial
+
+
+# list of object files to be passed to the linker.
+# These files must not have extensions, as the default extension for the compiler is used.
+extra_objects           =   [
+                            ]
+
+# list of libraries to link against
+libraries               =   [ "QtCore"
+                            , "QtGui"
+                            , "QtOpenGL"
+                            , "osg"
+                            , "osgFX"
+                            , "osgUtil"
+                            , "osgFX"
+                            , "osgGA"
+                            , "osgQt"
+                            , "osgAnimation"
+                            , "osgViewer"
+                            , "osgQt"
+                            , "osgManipulator"
+                            , "osgText"
+                            ]
+
+# list of directories to search for libraries at link-time
+library_dirs = []
+
+# # list of directories to search for shared (dynamically loaded) libraries at run-time
+runtime_library_dirs = []
+
+# additional command line options for the compiler command line
+extra_compile_args      =   [ "-O3"
+                            , "-std=c++0x"
+                            , "-Wno-reorder"
+                            ]
+
+# additional command line options for the linker command line
+extra_link_args         =   [ "-fPIC"
+                            , "-shared"
+                            ]
+
+#specify include directories to search
+include_dirs            =   [ "."
+                            , "./include"
+                            , "/usr/share/sip/PyQt4/"
+                            , "/usr/include/qt4/"
+                            , "/usr/include/qt4/QtCore/"
+                            , "/usr/include/qt4/QtGui/"
+                            , "/usr/include/qt4/QtOpenGL/"
+                            , "/usr/share/sip/PyQt4/QtCore/"
+                            , "/usr/share/sip/PyQt4/QtGui/"
+                            , "/usr/share/sip/PyQt4/QtOpenGL/"
+                            ]
+
+# define pre-processor macros
+define_macros           =   [
+                            ]
+
+# undefine pre-processor macros
+undef_macros            =   [
+                            ]
+
+
+moogli = Extension( name                  =   "_moogli"
+                  , sources               =   [ "src/core/Morphology.cpp"
+                                              , "src/core/Compartment.cpp"
+                                              , "src/core/SelectInfo.cpp"
+                                              , "src/core/KeyboardHandler.cpp"
+                                              , "src/core/MorphologyViewer.cpp"
+                                              , "src/core/MorphologyViewerWidget.cpp"
+                                              , "moc/MorphologyViewer.moc.cpp"
+                                              , "moc/MorphologyViewerWidget.moc.cpp"
+                                              , "src/core/Selector.cpp"
+                                              , "src/mesh/CylinderMesh.cpp"
+                                              , "src/mesh/SphereMesh.cpp"
+                                              , "src/utility/conversions.cpp"
+                                              , "src/utility/record.cpp"
+                                              , "src/utility/stringutils.cpp"
+                                              , "src/utility/utilities.cpp"
+                                              , "src/constants.cpp"
+                                              , "src/globals.cpp"
+                                              , "sip/moogli.sip"
+                                              ]
+                  , include_dirs          =   include_dirs
+                  , extra_compile_args    =   extra_compile_args
+                  , extra_link_args       =   extra_link_args
+                  , library_dirs          =   library_dirs
+                  , libraries             =   libraries
+                  , extra_objects         =   extra_objects
+                  , runtime_library_dirs  =   runtime_library_dirs
+                  , define_macros         =   define_macros
+                  , undef_macros          =   undef_macros
+                  )
+
+
+extensions = [ moogli
+             ]
+
 
 setup( name             =   'moogli'
-     , version          =   '1.0.0'
+     , version          =   '1.0'
      , author           =   'Aviral Goel'
      , author_email     =   'aviralg@ncbs.res.in'
      , maintainer       =   'Aviral Goel'
@@ -53,8 +143,10 @@ setup( name             =   'moogli'
                             , 'Programming Language :: Python'
                             , 'Programming Language :: C++'
                             ]
+     , platforms        =   ["Ubuntu"]
      , license          =   'GPLv3'
-     , packages         =   [ 'moogli' ]
-     , package_dir      =   { 'moogli' : '.' }
-     , package_data     =   { 'moogli' : [ '_moogli.so' ] }
+     , ext_modules      =   extensions
+     , cmdclass         =   { 'build_ext': sipdistutils.build_ext
+                            }
+
      )
