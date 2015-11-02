@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 FILE(GLOB SIP_SRC *.sip)
+FILE(GLOB SIP_MORE_SRC ${CMAKE_CURRENT_SOURCE_DIR}/../moogi/bin/*.sip)
 
 SET(GENERATED_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/sip_mooglicmodule.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/sip_moogliMorphology.cpp
