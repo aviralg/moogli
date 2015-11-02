@@ -95,6 +95,12 @@ include_dirs = ["/usr/include/qt4/",
                 "/usr/include/qt4/QtOpenGL/",
                 "./moogli/bin/include/"]
 
+# Add some more search paths.
+for x, ds, fs in os.walk('/usr/local/Frameworks'):
+    for d in ds:
+        if "Qt" in d[:2]:
+            include_dirs.append(os.path.join(d, "Headers"))
+
 # define pre-processor macros
 define_macros = []
 
