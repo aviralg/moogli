@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.bzr
+.bzr*
 
 # C extensions
 *.so
@@ -117,4 +119,5 @@ target/
 # Executables
 *.exe
 *.out
+*.app
 *.app
