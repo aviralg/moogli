@@ -1,0 +1,21 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE=1
+
+## Here goes the debian make.
+
+%:
+	dh "$@" --parallel
+
+override_dh_auto_clean:
+
+override_dh_auto_configure:
+
+override_dh_auto_build:
+	python setup.py sdist --dist-dir debian/tmp/usr/share/moogli/
+
+override_dh_auto_install:
+	echo "No install step"
+
+override_dh_prep:
+	echo "Nothing to do here"
