@@ -174,6 +174,7 @@ setup(name='moogli',
                 "moogli.core",
                 "moogli.widgets",
                 "moogli.extensions",
+                "moogli.extensions.moose",
                 "moogli.visualization",
                 "moogli.visualization.pipeline"
                 ],
