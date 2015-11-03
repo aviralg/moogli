@@ -101,7 +101,7 @@ define_macros = []
 # undefine pre-processor macros
 undef_macros = []
 
-moogli = Extension(name="_moogli",
+moogli = Extension(name="moogli.core._moogli",
                    sources=[
                        # "moogli/bin/src/core/CoordinateSystem.cpp",
                        #      "moogli/bin/src/core/Network.cpp",
@@ -168,6 +168,7 @@ setup(name='moogli',
                    'Topic :: Scientific/Engineering'],
       license='GPLv2',
       requires=requires,
+      include_package_data = True,
       packages=[ 
                 "moogli",
                 "moogli.core",
@@ -176,6 +177,7 @@ setup(name='moogli',
                 "moogli.visualization",
                 "moogli.visualization.pipeline"
                 ],
+      package_data = { 'moogli.core' : [ 'moogli/core/_moogli.so' ]},
       ext_modules=[moogli],
       cmdclass={'build_ext': sipdistutils.build_ext},
       entry_points={'console_scripts': ['moogli = moogli.console.main.main']})
