@@ -1,12 +1,17 @@
 #include "shapes/Sphere.hpp"
 
-Sphere::Sphere(const string & id) : Sphere( id
-                                              , osg::Vec3f(0.0f ,0.0f, 0.0f)
-                                              , 1.0f
-                                              , 20
-                                              , osg::Vec4f(0.0f, 1.0f, 0.0, 1.0f)
-                                              )
-{ }
+Sphere::Sphere(const string & id): Shape(id)
+{
+    set( osg::Vec3f(0.0f, 0.0f, 0.0f)
+       , 1.0f
+       , 20
+       , osg::Vec4f(0.0f, 1.0f, 0.0f, 1.0f)
+       );
+    allocate();
+    construct_indices();
+    construct_vertices();
+    this -> color();
+}
 
 Sphere::Sphere( const string & id
                       , const osg::Vec3f & center

@@ -2,7 +2,7 @@
 #import table
 #import swc
 #import neuroml
-import moose
+from . import moose
 
 __all__ = ["moose"]
 #"nsdf",
