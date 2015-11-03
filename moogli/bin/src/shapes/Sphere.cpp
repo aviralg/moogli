@@ -34,7 +34,7 @@ Sphere::allocate()
     _geometry -> setColorArray( new osg::Vec4Array(vertex_count)
                              , osg::Array::BIND_OVERALL
                              );
-    _geometry -> addPrimitiveSet( new osg::DrawElementsUShort( GL_TRIANGLES
+    _geometry -> insertPrimitiveSet(0,  new osg::DrawElementsUShort( GL_TRIANGLES
                                                             , (ring_count - 1) * 2 * _vertices * 3
                                                             )
                                );

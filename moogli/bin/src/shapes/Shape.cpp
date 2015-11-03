@@ -415,8 +415,8 @@ Shape::ShapeUpdateCallback::update( osg::NodeVisitor *nv
     if(shape -> allocation_required())
     {
         shape -> allocate();
-        shape -> construct_indices();
         shape -> construct_vertices();
+        shape -> construct_indices();
         shape -> color();
     }
     if(shape -> construction_required())
@@ -429,6 +429,16 @@ Shape::ShapeUpdateCallback::update( osg::NodeVisitor *nv
     }
 }
 
+Shape::~Shape()
+{
+    _outline = nullptr;
+    _cartoon = nullptr;
+    _wireframe = nullptr;
+    _specular_highlights = nullptr;
+    _geode = nullptr;
+    _geometry = nullptr;
+    root = nullptr;
+}
 
 
 // void

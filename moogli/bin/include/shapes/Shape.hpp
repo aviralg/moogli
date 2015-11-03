@@ -164,6 +164,9 @@ public:
     const osg::Vec4f &
     get_specular_highlights_effect_color() const;
 
+    virtual
+    ~Shape();
+
 protected:
 
     bool _allocation_required;

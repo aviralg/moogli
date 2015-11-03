@@ -28,9 +28,9 @@ public:
     resize(int width, int height);
 
     void
-    set_graphics_window(osgViewer::GraphicsWindowEmbedded * graphics_window);
+    set_graphics_window(osgQt::GraphicsWindowQt * graphics_window);
 
-    osgViewer::GraphicsWindowEmbedded *
+    osgQt::GraphicsWindowQt *
     get_graphics_window();
 
     void
@@ -117,7 +117,7 @@ private:
     osg::Vec2f _size;
     osg::Vec2f _position;
     osg::Vec4f _background_color;
-    osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> _graphics_window;
+    osg::ref_ptr<osgQt::GraphicsWindowQt> _graphics_window;
 };
 
 #endif /* __VIEW_HPP__ */

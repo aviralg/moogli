@@ -74,7 +74,7 @@ MeshView::resize(int width, int height)
 
 
 void
-MeshView::set_graphics_window(osgViewer::GraphicsWindowEmbedded * graphics_window)
+MeshView::set_graphics_window(osgQt::GraphicsWindowQt * graphics_window)
 {
     _graphics_window = graphics_window;
     _view -> getCamera() -> setGraphicsContext(_graphics_window.get());
@@ -87,7 +87,7 @@ MeshView::set_graphics_window(osgViewer::GraphicsWindowEmbedded * graphics_windo
     resize(width, height);
 }
 
-osgViewer::GraphicsWindowEmbedded *
+osgQt::GraphicsWindowQt *
 MeshView::get_graphics_window()
 {
     return _graphics_window.get();

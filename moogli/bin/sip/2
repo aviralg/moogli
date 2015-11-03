@@ -228,30 +228,9 @@ public:
     bool operator< (const Vec3f &v) const;
     void set(float x, float y, float z);
     void set(const Vec3f &rhs);
-    PyObject * get_x();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> x());
-    %End
-    void set_x(float value);
-    %MethodCode
-        sipCpp -> x() = a0;
-    %End
-    PyObject * get_y();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> y());
-    %End
-    void set_y(float value);
-    %MethodCode
-        sipCpp -> y() = a0;
-    %End
-    PyObject * get_z();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> z());
-    %End
-    void set_z(float value);
-    %MethodCode
-        sipCpp -> z() = a0;
-    %End
+    float x() const;
+    float y() const;
+    float z() const;
     bool valid() const;
     bool isNaN () const;
     float operator* (const Vec3f &rhs) const;
@@ -399,38 +378,10 @@ public:
     bool operator!= (const Vec4f &v) const;
     bool operator< (const Vec4f &v) const;
     void set(float x, float y, float z, float w);
-    PyObject * get_x();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> x());
-    %End
-    void set_x(float value);
-    %MethodCode
-        sipCpp -> x() = a0;
-    %End
-    PyObject * get_y();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> y());
-    %End
-    void set_y(float value);
-    %MethodCode
-        sipCpp -> y() = a0;
-    %End
-    PyObject * get_z();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> z());
-    %End
-    void set_z(float value);
-    %MethodCode
-        sipCpp -> z() = a0;
-    %End
-    PyObject * get_w();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> w());
-    %End
-    void set_w(float value);
-    %MethodCode
-        sipCpp -> w() = a0;
-    %End
+    float x() const;
+    float y() const;
+    float z() const;
+    float w() const;
     bool valid() const;
     bool isNaN() const;
     float operator* (const Vec4f &rhs) const;
@@ -497,38 +448,10 @@ public:
     Vec3f asVec3() const;
     void set(float x, float y, float z, float w);
     void set(const Vec4f &v);
-    PyObject * get_x();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> x());
-    %End
-    void set_x(float value);
-    %MethodCode
-        sipCpp -> x() = a0;
-    %End
-    PyObject * get_y();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> y());
-    %End
-    void set_y(float value);
-    %MethodCode
-        sipCpp -> y() = a0;
-    %End
-    PyObject * get_z();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> z());
-    %End
-    void set_z(float value);
-    %MethodCode
-        sipCpp -> z() = a0;
-    %End
-    PyObject * get_w();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> w());
-    %End
-    void set_w(float value);
-    %MethodCode
-        sipCpp -> w() = a0;
-    %End
+    float x() const;
+    float y() const;
+    float z() const;
+    float w() const;
     bool zeroRotation() const;
     const Quat operator* (float rhs) const;
     const Quat operator* (const Quat &rhs) const;
@@ -580,44 +503,6 @@ public:
     %End
 
 };
-// template<typename VT>
-// class BoundingBoxImpl
-// {
-// %TypeHeaderCode
-// #include <osg/BoundingBox>
-// %End
-//     BoundingBoxImpl(float xmin, float ymin, float zmin, float xmax, float ymax, float zmax);
-//  	  BoundingBoxImpl(const Vec3f & min, const Vec3f & max);
-//     void init();
-//     bool valid() const;
-//     void set(float xmin, float ymin, float zmin, float xmax, float ymax, float zmax);
-//     void set(const Vec3f & min, const Vec3f & max);
-//     float xMin() const;
-//     float yMin() const;
-//     float zMin() const;
-//     float xMax() const;
-//     float yMax() const;
-//     float zMax() const;
-//     const Vec3f & center() const;
-//     float radius() const;
-//     float radius2() const;
-// };
-// // const vec_type 	corner (unsigned int pos) const
-// //  	Returns a specific corner of the bounding box.
-// // void 	expandBy (const vec_type &v)
-// //  	Expands the bounding box to include the given coordinate.
-// // void 	expandBy (value_type x, value_type y, value_type z)
-// //  	Expands the bounding box to include the given coordinate.
-// // void 	expandBy (const BoundingBoxImpl &bb)
-// //  	Expands this bounding box to include the given bounding box.
-// // void 	expandBy (const BoundingSphereImpl< VT > &sh)
-// //  	Expands this bounding box to include the given sphere.
-// // BoundingBoxImpl 	intersect (const BoundingBoxImpl &bb) const
-// //  	Returns the intersection of this bounding box and the specified bounding box.
-// // bool 	intersects (const BoundingBoxImpl &bb) const
-// //  	Return true if this bounding box intersects the specified bounding box.
-// // bool 	contains (const vec_type &v) const
-// //  	Returns true if this bounding box contains the specified coordinate. 
 
 
 class Shape /Abstract/ 
@@ -996,188 +881,6 @@ public:
 };
 
 
-class EllipsoidalSurface : public Shape
-{
-%TypeHeaderCode
-#include "shapes/EllipsoidalSurface.hpp"
-%End
-
-public:
-
-    EllipsoidalSurface(const char * id);
-
-
-    EllipsoidalSurface( const char * id
-                      , const Vec3f & center
-                      , float a
-                      , float b
-                      , float c
-                      , const Vec3f & a_axis
-                      , const Vec3f & b_axis
-                      , float theta_min
-                      , float theta_max
-                      , float phi_min
-                      , float phi_max
-                      , unsigned int vertices
-                      , const Vec4f & color
-                      );
-
-    void
-    set_geometry( const Vec3f & center
-                , float a
-                , float b
-                , float c
-                , const Vec3f & a_axis
-                , const Vec3f & b_axis
-                , float theta_min
-                , float theta_max
-                , float phi_min
-                , float phi_max
-                , unsigned int vertices
-                );
-
-    void
-    set( const Vec3f & center
-       , float a
-       , float b
-       , float c
-       , const Vec3f & a_axis
-       , const Vec3f & b_axis
-       , float theta_min
-       , float theta_max
-       , float phi_min
-       , float phi_max
-       , unsigned int vertices
-       , const Vec4f & color
-       );
-
-    float
-    get_phi_min() const;
-
-    void
-    set_phi_min(float phi_min);
-
-    float
-    get_phi_max() const;
-
-    void
-    set_phi_max(float phi_max);
-
-    float
-    get_theta_min() const;
-
-    void
-    set_theta_min(float theta_min);
-
-    float
-    get_theta_max() const;
-
-    void
-    set_theta_max(float theta_max);
-
-    float
-    get_a() const;
-
-    void
-    set_a(float a);
-
-    float
-    get_b() const;
-
-    void
-    set_b(float b);
-
-    float
-    get_c() const;
-
-    void
-    set_c(float c);
-
-    void
-    set_abc(float a, float b, float c);
-
-    void
-    set_theta(float theta_min, float theta_max);
-
-    void
-    set_phi(float phi_min, float phi_max);
-
-    void
-    set_center(const Vec3f & center);
-
-    const Vec3f &
-    get_center() const;
-
-    void
-    set_color(const Vec4f & color);
-
-    const Vec4f &
-    get_color() const;
-
-    void
-    set_a_and_b_axes(const Vec3f & a_axis, const Vec3f & b_axis);
-
-    void
-    set_b_and_c_axes(const Vec3f & b_axis, const Vec3f & c_axis);
-
-    void
-    set_c_and_a_axes(const Vec3f & c_axis, const Vec3f & a_axis);
-
-    const Vec3f &
-    get_a_axis() const;
-
-    const Vec3f &
-    get_b_axis() const;
-
-    const Vec3f &
-    get_c_axis() const;
-
-    void
-    set_vertices(unsigned int vertices);
-
-    unsigned int
-    get_vertices() const;
-//     PyObject *
-//     __str__();
-//     %MethodCode
-//         sipRes = PyString_FromString( ( std::string("EllipsoidalSurface(")
-//                                       + "id => " + sipCpp -> id()
-//                                       + "a  => " + sipCpp -> get_a()
-//                                       + "b  => " + sipCpp -> get_b()
-//                                       + "c  => " + sipCpp -> get_c()
-//        , float b
-//        , float c
-//        , const Vec3f & a_axis
-//        , const Vec3f & b_axis
-//        , float theta_min
-//        , float theta_max
-//        , float phi_min
-//        , float phi_max
-
-// + " "
-//                                       std::to_string(sipCpp -> x())
-//                                       + ", "
-//                                       + std::to_string(sipCpp -> y())
-//                                       + ")"
-//                                       ).c_str()
-//                                     );
-//     %End
-
-//     PyObject *
-//     __repr__();
-//     %MethodCode
-//         sipRes = PyString_FromString( ( std::string("Vec2i(")
-//                                       + std::to_string(sipCpp -> x())
-//                                       + ", "
-//                                       + std::to_string(sipCpp -> y())
-//                                       + ")"
-//                                       ).c_str()
-//                                     );
-//     %End
-
-};
-
-
 class ColorBar
 {
 %TypeHeaderCode
@@ -1414,21 +1117,4 @@ public:
     void
     detach_shape(Shape * shape);
 
-protected:
-    void
-    initializeGL();
-
-    void
-    paintGL();
-
-    bool
-    event(QEvent * event);
-
-public Q_SLOTS:
-    void
-    updateGL();
-
-signals:
-    void
-    selected(const char * id);
 };

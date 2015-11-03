@@ -1,6 +1,9 @@
 import moogli.core._moogli
 import collections
 
+class EllipsoidalSurface(moogli.core._moogli.EllipsoidalSurface):
+    pass
+
 class Frustum(moogli.core._moogli.Frustum):
     def subdivide(self, n, ids=None):
         if ids is None:
@@ -50,8 +53,18 @@ class Frustum(moogli.core._moogli.Frustum):
 class Sphere(moogli.core._moogli.Sphere):
 
     @classmethod
-    def sequence(cls):
+    def sequence(cls,
+                 id,
+                 center,
+                 axis,
+                 count,
+                 separation,
+                 radii,
+                 colors,
+                 vertices=20):
         pass
+
+
 
     @classmethod
     def grid(cls,
@@ -65,7 +78,7 @@ class Sphere(moogli.core._moogli.Sphere):
              col_separation,
              radii,
              colors,
-             vertices):
+             vertices=20):
         group = moogli.Group(id)
         if not isinstance(colors, collections.Sequence):
             colors = [colors]
@@ -92,11 +105,102 @@ class Sphere(moogli.core._moogli.Sphere):
         return group
 
     @classmethod
-    def lattice(cls):
-        pass
+    def lattice(id,
+                center,
+                row_axis,
+                row_count,
+                row_separation,
+                col_axis,
+                col_count,
+                col_separation,
+                stack_axis,
+                stack_count,
+                stack_separation,
+                radii,
+                colors,
+                vertices=20):
+        group = moogli.Group(id)
+        if not isinstance(colors, collections.Sequence):
+            colors = [colors]
+        if not isinstance(radii, collections.Sequence):
+            radii = [radii]
+        pseudo_center = row_axis * row_separation * (col_count - 1) / 2.0 + col_axis * col_separation * (row_count - 1) / 2.0
+        translation = center - pseudo_center
+        for row_index in range(row_count):
+            for col_index in range(col_count):
+                index = row_index * col_count + col_index
+                shape_center = translation + row_axis * col_index * col_separation + col_axis * row_index * row_separation
+                # new_center = moogli.core.Vec3f(i * soma_radius * 5.0,
+                #                                0.0,
+                #                                j * soma_radius * 5.0) + soma_center - moogli.core.Vec3f( 49 * soma_radius * 2.5, 0.0, 49 * soma_radius * 2.5)
+                shape_color = colors[index % len(colors)]
+                shape_radius = radii[index % len(radii)]
+                group.attach_shape(cls("{0}[{1}][{2}]".format(id,
+                                                              row_index,
+                                                              col_index),
+                                       shape_center,
+                                       shape_radius,
+                                       vertices,
+                                       shape_color))
+        return group
 
-    def subdivide():
-        pass
+    def subdivide(self, axis, n, ids=None, vertices=10):
+        if ids is None:
+            ids = [self.id() + "[" + str(i) + "]" for i in range(n)]
+        spheres = moogli.Group(self.id())
+        base = self.get_center() - axis * self.get_radius()
+        apex = self.get_center() + axis * self.get_radius()
+        length = self.get_length()
+        base_radius = 0
+        apex_radius = 0
+        color = self.get_color()
+        delta_phi =  12.0
+        delta_length = length / n
+        delta_radius = (apex_radius - base_radius) / n
+        new_base = base
+        new_base_radius = base_radius
+        for i in range(n):
+            apex = base + axis * delta_length * (i + 1)
+            apex_radius = base_radius + delta_radius * (i + 1)
+            frustums.attach_shape(Frustum(ids[i],
+                                          new_base,
+                                          apex,
+                                          new_base_radius,
+                                          apex_radius,
+                                          vertices,
+                                          base_color,
+                                          apex_color))
+            new_base = apex
+            new_base_radius = apex_radius
+
+        return frustums
+
+
+
+    @classmethod
+    def spheres(cls,
+                id,
+                centers,
+                radii,
+                colors,
+                vertices=20):
+        group = moogli.Group(id)
+        if not isinstance(radii, collections.Sequence):
+            radii = [radii]
+        if not isinstance(colors, collections.Sequence):
+            colors = [colors]
+        for i in range(len(centers)):
+            center = centers[i]
+            color = colors[i % len(colors)]
+            radius = radii[i % len(radii)]
+            group.attach_shape(cls("{0}[{1}]".format(id, i),
+                                   center,
+                                   radius,
+                                   vertices,
+                                   color))
+        return group
+
+
 
 __all__ = ["Frustum",
            "Sphere"]

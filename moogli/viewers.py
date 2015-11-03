@@ -37,7 +37,7 @@ class View(moogli.core._moogli.MeshView):
 
     def start(self):
         self._done = False
-        self.viewer().update()
+        #self.viewer().update()
         self.home()
         self.prelude(self)
         self.run()
@@ -52,11 +52,11 @@ class View(moogli.core._moogli.MeshView):
     def stop(self):
         self._done = True
         self.postlude(self)
-        self.viewer().update()
+        # self.viewer().update()
 
     def run(self):
         self.interlude(self)
-        self.viewer().update()
+        # self.viewer().update()
         if self._done: return
         if self._pause: return
         PyQt4.QtCore.QTimer.singleShot(self.idletime, self.run)
@@ -116,11 +116,14 @@ class Viewer(moogli.core._moogli.Viewer):
             view.resize(event.size().width(), event.size().height())
 
     def attach_view(self, view):
+        #self.updateGL()
         if view in self._views.values(): return
         super(Viewer, self).attach_view(view)
         self._views[view.id()] = view
         view._viewer = self
-        self.update()
+        print "Here"
+        #self.updateGL()
+        # self.update()
         view.home()
 
     def detach_view(self, view):
