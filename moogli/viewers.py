@@ -4,7 +4,6 @@ from PyQt4.QtCore import Qt
 import math
 import moogli.core._moogli
 
-
 class View(moogli.core._moogli.MeshView):
     def __init__(self,
                  id,

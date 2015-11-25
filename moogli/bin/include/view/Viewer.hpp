@@ -30,10 +30,10 @@ public:
     detach_view(MeshView * mesh_view);
 
     void
-    attach_shape(Shape * shape);
+    attach_shape(MoogliShape * shape);
 
     void
-    detach_shape(Shape * shape);
+    detach_shape(MoogliShape * shape);
 
     osgViewer::View *
     get_view_with_focus();

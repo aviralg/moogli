@@ -4,7 +4,7 @@
 #include "utility/libraries.hpp"
 #include "shapes/Shape.hpp"
 
-class Frustum: public Shape
+class Frustum: public MoogliShape
 {
 public:
 

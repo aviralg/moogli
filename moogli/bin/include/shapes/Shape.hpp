@@ -3,7 +3,7 @@
 
 #include "utility/libraries.hpp"
 
-class Shape
+class MoogliShape
 {
 private:
     static std::unordered_map<unsigned int, osg::ref_ptr<osg::Vec3Array> > _polygons;
@@ -21,7 +21,7 @@ public:
 
     osg::ref_ptr<osg::Node> root;
 
-    Shape(const string & id);
+    MoogliShape(const string & id);
 
     const std::string &
     id() const;
@@ -179,17 +179,17 @@ protected:
 
 public:
 
-    class ShapeUpdateCallback : public osg::Drawable::UpdateCallback
+    class MoogliShapeUpdateCallback : public osg::Drawable::UpdateCallback
     {
     public:
-        ShapeUpdateCallback(Shape * shape);
+        MoogliShapeUpdateCallback(MoogliShape * shape);
 
         virtual void
         update( osg::NodeVisitor * nv
               , osg::Drawable * drawable
               );
     private:
-        Shape * shape;
+        MoogliShape * shape;
     };
 };
 
