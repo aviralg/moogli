@@ -10,30 +10,25 @@ https://docs.python.org/2/distutils/apiref.html
 http://stackoverflow.com/questions/3207219/how-to-list-all-files-of-a-directory-in-python
 """
 
-print """
-Please ensure the following libraries are installed in case the
-installation of this library fails -
-
-print 1) python-qt4-dev
-print 2)
-print 3)
-print 4)
-print 5)
-print 6)
-print 7)
-"""
-
-from setuptools import setup, Extension
 from PyQt4 import pyqtconfig
+import PyQt4
 import sipdistutils
 import sys
 import os
+import platform
+osname_ = platform.system()
+
+from distutils.core import setup, Extension
 
 qcfg = pyqtconfig.Configuration()
 qcfg.pyqt_sip_flags
 remaining = sys.argv[1:]
+
+print("[INFO] Sip flags: %s" % qcfg.pyqt_sip_flags)
+print("[INFO] On system: %s" % osname_)
+
 sys.argv = [sys.argv[0],
-            'build_ext',
+            'build_ext', 
             '--sip-opts=-I{} -e -g {}'.format(qcfg.pyqt_sip_dir,
                                               qcfg.pyqt_sip_flags)]
 sys.argv.extend(remaining)
@@ -50,7 +45,7 @@ here = os.path.dirname(__file__)
 # list of object files to be passed to the linker.
 # These files must not have extensions, as the default extension
 # for the compiler is used.
-os.environ["CC"]="g++"
+#os.environ["CC"]="g++"
 extra_objects = []
 
 # list of libraries to link against
@@ -75,25 +70,40 @@ libraries = ["QtCore",
 library_dirs = []
 
 # list of directories to search for shared (dynamically loaded) libraries at run-time
-runtime_library_dirs = []
+runtime_library_dirs = PyQt4.__path__
 
 # additional command line options for the compiler command line
-extra_compile_args = ["-O3",
+extra_compile_args = ["-O2",
                       "-std=c++0x",
                       "-Wno-reorder",
                       "-Wno-overloaded-virtual"]
 
 # additional command line options for the linker command line
-extra_link_args = ["-fPIC",
-                   "-shared"]
-
+if osname_ == 'Linux':
+    extra_link_args = ["-fPIC", "-shared"]
+elif osname_ == 'Windows':
+    # Who cares
+    pass
+else:
+    # On MacOSX, leave them empty.
+    extra_link_args = []
 
 # specify include directories to search
-include_dirs = ["/usr/include/qt4/",
-                "/usr/include/qt4/QtCore/",
-                "/usr/include/qt4/QtGui/",
-                "/usr/include/qt4/QtOpenGL/",
-                "./moogli/bin/include/"]
+include_dirs = [ "./moogli/bin/include/" ]
+
+includes = [ 
+    "include/qt4/",
+    "include/qt4/QtCore/",
+    "include/qt4/QtGui/",
+    "include/qt4/QtOpenGL/",
+    "include/QtCore/",
+    "include/QtGui/",
+    "include/QtOpenGL/",
+    ]
+
+prefixes = [ "/usr", "/usr/local", "/opt" ]
+for p in prefixes:
+    include_dirs += [ os.path.join(p, x) for x in includes ]
 
 # define pre-processor macros
 define_macros = []
@@ -168,22 +178,17 @@ setup(name='moogli',
                    'Topic :: Scientific/Engineering'],
       license='GPLv2',
       requires=requires,
-      packages=["moogli",
+      include_package_data = True,
+      packages=[ 
+                "moogli",
                 "moogli.core",
                 "moogli.widgets",
                 "moogli.extensions",
                 "moogli.extensions.moose",
                 "moogli.visualization",
-                "moogli.visualization.pipeline"],
+                "moogli.visualization.pipeline"
+                ],
+      package_data = { 'moogli.core' : [ 'moogli/core/_moogli.so' ]},
       ext_modules=[moogli],
       cmdclass={'build_ext': sipdistutils.build_ext},
-      entry_points={'console_scripts': ['moogli = moogli.console.main.main']})
-# scripts=scripts
-
-# , test_suite       =   'moogli.test.main',
-# , entry_points     =   { 'console_scripts': [ 'moogliviewer = moogli.console.viewer']
-#                        }
-
-
-
-
+      )

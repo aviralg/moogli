@@ -230,14 +230,14 @@ public:
 };
 
 
-class Shape /Abstract/ 
+class MoogliShape /Abstract/ 
 {
 %TypeHeaderCode
 #include "shapes/Shape.hpp"
 %End
 
 public:
-    Shape(const char * id);
+    MoogliShape(const char * id);
 
     PyObject *
     id() const;
@@ -387,7 +387,7 @@ public:
 };
 
 
-class Frustum : public Shape 
+class Frustum : public MoogliShape 
 {
 %TypeHeaderCode
 #include "shapes/Frustum.hpp"
@@ -547,7 +547,7 @@ public:
 
 };
 
-class Sphere : public Shape 
+class MoogliSphere : public MoogliShape 
 {
 %TypeHeaderCode
 #include "shapes/Sphere.hpp"
@@ -555,9 +555,9 @@ class Sphere : public Shape
 
 public:
 
-    Sphere(const char * id);
+    MoogliSphere(const char * id);
 
-    Sphere( const char * id
+    MoogliSphere( const char * id
           , const Vec3f & center
           , const float radius
           , unsigned int vertices
@@ -837,9 +837,9 @@ public:
     attach_view(MeshView * mesh_view);
 
     void
-    attach_shape(Shape * shape);
+    attach_shape(MoogliShape * shape);
 
     void
-    detach_shape(Shape * shape);
+    detach_shape(MoogliShape * shape);
 
 };

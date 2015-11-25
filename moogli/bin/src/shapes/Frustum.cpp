@@ -1,6 +1,6 @@
 #include "shapes/Frustum.hpp"
 
-Frustum::Frustum(const string & id) : Shape(id)
+Frustum::Frustum(const string & id) : MoogliShape(id)
 {
     set( osg::Vec3f(0.0f, 0.0f, 0.0f),
          osg::Z_AXIS,
@@ -27,7 +27,7 @@ Frustum::Frustum( const string & id
             , unsigned int vertices
             , const osg::Vec4f & base_color
             , const osg::Vec4f & apex_color
-            ) : Shape(id)
+            ) : MoogliShape(id)
 {
     set(center, axis, length, base_radius, apex_radius, vertices, base_color, apex_color);
     allocate();
@@ -44,7 +44,7 @@ Frustum::Frustum( const string & id
              , unsigned int vertices
              , const osg::Vec4f & base_color
              , const osg::Vec4f & apex_color
-             ) : Shape(id)
+             ) : MoogliShape(id)
 {
     set(base, apex, base_radius, apex_radius, vertices, base_color, apex_color);
     allocate();
@@ -342,7 +342,7 @@ Frustum::construct_vertices()
      osg::Quat rotation; rotation.makeRotate(osg::Z_AXIS, _axis);
      unsigned int i, j, k, l;
      osg::Vec3f vertex;
-     const osg::Vec3Array * polygon = Shape::regular_polygon(_vertices);
+     const osg::Vec3Array * polygon = MoogliShape::regular_polygon(_vertices);
      osg::Vec3Array * V = static_cast<osg::Vec3Array *>(_geometry -> getVertexArray());
      osg::Vec3Array * N = static_cast<osg::Vec3Array *>(_geometry -> getNormalArray());
      for(i = 0; i < _vertices; ++i)
@@ -376,8 +376,8 @@ Frustum::construct_indices()
 
     osg::DrawElementsUShort * I = static_cast<osg::DrawElementsUShort *>(_geometry -> getPrimitiveSet(0));
 
-    const osg::DrawElementsUShort * basal_triangle_indices = Shape::basal_triangle(_vertices);
-    const osg::DrawElementsUShort * axial_triangle_indices = Shape::axial_triangle(_vertices);
+    const osg::DrawElementsUShort * basal_triangle_indices = MoogliShape::basal_triangle(_vertices);
+    const osg::DrawElementsUShort * axial_triangle_indices = MoogliShape::axial_triangle(_vertices);
     for(i = 0; i < basal_triangle_count; ++i)
     {
         j = i * 3;

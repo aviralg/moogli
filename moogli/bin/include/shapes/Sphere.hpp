@@ -4,13 +4,13 @@
 #include "shapes/Shape.hpp"
 #include "utility/libraries.hpp"
 
-class Sphere : public Shape
+class MoogliSphere : public MoogliShape
 {
 public:
 
-    Sphere(const string & id);
+    MoogliSphere(const string & id);
 
-    Sphere( const string & id
+    MoogliSphere( const string & id
           , const osg::Vec3f & center
           , const float radius
           , unsigned int vertices

@@ -1,6 +1,7 @@
 #include "shapes/Sphere.hpp"
+#include <string>
 
-Sphere::Sphere(const string & id): Shape(id)
+MoogliSphere::MoogliSphere(const string & id): MoogliShape(id)
 {
     set( osg::Vec3f(0.0f, 0.0f, 0.0f)
        , 1.0f
@@ -13,12 +14,13 @@ Sphere::Sphere(const string & id): Shape(id)
     this -> color();
 }
 
-Sphere::Sphere( const string & id
+
+MoogliSphere::MoogliSphere( const string & id
                       , const osg::Vec3f & center
                       , const float radius
                       , unsigned int vertices
                       , const osg::Vec4f & color
-                      ) : Shape(id)
+                      ) : MoogliShape(id)
 {
     set(center, radius, vertices, color);
     allocate();
@@ -28,7 +30,7 @@ Sphere::Sphere( const string & id
 }
 
 void
-Sphere::allocate()
+MoogliSphere::allocate()
 {
     unsigned int ring_count = _vertices / 2 + 1;
     unsigned int vertex_count = _vertices * ring_count;
@@ -48,7 +50,7 @@ Sphere::allocate()
 }
 
 void
-Sphere::construct_vertices()
+MoogliSphere::construct_vertices()
 {
     unsigned int i, j;
     unsigned int ring_count = _vertices / 2 + 1;
@@ -56,7 +58,7 @@ Sphere::construct_vertices()
     float phi, delta_phi = osg::PI / (ring_count - 1);
     float radius, height;
     osg::Vec3f vertex;
-    const osg::Vec3Array * polygon = Shape::regular_polygon(_vertices);
+    const osg::Vec3Array * polygon = MoogliShape::regular_polygon(_vertices);
     osg::Vec3Array * V = static_cast<osg::Vec3Array *>(_geometry -> getVertexArray());
     osg::Vec3Array * N = static_cast<osg::Vec3Array *>(_geometry -> getNormalArray());
     unsigned int vertex_offset = (ring_count - 1) * _vertices;
@@ -95,7 +97,7 @@ Sphere::construct_vertices()
 }
 
 void
-Sphere::construct_indices()
+MoogliSphere::construct_indices()
 {
     unsigned int i, j, k, l, m, n, o, p;
     unsigned int ring_count = _vertices / 2 + 1;
@@ -105,7 +107,7 @@ Sphere::construct_indices()
     unsigned int index_offset;
     osg::DrawElementsUShort * I = static_cast<osg::DrawElementsUShort *>(_geometry -> getPrimitiveSet(0));
 
-    const osg::DrawElementsUShort * axial_triangle_indices = Shape::axial_triangle(_vertices);
+    const osg::DrawElementsUShort * axial_triangle_indices = MoogliShape::axial_triangle(_vertices);
     // for(i = 0; i < _vertices; ++i)
     // {
     //     j = i * 3;
@@ -153,7 +155,7 @@ Sphere::construct_indices()
 }
 
 void
-Sphere::color()
+MoogliSphere::color()
 {
     osg::Vec4Array * colors = static_cast<osg::Vec4Array *>(_geometry -> getColorArray());
     (*colors)[0] = _color;
@@ -162,7 +164,7 @@ Sphere::color()
 }
 
 void
-Sphere::set_geometry( const osg::Vec3f & center
+MoogliSphere::set_geometry( const osg::Vec3f & center
                         , float radius
                         , unsigned int vertices
                         )
@@ -175,7 +177,7 @@ Sphere::set_geometry( const osg::Vec3f & center
 }
 
 void
-Sphere::set( const osg::Vec3f & center
+MoogliSphere::set( const osg::Vec3f & center
                , float radius
                , unsigned int vertices
                , const osg::Vec4f & color
@@ -186,7 +188,7 @@ Sphere::set( const osg::Vec3f & center
 }
 
 void
-Sphere::set_vertices(unsigned int vertices)
+MoogliSphere::set_vertices(unsigned int vertices)
 {
     _vertices = vertices;
     _allocation_required = true;
@@ -194,52 +196,52 @@ Sphere::set_vertices(unsigned int vertices)
 }
 
 unsigned int
-Sphere::get_vertices()
+MoogliSphere::get_vertices()
 {
     return _vertices;
 }
 
 void
-Sphere::set_center(const osg::Vec3f & center)
+MoogliSphere::set_center(const osg::Vec3f & center)
 {
     _center = center;
     _construction_required = true;
 }
 
 osg::Vec3f
-Sphere::get_center() const
+MoogliSphere::get_center() const
 {
     return _center;
 }
 
 void
-Sphere::set_radius(const float radius)
+MoogliSphere::set_radius(const float radius)
 {
     _radius = radius;
     _construction_required = true;
 }
 
 float
-Sphere::get_radius() const
+MoogliSphere::get_radius() const
 {
     return _radius;
 }
 
 void
-Sphere::set_color(const osg::Vec4f & color)
+MoogliSphere::set_color(const osg::Vec4f & color)
 {
     _color = color;
     _coloring_required = true;
 }
 
 const osg::Vec4f &
-Sphere::get_color() const
+MoogliSphere::get_color() const
 {
     return _color;
 }
 
 void
-Sphere::move_center_by(const osg::Vec3f & displacement)
+MoogliSphere::move_center_by(const osg::Vec3f & displacement)
 {
     set_center(_center + displacement);
 }

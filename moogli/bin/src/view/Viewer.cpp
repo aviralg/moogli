@@ -460,13 +460,13 @@ Viewer::detach_view(MeshView * mesh_view)
 }
 
 void
-Viewer::attach_shape(Shape * shape)
+Viewer::attach_shape(MoogliShape * shape)
 {
     _shapes -> addChild(shape -> root.get());
 }
 
 void
-Viewer::detach_shape(Shape * shape)
+Viewer::detach_shape(MoogliShape * shape)
 {
     _shapes -> removeChild(shape -> root.get());
 }
