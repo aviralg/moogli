@@ -59,6 +59,7 @@ CatmullRom::attach_geometry(osg::Geometry * geometry)
   geometry -> setUseDisplayList(false);
   geometry -> setUseVertexBufferObjects(true);
   _geode -> addDrawable(geometry);
+  _geode -> dirtyBound();
 }
 
 
@@ -618,7 +619,7 @@ CatmullRom::_interpolate_internal_node_to_internal_node( CatmullRom * grandparen
   float l;
   osg::Quat Q;
 
-  osg::Vec3Array * V0 = parent -> get_geode() -> getVertexArray();
+  osg::Vec3Array * V0 = new osg::Vec3Array(radial_segments);//parent -> get_geode() -> getVertexArray();
 
   D = parent -> distal - grandparent -> distal;
   l = D.normalize();
