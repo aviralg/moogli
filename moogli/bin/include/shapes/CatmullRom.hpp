@@ -33,31 +33,46 @@ public:
     _interpolate_root_child_node_to_internal_node( CatmullRom * parent
                                                  , CatmullRom * child
                                                  , CatmullRom * grandchild
+                                                 , const uint axial_segments
+                                                 , const uint radial_segments
                                                  );
 
 
     void
     _interpolate_root_child_node_to_leaf_node( CatmullRom * parent
                                              , CatmullRom * child
+                                             , const uint axial_segments
+                                             , const uint radial_segments
                                              );
 
     void
-    interpolate_internal_node_to_internal_node( CatmullRom * parent
-                                              , CatmullRom * child
-                                              , CatmullRom * grandchild
-                                              );
+    _interpolate_internal_node_to_internal_node( CatmullRom * grandparent
+                                               , CatmullRom * parent
+                                               , CatmullRom * child
+                                               , CatmullRom * grandchild
+                                               , const uint axial_segments
+                                               , const uint radial_segments
+                                               );
 
     void
-    _interpolate_internal_node_to_leaf_node( CatmullRom * parent
+    _interpolate_internal_node_to_leaf_node( CatmullRom * grandparent
+                                           , CatmullRom * parent
                                            , CatmullRom * child
+                                           , const uint axial_segments
+                                           , const uint radial_segments
                                            );
 
     void
     _interpolate_root_node_to_internal_node( CatmullRom * child
                                            , CatmullRom * grandchild
+                                           , const uint axial_segments
+                                           , const uint radial_segments
                                            );
     void
-    _interpolate_leaf_node(CatmullRom * parent);
+    _interpolate_leaf_node( CatmullRom * parent
+                          , const uint axial_segments
+                          , const uint radial_segments
+                          );
 
     void
     attach_geometry(osg::Geometry * geometry);

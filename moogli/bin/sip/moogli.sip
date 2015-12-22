@@ -741,19 +741,19 @@ public:
     toggle_outline_effect();
 
     bool
-    outline_effect_enabled() const;
+    outline_effect_enabled();
 
     void
     set_outline_effect_line_width(float width);
 
     float
-    get_outline_effect_line_width() const;
+    get_outline_effect_line_width();
 
     void
     set_outline_effect_line_color(const Vec4f & color);
 
     const Vec4f &
-    get_outline_effect_line_color() const;
+    get_outline_effect_line_color();
 
     void
     enable_cartoon_effect();
@@ -765,19 +765,19 @@ public:
     toggle_cartoon_effect();
 
     bool
-    cartoon_effect_enabled() const;
+    cartoon_effect_enabled();
 
     void
     set_cartoon_effect_outline_width(float width);
 
     float
-    get_cartoon_effect_outline_width() const;
+    get_cartoon_effect_outline_width();
 
     void
     set_cartoon_effect_outline_color(const Vec4f & color);
 
     const Vec4f &
-    get_cartoon_effect_outline_color() const;
+    get_cartoon_effect_outline_color();
 
     void
     enable_wireframe_effect();
@@ -789,19 +789,19 @@ public:
     toggle_wireframe_effect();
 
     bool
-    wireframe_effect_enabled() const;
+    wireframe_effect_enabled();
 
     void
     set_wireframe_effect_line_width(float width);
 
     float
-    get_wireframe_effect_line_width() const;
+    get_wireframe_effect_line_width();
 
     void
     set_wireframe_effect_line_color(const Vec4f & color);
 
     const Vec4f &
-    get_wireframe_effect_line_color() const;
+    get_wireframe_effect_line_color();
 
     void
     enable_specular_highlights_effect();
@@ -813,19 +813,19 @@ public:
     toggle_specular_highlights_effect();
 
     bool
-    specular_highlights_effect_enabled() const;
+    specular_highlights_effect_enabled();
 
     void
     set_specular_highlights_effect_exponent(float exponent);
 
     float
-    get_specular_highlights_effect_exponent() const;
+    get_specular_highlights_effect_exponent();
 
     void
     get_specular_highlights_effect_color(const Vec4f & color);
 
     const Vec4f &
-    get_specular_highlights_effect_color() const;
+    get_specular_highlights_effect_color();
 };
 
 
@@ -1229,7 +1229,6 @@ public:
 
 };
 
-
 class CatmullRom : public Shape
 {
 %TypeHeaderCode
@@ -1254,6 +1253,52 @@ public:
                                        , const uint   axial_segments
                                        , const uint   radial_segments
                                        );
+
+    void
+    _interpolate_root_child_node_to_internal_node( CatmullRom * parent
+                                                 , CatmullRom * child
+                                                 , CatmullRom * grandchild
+                                                 , const uint axial_segments
+                                                 , const uint radial_segments
+                                                 );
+
+
+    void
+    _interpolate_root_child_node_to_leaf_node( CatmullRom * parent
+                                             , CatmullRom * child
+                                             , const uint axial_segments
+                                             , const uint radial_segments
+                                             );
+
+    void
+    _interpolate_internal_node_to_internal_node( CatmullRom * grandparent
+                                               , CatmullRom * parent
+                                               , CatmullRom * child
+                                               , CatmullRom * grandchild
+                                               , const uint axial_segments
+                                               , const uint radial_segments
+                                               );
+
+    void
+    _interpolate_internal_node_to_leaf_node( CatmullRom * grandparent
+                                           , CatmullRom * parent
+                                           , CatmullRom * child
+                                           , const uint axial_segments
+                                           , const uint radial_segments
+                                           );
+
+    void
+    _interpolate_root_node_to_internal_node( CatmullRom * child
+                                           , CatmullRom * grandchild
+                                           , const uint axial_segments
+                                           , const uint radial_segments
+                                           );
+    void
+    _interpolate_leaf_node( CatmullRom * parent
+                          , const uint axial_segments
+                          , const uint radial_segments
+                          );
+
 };
 
 class ColorBar

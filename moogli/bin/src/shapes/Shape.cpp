@@ -92,6 +92,46 @@ Shape::face_normal(osg::Vec3f x, osg::Vec3f y, osg::Vec3f z)
     return (y - x) ^ (z - y);
 }
 
+void
+Shape::fill_regular_polygon( osg::Vec3Array * T
+                           , uint index
+                           , uint vertices
+                           , float radius
+                           , const osg::Vec3f & center
+                           , const osg::Vec3f & D
+                           , const osg::Vec3f & U
+                           )
+{
+    // Fill vector T with the coordinates of a radial_segments sided regular polygon of radius 'radius' centered at 'center' with axis 'axis'
+    // starting from index t.
+    // A cache is used to speed up generation of coordinates. The cache ensures that sine and cosine operations are not recomputed and that only basic vector operations are required at each step.
+    // generates the unit polygons in such a way that the first point is guaranteed to be in the XZ plane.
+
+    std::unordered_map<uint, osg::ref_ptr<osg::Vec3Array> >::const_iterator result = _regular_polygon_cache.find(vertices);
+    osg::Vec3Array * P;
+    if(result != _regular_polygon_cache.end()) { P = result -> second.get(); }
+    else
+    {
+        P = new osg::Vec3Array(vertices);
+        float delta_theta = 2 * osg::PI / vertices;
+        float theta;
+        for(uint i = 0; i < vertices; ++i)
+          {
+            theta = i * delta_theta;
+            (*P)[i] = osg::Vec3f(cos(theta) , sin(theta) , 0.0f);
+          }
+        _regular_polygon_cache[vertices] = P;
+    }
+
+    osg::Vec3f V = D ^ U;
+
+    for(size_t i = 0; i < vertices; ++i)
+    {
+        (*T)[index + i] =  U * (*P)[i][0] * radius
+                        +  V * (*P)[i][1] * radius
+                        + center;
+    }
+}
 
 void
 Shape::fill_regular_polygon( osg::Vec3Array * T
@@ -146,8 +186,9 @@ Shape::fill_surface_triangles( osg::DrawElementsUShort * I
                              )
 {
     size_t triangle_index = 0;
-    size_t rows = I -> size() / ( 6 * radial_segments);
+    size_t rows = I -> size() / (6 * radial_segments) + 1;
     size_t row, col;
+    // std::cerr << "Rows => " << rows;
     for(row = 0; row < rows - 1; ++row)
     {
         for(col = 0 ; col < radial_segments; ++col)
@@ -478,24 +519,12 @@ Shape::fill_surface_normals( osg::Vec3Array * V
 }
 
 
-Shape::Shape(const string & id): _outline(new osgFX::Outline())
-                               , _cartoon(new osgFX::Cartoon())
-                               , _wireframe(new osgFX::Scribe())
-                               , _specular_highlights(new osgFX::SpecularHighlights())
-                               , _geode(new osg::Geode())
+Shape::Shape(const string & id): _geode(new osg::Geode())
                                , _geometry(new osg::Geometry())
                                , _allocation_required(true)
                                , _construction_required(true)
                                , _coloring_required(true)
 {
-    _outline -> setName(id);
-    _outline -> addChild(_cartoon.get());
-    _cartoon -> setName(id);
-    _cartoon -> addChild(_wireframe.get());
-    _wireframe -> setName(id);
-    _wireframe -> addChild(_specular_highlights.get());
-    _specular_highlights -> setName(id);
-    _specular_highlights -> addChild(_geode.get());
     _geode -> setName(id);
     _geode -> addDrawable(_geometry.get());
     _geode -> getOrCreateStateSet() -> setMode(GL_BLEND,
@@ -506,14 +535,51 @@ Shape::Shape(const string & id): _outline(new osgFX::Outline())
     //setUpdateCallback(callback);
     _geometry -> setUseDisplayList(false);
     _geometry -> setUseVertexBufferObjects(true);
-    disable_effects();
+    root = _geode;
+}
+
+void
+Shape::create_effect_nodes()
+{
+  osg::Geode * geode = root -> asGeode();
+  if(geode)
+  {
+    _outline = new osgFX::Outline();
+    _outline -> setName(id());
+    _outline -> setEnabled(false);
+
+    _cartoon = new osgFX::Cartoon();
+    _cartoon -> setName(id());
+    _cartoon -> setEnabled(false);
+
+    _wireframe = new osgFX::Scribe();
+    _wireframe -> setName(id());
+    _wireframe -> setEnabled(false);
+
+    _specular_highlights = new osgFX::SpecularHighlights();
+    _specular_highlights -> setName(id());
+    _specular_highlights -> setEnabled(false);
+
+    _outline -> addChild(_cartoon.get());
+    _cartoon -> addChild(_wireframe.get());
+    _wireframe -> addChild(_specular_highlights.get());
+    _specular_highlights -> addChild(_geode.get());
+
+    osg::Node::ParentList parents = geode -> getParents();
+    for(osg::Group * parent : parents)
+    {
+        parent -> removeChild(geode);
+        parent -> addChild(_outline.get());
+    }
     root = _outline;
+  }
+
 }
 
 const std::string &
 Shape::id() const
 {
-    return root -> getName();
+    return _geode -> getName();
 }
 // void
 // Shape::allocate()
@@ -578,6 +644,7 @@ Shape::export_geometry(const std::string & filename, bool with_effects) const
 void
 Shape::enable_effects()
 {
+    create_effect_nodes();
     enable_cartoon_effect();
     enable_outline_effect();
     enable_wireframe_effect();
@@ -587,6 +654,7 @@ Shape::enable_effects()
 void
 Shape::disable_effects()
 {
+    create_effect_nodes();
     disable_cartoon_effect();
     disable_outline_effect();
     disable_wireframe_effect();
@@ -596,6 +664,7 @@ Shape::disable_effects()
 void
 Shape::toggle_effects()
 {
+    create_effect_nodes();
     toggle_cartoon_effect();
     toggle_outline_effect();
     toggle_wireframe_effect();
@@ -605,145 +674,170 @@ Shape::toggle_effects()
 void
 Shape::enable_outline_effect()
 {
+    create_effect_nodes();
     _outline -> setEnabled(true);
 }
 
 void
 Shape::disable_outline_effect()
 {
+    create_effect_nodes();
     _outline -> setEnabled(false);
 }
 
 void
 Shape::toggle_outline_effect()
 {
+    create_effect_nodes();
     _outline -> setEnabled(! _outline -> getEnabled());
 }
 
 bool
-Shape::outline_effect_enabled() const
+Shape::outline_effect_enabled() 
 {
+    create_effect_nodes();
     return _outline -> getEnabled();
 }
 
 void
 Shape::set_outline_effect_line_width(float width)
 {
-  _outline -> setWidth(width);
+    create_effect_nodes();
+    _outline -> setWidth(width);
 }
 
 float
-Shape::get_outline_effect_line_width() const
+Shape::get_outline_effect_line_width() 
 {
+
+    create_effect_nodes();
     return _outline -> getWidth();
 }
 
 void
 Shape::set_outline_effect_line_color(const osg::Vec4f & color)
 {
+    create_effect_nodes();
     _outline -> setColor(color);
 }
 
 const osg::Vec4f &
-Shape::get_outline_effect_line_color() const
+Shape::get_outline_effect_line_color() 
 {
+    create_effect_nodes();
     return _outline -> getColor();
 }
 
 void
 Shape::enable_cartoon_effect()
 {
+    create_effect_nodes();
     _cartoon -> setEnabled(true);
 }
 
 void
 Shape::disable_cartoon_effect()
 {
+    create_effect_nodes();
     _cartoon -> setEnabled(false);
 }
 
 void
 Shape::toggle_cartoon_effect()
 {
+    create_effect_nodes();
     _cartoon -> setEnabled(! _cartoon -> getEnabled());
 }
 
 bool
-Shape::cartoon_effect_enabled() const
+Shape::cartoon_effect_enabled() 
 {
+    create_effect_nodes();
     return _cartoon -> getEnabled();
 }
 
 void
 Shape::set_cartoon_effect_outline_width(float width)
 {
+    create_effect_nodes();
     _cartoon -> setOutlineLineWidth(width);
 }
 
 float
-Shape::get_cartoon_effect_outline_width() const
+Shape::get_cartoon_effect_outline_width() 
 {
+    create_effect_nodes();
     return _cartoon -> getOutlineLineWidth();
 }
 
 void
 Shape::set_cartoon_effect_outline_color(const osg::Vec4f & color)
 {
-  _cartoon -> setOutlineColor(color);
+    create_effect_nodes();
+    _cartoon -> setOutlineColor(color);
 }
 
 const osg::Vec4f &
-Shape::get_cartoon_effect_outline_color() const
+Shape::get_cartoon_effect_outline_color() 
 {
-  return _cartoon -> getOutlineColor();
+    create_effect_nodes();
+    return _cartoon -> getOutlineColor();
 }
 
 
 void
 Shape::enable_wireframe_effect()
 {
+    create_effect_nodes();
     _wireframe -> setEnabled(true);
 }
 
 void
 Shape::disable_wireframe_effect()
 {
+    create_effect_nodes();
     _wireframe -> setEnabled(false);
 }
 
 void
 Shape::toggle_wireframe_effect()
 {
+    create_effect_nodes();
     _wireframe -> setEnabled(! _wireframe -> getEnabled());
 }
 
 bool
-Shape::wireframe_effect_enabled() const
+Shape::wireframe_effect_enabled() 
 {
-  return _wireframe -> getEnabled();
+    create_effect_nodes();
+    return _wireframe -> getEnabled();
 }
 
 void
 Shape::set_wireframe_effect_line_width(float width)
 {
+    create_effect_nodes();
     _wireframe -> setWireframeLineWidth(width);
 }
 
 float
-Shape::get_wireframe_effect_line_width() const
+Shape::get_wireframe_effect_line_width() 
 {
-  return _wireframe -> getWireframeLineWidth();
+    create_effect_nodes();
+    return _wireframe -> getWireframeLineWidth();
 }
 
 void
 Shape::set_wireframe_effect_line_color(const osg::Vec4f & color)
 {
+    create_effect_nodes();
     _wireframe -> setWireframeColor(color);
 }
 
 const osg::Vec4f &
-Shape::get_wireframe_effect_line_color() const
+Shape::get_wireframe_effect_line_color() 
 {
+    create_effect_nodes();
     return _wireframe -> getWireframeColor();
 }
 
@@ -751,48 +845,56 @@ Shape::get_wireframe_effect_line_color() const
 void
 Shape::enable_specular_highlights_effect()
 {
+    create_effect_nodes();
     _specular_highlights -> setEnabled(true);
 }
 
 void
 Shape::disable_specular_highlights_effect()
 {
+    create_effect_nodes();
     _specular_highlights -> setEnabled(false);
 }
 
 void
 Shape::toggle_specular_highlights_effect()
 {
+    create_effect_nodes();
     _specular_highlights -> setEnabled(! _specular_highlights -> getEnabled());
 }
 
 bool
-Shape::specular_highlights_effect_enabled() const
+Shape::specular_highlights_effect_enabled()
 {
+    create_effect_nodes();
     return _specular_highlights -> getEnabled();
 }
 
 void
 Shape::set_specular_highlights_effect_exponent(float exponent)
 {
+    create_effect_nodes();
     _specular_highlights -> setSpecularExponent(exponent);
 }
 
 float
-Shape::get_specular_highlights_effect_exponent() const
+Shape::get_specular_highlights_effect_exponent()
 {
+    create_effect_nodes();
     return _specular_highlights -> getSpecularExponent();
 }
 
 void
 Shape::get_specular_highlights_effect_color(const osg::Vec4f & color)
 {
+    create_effect_nodes();
     _specular_highlights -> setSpecularColor(color);
 }
 
 const osg::Vec4f &
-Shape::get_specular_highlights_effect_color() const
+Shape::get_specular_highlights_effect_color()
 {
+    create_effect_nodes();
     return _specular_highlights -> getSpecularColor();
 }
 
@@ -887,5 +989,3 @@ Shape::~Shape()
 //   }
 // }
 //_fill_regular_polygon(V0, 0, radial_segments, this -> radius, this -> distal, dc);
-
-

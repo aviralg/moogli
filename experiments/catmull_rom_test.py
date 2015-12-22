@@ -16,12 +16,27 @@ print moogli.__path__
 
 soma = moogli.shapes.CatmullRom("soma", moogli.geometry.Vec3f(0.0, 0.0, 0.0), 2.0)
 soma_sphere = moogli.shapes.Sphere("Soma sphere", moogli.geometry.Vec3f(0.0, 0.0, 0.0), 2.0, 20, moogli.colors.GREEN)
-axon_segment_1 = moogli.shapes.CatmullRom("axon_segment_1", moogli.geometry.Vec3f(20.0, 20.0, 20.0), 0.25)
-axon_segment_2 = moogli.shapes.CatmullRom("axon_segment_2", moogli.geometry.Vec3f(10.0, 0.0, 0.0), 0.50)
-axon_segment_3 = moogli.shapes.CatmullRom("axon_segment_3", moogli.geometry.Vec3f(0.0, 10.0, 0.0), 0.75)
-soma._interpolate_root_node_to_leaf_node(axon_segment_1, 20, 10)
-soma._interpolate_root_node_to_leaf_node(axon_segment_2, 20, 10)
-soma._interpolate_root_node_to_leaf_node(axon_segment_3, 20, 10)
+axon_segment_1 = moogli.shapes.CatmullRom("axon_segment_1",
+                                          moogli.geometry.Vec3f(0.0, 0.0, 20.0),
+                                          0.10)
+axon_segment_2 = moogli.shapes.CatmullRom("axon_segment_2",
+                                          moogli.geometry.Vec3f(0.0, 0.0, 30.0),
+                                          0.75)
+axon_segment_3 = moogli.shapes.CatmullRom("axon_segment_3",
+                                          moogli.geometry.Vec3f(0.0, 0.0, 40.0),
+                                          5.0)
+soma._interpolate_root_node_to_internal_node(axon_segment_1, axon_segment_2, 20, 10)
+axon_segment_1._interpolate_root_child_node_to_internal_node(soma,
+                                                             axon_segment_2,
+                                                             axon_segment_3,
+                                                             20,
+                                                             10)
+axon_segment_2._interpolate_internal_node_to_leaf_node(soma,
+                                                       axon_segment_1,
+                                                       axon_segment_3,
+                                                       20,
+                                                       10)
+#soma._interpolate_root_child_node_to_internal_node(axon_segment_3, 20, 10)
 
 app = QApplication(sys.argv)
 #
@@ -122,7 +137,7 @@ viewer.set_background_color(moogli.geometry.Vec4f(1.0, 1.0, 1.0, 1.0))
 viewer.attach_shape(soma)
 viewer.attach_shape(axon_segment_1)
 viewer.attach_shape(axon_segment_2)
-viewer.attach_shape(axon_segment_3)
+# viewer.attach_shape(axon_segment_3)
 viewer.attach_shape(soma_sphere)
 viewer.update()
 viewer.show()

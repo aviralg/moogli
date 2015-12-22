@@ -23,6 +23,16 @@ public:
     face_normal(osg::Vec3f x, osg::Vec3f y, osg::Vec3f z);
 
     static void
+    fill_regular_polygon( osg::Vec3Array * T
+                        , uint index
+                        , uint vertices
+                        , float radius
+                        , const osg::Vec3f & center
+                        , const osg::Vec3f & D
+                        , const osg::Vec3f & U
+                        );
+
+    static void
     fill_regular_polygon( osg::Vec3Array * V
                         , uint index
                         , uint vertices
@@ -85,6 +95,9 @@ public:
     export_geometry(const std::string & filename, bool with_effects = false) const;
 
     void
+    create_effect_nodes();
+
+    void
     enable_effects();
 
     void
@@ -103,19 +116,19 @@ public:
     toggle_outline_effect();
 
     bool
-    outline_effect_enabled() const;
+    outline_effect_enabled();
 
     void
     set_outline_effect_line_width(float width);
 
     float
-    get_outline_effect_line_width() const;
+    get_outline_effect_line_width();
 
     void
     set_outline_effect_line_color(const osg::Vec4f & color);
 
     const osg::Vec4f &
-    get_outline_effect_line_color() const;
+    get_outline_effect_line_color();
 
     void
     enable_cartoon_effect();
@@ -127,19 +140,19 @@ public:
     toggle_cartoon_effect();
 
     bool
-    cartoon_effect_enabled() const;
+    cartoon_effect_enabled();
 
     void
     set_cartoon_effect_outline_width(float width);
 
     float
-    get_cartoon_effect_outline_width() const;
+    get_cartoon_effect_outline_width();
 
     void
     set_cartoon_effect_outline_color(const osg::Vec4f & color);
 
     const osg::Vec4f &
-    get_cartoon_effect_outline_color() const;
+    get_cartoon_effect_outline_color();
 
     void
     enable_wireframe_effect();
@@ -151,19 +164,19 @@ public:
     toggle_wireframe_effect();
 
     bool
-    wireframe_effect_enabled() const;
+    wireframe_effect_enabled();
 
     void
     set_wireframe_effect_line_width(float width);
 
     float
-    get_wireframe_effect_line_width() const;
+    get_wireframe_effect_line_width();
 
     void
     set_wireframe_effect_line_color(const osg::Vec4f & color);
 
     const osg::Vec4f &
-    get_wireframe_effect_line_color() const;
+    get_wireframe_effect_line_color();
 
     void
     enable_specular_highlights_effect();
@@ -175,19 +188,19 @@ public:
     toggle_specular_highlights_effect();
 
     bool
-    specular_highlights_effect_enabled() const;
+    specular_highlights_effect_enabled();
 
     void
     set_specular_highlights_effect_exponent(float exponent);
 
     float
-    get_specular_highlights_effect_exponent() const;
+    get_specular_highlights_effect_exponent();
 
     void
     get_specular_highlights_effect_color(const osg::Vec4f & color);
 
     const osg::Vec4f &
-    get_specular_highlights_effect_color() const;
+    get_specular_highlights_effect_color();
 
     virtual
     ~Shape();
