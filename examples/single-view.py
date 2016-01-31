@@ -40,7 +40,6 @@ sphere.set_radius(5.1)
 sphere.set_center(Vec3f(20.0, 0.0, 0.0))
 viewer.add_view(view)
 viewer.add_mesh(sphere)
-
 for frustum in frustums:
     viewer.add_mesh(frustum)
 viewer.show()

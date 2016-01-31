@@ -1,22 +1,16 @@
 #include "shapes/Frustum.hpp"
 
-Frustum::Frustum(const string & id) : Shape(id)
-{
-    set( osg::Vec3f(0.0f, 0.0f, 0.0f),
-         osg::Z_AXIS,
-         10.0f,
-         5.0f,
-         2.0f,
-         10,
-         osg::Vec4f(1.0f, 0.0f, 0.0f, 1.0f),
-         osg::Vec4f(0.0f, 0.0f, 1.0f, 1.0f)
-       );
-    allocate();
-    construct_indices();
-    construct_vertices();
-    this -> color();
-}
-
+Frustum::Frustum(const string & id) : Frustum( id
+                                            , osg::Vec3f(0.0f, 0.0f, 0.0f)
+                                            , osg::Z_AXIS
+                                            , 10.0f
+                                            , 5.0f
+                                            , 2.0f
+                                            , 4
+                                            , osg::Vec4f(1.0f, 0.0f, 0.0f, 1.0f)
+                                            , osg::Vec4f(0.0f, 0.0f, 1.0f, 1.0f)
+                                            )
+{ }
 
 Frustum::Frustum( const string & id
             , const osg::Vec3f & center
@@ -268,13 +262,6 @@ Frustum::set_apex_color(const osg::Vec4f & apex_color)
     _coloring_required = true;
 }
 
-void
-Frustum::set_side_color(const osg::Vec4f & side_color)
-{
-    _side_color = side_color;
-    _coloring_required = true;
-}
-
 const osg::Vec4f &
 Frustum::get_base_color() const
 {
@@ -285,12 +272,6 @@ const osg::Vec4f &
 Frustum::get_apex_color() const
 {
     return _apex_color;
-}
-
-const osg::Vec4f &
-Frustum::get_side_color() const
-{
-    return _side_color;
 }
 
 void
@@ -342,7 +323,7 @@ Frustum::allocate()
     _geometry -> setVertexArray(new osg::Vec3Array(4 * _vertices));
     _geometry -> setNormalArray(new osg::Vec3Array(4 * _vertices), osg::Array::BIND_PER_VERTEX);
     _geometry -> setColorArray(new osg::Vec4Array(4 * _vertices), osg::Array::BIND_PER_VERTEX);
-    _geometry -> insertPrimitiveSet(0, new osg::DrawElementsUShort(GL_TRIANGLES, 12 * _vertices - 12));
+    _geometry -> addPrimitiveSet(new osg::DrawElementsUShort(GL_TRIANGLES, 12 * _vertices - 12));
     _allocation_required = false;
 }
 

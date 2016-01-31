@@ -6,8 +6,6 @@ import colors
 from .group import Group
 from .viewers import View
 from .viewers import Viewer
-from .viewers import CompositeView
-from .viewers import CompositeViewer
 import widgets
 # import constants
 # import visualization
@@ -22,8 +20,6 @@ __all__ = ["core",
            "Group",
            "View",
            "Viewer",
-           "CompositeView",
-           "CompositeViewer",
            "extensions"]
   #         "constants",
   #         "visualization",

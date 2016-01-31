@@ -25,6 +25,7 @@
 /******************************************************************************/
 /* OSG HEADERS                                                                */
 /******************************************************************************/
+#include <osg/Shape>
 #include <osg/Geometry>
 #include <osg/Geode>
 #include <osg/Billboard>
@@ -58,7 +59,6 @@
 #include <osgQt/GraphicsWindowQt>
 
 #include <osgGA/TrackballManipulator>
-#include <osgGA/MultiTouchTrackballManipulator>
 #include <osgGA/FirstPersonManipulator>
 #include <osgGA/OrbitManipulator>
 #include <osgGA/FlightManipulator>

@@ -36,30 +36,25 @@ class Group():
         self.groups.pop(group.id())
 
     def hide(self):
-        map(lambda shape: shape.hide(),
-            self.shapes.values())
+        pass
 
     def show(self):
-        map(lambda shape: shape.show(),
-            self.shapes.values())
+        pass
+
+    def outline(self):
+        pass
 
     def enable_outline_mode(self):
-        map(lambda shape: shape.enable_outline_mode(),
-            self.shapes.values())
+        pass
 
     def disable_outline_mode(self):
-        map(lambda shape: shape.enable_outline_mode(),
-            self.shapes.values())
+        pass
 
-    # def toggle_outline_mode
     def enable_wireframe_mode(self):
-        map(lambda shape: shape.enable_wireframe_mode(),
-            self.shapes.values())
+        pass
 
     def disable_wireframe_mode(self):
-        map(lambda shape: shape.disable_wireframe_mode(),
-            self.shapes.values())
-
+        pass
 
     def set_outline(self):
         pass

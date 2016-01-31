@@ -141,17 +141,11 @@ public:
     void
     set_apex_color(const osg::Vec4f & apex_color);
 
-    void
-    set_side_color(const osg::Vec4f & side_color);
-
     const osg::Vec4f &
     get_base_color() const;
 
     const osg::Vec4f &
     get_apex_color() const;
-
-    const osg::Vec4f &
-    get_side_color() const;
 
     void
     set_color(const osg::Vec4f & color);
@@ -188,7 +182,6 @@ private:
     unsigned int _vertices;
     osg::Vec4f _base_color;
     osg::Vec4f _apex_color;
-    osg::Vec4f _side_color;
 };
 
 

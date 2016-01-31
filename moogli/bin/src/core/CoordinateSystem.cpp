@@ -4,14 +4,6 @@
 // http://opensg.org/wiki/Tutorial/OpenSG1/Traversal
 // http://stackoverflow.xluat.com/questions/28104362/how-to-rotate-camera-in-openscenegraphwalk-through-in-model
 
-
-class FixedRelativePositionNode:
-{
-    
-}
-
-
-
 CoordinateSystem::CoordinateSystem(): PositionAttitudeTransform()
                                     , plane(new osg::Geometry())
 {

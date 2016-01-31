@@ -1,17 +1,12 @@
 #include "shapes/Sphere.hpp"
 
-Sphere::Sphere(const string & id): Shape(id)
-{
-    set( osg::Vec3f(0.0f, 0.0f, 0.0f)
-       , 1.0f
-       , 20
-       , osg::Vec4f(0.0f, 1.0f, 0.0f, 1.0f)
-       );
-    allocate();
-    construct_indices();
-    construct_vertices();
-    this -> color();
-}
+Sphere::Sphere(const string & id) : Sphere( id
+                                              , osg::Vec3f(0.0f ,0.0f, 0.0f)
+                                              , 1.0f
+                                              , 20
+                                              , osg::Vec4f(0.0f, 1.0f, 0.0, 1.0f)
+                                              )
+{ }
 
 Sphere::Sphere( const string & id
                       , const osg::Vec3f & center
@@ -39,7 +34,7 @@ Sphere::allocate()
     _geometry -> setColorArray( new osg::Vec4Array(vertex_count)
                              , osg::Array::BIND_OVERALL
                              );
-    _geometry -> insertPrimitiveSet(0,  new osg::DrawElementsUShort( GL_TRIANGLES
+    _geometry -> addPrimitiveSet( new osg::DrawElementsUShort( GL_TRIANGLES
                                                             , (ring_count - 1) * 2 * _vertices * 3
                                                             )
                                );

@@ -3,58 +3,6 @@
 %Import QtGui/QtGuimod.sip
 %Import QtOpenGL/QtOpenGLmod.sip
 
-%ModuleHeaderCode
-#include <osg/Geometry>
-#include <osgUtil/LineSegmentIntersector>
-#include <iostream>
-#include <Python.h>
-PyObject *
-intersections_to_tuple_of_pairs(const osgUtil::LineSegmentIntersector::Intersections & intersections);
-%End
-
-%ModuleCode
-#include <osg/Geometry>
-#include <osgUtil/LineSegmentIntersector>
-#include <iostream>
-#include <Python.h>
-
-PyObject *
-intersections_to_tuple_of_pairs(const osgUtil::LineSegmentIntersector::Intersections & intersections)
-{
-    PyObject * tuple = PyTuple_New(intersections.size());
-    uint index = 0;
-    for(const osgUtil::LineSegmentIntersector::Intersection & hit : intersections)
-    {
-         std::cerr << hit.drawable -> className() << std::endl;
-         osg::Geometry * geometry = hit.drawable -> asGeometry();
-         if(geometry)
-         {
-             PyObject * pair = PyTuple_New(2);
-             PyTuple_SET_ITEM( pair
-                             , 0
-                             , PyString_FromString(geometry -> getName().c_str())
-                             );
-             
-             osg::Vec3f * point = new osg::Vec3f( hit.getWorldIntersectPoint().x()
-                                                , hit.getWorldIntersectPoint().y()
-                                                , hit.getWorldIntersectPoint().z()
-                                                );
-             PyTuple_SET_ITEM( pair
-                             , 1
-                             , sipConvertFromType( point 
-                                                 , sipFindType("Vec3f")
-                                                 , Py_None
-                                                 )
-                             );
-
-             PyTuple_SET_ITEM(tuple, index, pair);
-             index += 1;
-         }
-    }
-    return tuple;
-}
-%End
-
 class Vec2i
 {
 %TypeHeaderCode
@@ -62,29 +10,17 @@ class Vec2i
 using osg::Vec2i;
 %End
 public:
- 	  Vec2i();
+    Vec2i();
  	  Vec2i(int x, int y);
-    bool operator== (const Vec2i &v) const;
-    bool operator!= (const Vec2i &v) const;
-    bool operator< (const Vec2i &v) const;
-    void set(int x, int y);
-    void set(const Vec2i &rhs);
-    PyObject * get_x();
-    %MethodCode
-        sipRes = PyInt_FromLong(sipCpp -> x());
-    %End
-    void set_x(int value);
-    %MethodCode
-        sipCpp -> x() = a0;
-    %End
-    PyObject * get_y();
-    %MethodCode
-        sipRes = PyInt_FromLong(sipCpp -> y());
-    %End
-    void set_y(int value);
-    %MethodCode
-        sipCpp -> y() = a0;
-    %End
+    bool 	operator== (const Vec2i &v) const;
+    bool 	operator!= (const Vec2i &v) const;
+    bool 	operator< (const Vec2i &v) const;
+    void 	set(int x, int y);
+    void 	set(const Vec2i &rhs);
+    int x() const;
+    int y() const;
+    int r() const;
+    int g() const;
     Vec2i	operator* (int rhs) const;
     Vec2i	operator/ (int rhs) const;
     Vec2i	operator+ (int rhs) const;
@@ -92,30 +28,6 @@ public:
     Vec2i	operator+ (const Vec2i &rhs) const;
     Vec2i	operator- (const Vec2i &rhs) const;
     Vec2i	operator* (const Vec2i &rhs) const;
-    PyObject *
-    __str__();
-    %MethodCode
-        sipRes = PyString_FromString( ( std::string("Vec2i(")
-                                      + std::to_string(sipCpp -> x())
-                                      + ", "
-                                      + std::to_string(sipCpp -> y())
-                                      + ")"
-                                      ).c_str()
-                                    );
-    %End
-
-    PyObject *
-    __repr__();
-    %MethodCode
-        sipRes = PyString_FromString( ( std::string("Vec2i(")
-                                      + std::to_string(sipCpp -> x())
-                                      + ", "
-                                      + std::to_string(sipCpp -> y())
-                                      + ")"
-                                      ).c_str()
-                                    );
-    %End
-
 };
 
 class Vec2f
@@ -131,22 +43,8 @@ public:
     bool operator!= (const Vec2f &v) const;
     bool operator< (const Vec2f &v) const;
     void set(float x, float y);
-    PyObject * get_x();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> x());
-    %End
-    void set_x(float value);
-    %MethodCode
-        sipCpp -> x() = a0;
-    %End
-    PyObject * get_y();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> y());
-    %End
-    void set_y(float value);
-    %MethodCode
-        sipCpp -> y() = a0;
-    %End
+    float x() const;
+    float y() const;
     bool valid() const;
     bool isNaN() const;
     float operator* (const Vec2f &rhs) const;
@@ -158,34 +56,7 @@ public:
     float length() const;
     float length2() const;
     float normalize();
-
-    PyObject *
-    __str__();
-    %MethodCode
-        sipRes = PyString_FromString( ( "Vec2f("
-                                      + std::to_string(sipCpp -> x())
-                                      + ", "
-                                      + std::to_string(sipCpp -> y())
-                                      + ")"
-                                      ).c_str()
-                                    );
-    %End
-
-    PyObject *
-    __repr__();
-    %MethodCode
-        sipRes = PyString_FromString( ( "Vec2f("
-                                      + std::to_string(sipCpp -> x())
-                                      + ", "
-                                      + std::to_string(sipCpp -> y())
-                                      + ")"
-                                      ).c_str()
-                                    );
-    %End
-
-
 };
-
 
 class Vec3i
 {
@@ -201,30 +72,12 @@ public:
     bool operator< (const Vec3i &v) const;
     void set(int r, int g, int b);
     void set(const Vec3i &rhs);
-    PyObject * get_x();
-    %MethodCode
-        sipRes = PyInt_FromLong(sipCpp -> x());
-    %End
-    void set_x(int value);
-    %MethodCode
-        sipCpp -> x() = a0;
-    %End
-    PyObject * get_y();
-    %MethodCode
-        sipRes = PyInt_FromLong(sipCpp -> y());
-    %End
-    void set_y(int value);
-    %MethodCode
-        sipCpp -> y() = a0;
-    %End
-    PyObject * get_z();
-    %MethodCode
-        sipRes = PyInt_FromLong(sipCpp -> z());
-    %End
-    void set_z(int value);
-    %MethodCode
-        sipCpp -> z() = a0;
-    %End
+    int	x() const;
+    int	y() const;
+    int	z() const;
+    int	r() const;
+    int	g() const;
+    int	b() const;
     Vec3i	operator* (int rhs) const;
     Vec3i	operator/ (int rhs) const;
     Vec3i	operator+ (int rhs) const;
@@ -232,37 +85,6 @@ public:
     Vec3i	operator+ (const Vec3i &rhs) const;
     Vec3i	operator- (const Vec3i &rhs) const;
     Vec3i	operator* (const Vec3i &rhs) const;
-
-    PyObject *
-    __str__();
-    %MethodCode
-        sipRes = PyString_FromString( ( "Vec3i("
-                                      + std::to_string(sipCpp -> x())
-                                      + ", "
-                                      + std::to_string(sipCpp -> y())
-                                      + ", "
-                                      + std::to_string(sipCpp -> z())
-                                      + ")"
-                                      ).c_str()
-                                    );
-    %End
-
-    PyObject *
-    __repr__();
-    %MethodCode
-        sipRes = PyString_FromString( ( "Vec3i("
-                                      + std::to_string(sipCpp -> x())
-                                      + ", "
-                                      + std::to_string(sipCpp -> y())
-                                      + ", "
-                                      + std::to_string(sipCpp -> z())
-                                      + ")"
-                                      ).c_str()
-                                    );
-    %End
-
-
-
 };
 
 class Vec3f
@@ -280,30 +102,9 @@ public:
     bool operator< (const Vec3f &v) const;
     void set(float x, float y, float z);
     void set(const Vec3f &rhs);
-    PyObject * get_x();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> x());
-    %End
-    void set_x(float value);
-    %MethodCode
-        sipCpp -> x() = a0;
-    %End
-    PyObject * get_y();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> y());
-    %End
-    void set_y(float value);
-    %MethodCode
-        sipCpp -> y() = a0;
-    %End
-    PyObject * get_z();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> z());
-    %End
-    void set_z(float value);
-    %MethodCode
-        sipCpp -> z() = a0;
-    %End
+    float x() const;
+    float y() const;
+    float z() const;
     bool valid() const;
     bool isNaN () const;
     float operator* (const Vec3f &rhs) const;
@@ -316,37 +117,6 @@ public:
     float length() const;
     float length2() const;
     float normalize();
-
-    PyObject *
-    __str__();
-    %MethodCode
-        sipRes = PyString_FromString( ( "Vec3f("
-                                      + std::to_string(sipCpp -> x())
-                                      + ", "
-                                      + std::to_string(sipCpp -> y())
-                                      + ", "
-                                      + std::to_string(sipCpp -> z())
-                                      + ")"
-                                      ).c_str()
-                                    );
-    %End
-
-    PyObject *
-    __repr__();
-    %MethodCode
-        sipRes = PyString_FromString( ( "Vec3f("
-                                      + std::to_string(sipCpp -> x())
-                                      + ", "
-                                      + std::to_string(sipCpp -> y())
-                                      + ", "
-                                      + std::to_string(sipCpp -> z())
-                                      + ")"
-                                      ).c_str()
-                                    );
-    %End
-
-
-
 };
 
 class Vec4i
@@ -362,38 +132,14 @@ public:
     bool operator!= (const Vec4i &v) const;
     bool operator< (const Vec4i &v) const;
     void set(int x, int y, int z, int w);
-    PyObject * get_x();
-    %MethodCode
-        sipRes = PyInt_FromLong(sipCpp -> x());
-    %End
-    void set_x(int value);
-    %MethodCode
-        sipCpp -> x() = a0;
-    %End
-    PyObject * get_y();
-    %MethodCode
-        sipRes = PyInt_FromLong(sipCpp -> y());
-    %End
-    void set_y(int value);
-    %MethodCode
-        sipCpp -> y() = a0;
-    %End
-    PyObject * get_z();
-    %MethodCode
-        sipRes = PyInt_FromLong(sipCpp -> z());
-    %End
-    void set_z(int value);
-    %MethodCode
-        sipCpp -> z() = a0;
-    %End
-    PyObject * get_w();
-    %MethodCode
-        sipRes = PyInt_FromLong(sipCpp -> w());
-    %End
-    void set_w(int value);
-    %MethodCode
-        sipCpp -> w() = a0;
-    %End
+    int x() const;
+    int y() const;
+    int	z() const;
+    int	w() const;
+    int r() const;
+    int	g() const;
+    int	b() const;
+    int	a() const;
     Vec4i	operator* (int rhs) const;
     Vec4i	operator/ (int rhs) const;
     Vec4i	operator+ (int rhs) const;
@@ -401,39 +147,6 @@ public:
     Vec4i	operator+ (const Vec4i &rhs) const;
     Vec4i operator- (const Vec4i &rhs) const;
     Vec4i	operator* (const Vec4i &rhs) const;
-
-    PyObject *
-    __str__();
-    %MethodCode
-        sipRes = PyString_FromString( ( "Vec4i("
-                                      + std::to_string(sipCpp -> x())
-                                      + ", "
-                                      + std::to_string(sipCpp -> y())
-                                      + ", "
-                                      + std::to_string(sipCpp -> z())
-                                      + ", "
-                                      + std::to_string(sipCpp -> w())
-                                      + ")"
-                                      ).c_str()
-                                    );
-    %End
-
-    PyObject *
-    __repr__();
-    %MethodCode
-        sipRes = PyString_FromString( ( "Vec4i("
-                                      + std::to_string(sipCpp -> x())
-                                      + ", "
-                                      + std::to_string(sipCpp -> y())
-                                      + ", "
-                                      + std::to_string(sipCpp -> z())
-                                      + ", "
-                                      + std::to_string(sipCpp -> w())
-                                      + ")"
-                                      ).c_str()
-                                    );
-    %End
-
 };
 
 
@@ -451,38 +164,16 @@ public:
     bool operator!= (const Vec4f &v) const;
     bool operator< (const Vec4f &v) const;
     void set(float x, float y, float z, float w);
-    PyObject * get_x();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> x());
-    %End
-    void set_x(float value);
-    %MethodCode
-        sipCpp -> x() = a0;
-    %End
-    PyObject * get_y();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> y());
-    %End
-    void set_y(float value);
-    %MethodCode
-        sipCpp -> y() = a0;
-    %End
-    PyObject * get_z();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> z());
-    %End
-    void set_z(float value);
-    %MethodCode
-        sipCpp -> z() = a0;
-    %End
-    PyObject * get_w();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> w());
-    %End
-    void set_w(float value);
-    %MethodCode
-        sipCpp -> w() = a0;
-    %End
+    float x() const;
+    float y() const;
+    float z() const;
+    float w() const;
+    float r() const;
+    float g() const;
+    float b() const;
+    float a() const;
+    unsigned int asABGR() const;
+    unsigned int asRGBA() const;
     bool valid() const;
     bool isNaN() const;
     float operator* (const Vec4f &rhs) const;
@@ -494,40 +185,6 @@ public:
     float length() const;
     float length2() const;
     float normalize();
-
-    PyObject *
-    __str__();
-    %MethodCode
-        sipRes = PyString_FromString( ( "Vec4f("
-                                      + std::to_string(sipCpp -> x())
-                                      + ", "
-                                      + std::to_string(sipCpp -> y())
-                                      + ", "
-                                      + std::to_string(sipCpp -> z())
-                                      + ", "
-                                      + std::to_string(sipCpp -> w())
-                                      + ")"
-                                      ).c_str()
-                                    );
-    %End
-
-    PyObject *
-    __repr__();
-    %MethodCode
-        sipRes = PyString_FromString( ( "Vec4f("
-                                      + std::to_string(sipCpp -> x())
-                                      + ", "
-                                      + std::to_string(sipCpp -> y())
-                                      + ", "
-                                      + std::to_string(sipCpp -> z())
-                                      + ", "
-                                      + std::to_string(sipCpp -> w())
-                                      + ")"
-                                      ).c_str()
-                                    );
-    %End
-
-
 };
 
 class Quat
@@ -549,38 +206,10 @@ public:
     Vec3f asVec3() const;
     void set(float x, float y, float z, float w);
     void set(const Vec4f &v);
-    PyObject * get_x();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> x());
-    %End
-    void set_x(float value);
-    %MethodCode
-        sipCpp -> x() = a0;
-    %End
-    PyObject * get_y();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> y());
-    %End
-    void set_y(float value);
-    %MethodCode
-        sipCpp -> y() = a0;
-    %End
-    PyObject * get_z();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> z());
-    %End
-    void set_z(float value);
-    %MethodCode
-        sipCpp -> z() = a0;
-    %End
-    PyObject * get_w();
-    %MethodCode
-        sipRes = PyFloat_FromDouble(sipCpp -> w());
-    %End
-    void set_w(float value);
-    %MethodCode
-        sipCpp -> w() = a0;
-    %End
+    float x() const;
+    float y() const;
+    float z() const;
+    float w() const;
     bool zeroRotation() const;
     const Quat operator* (float rhs) const;
     const Quat operator* (const Quat &rhs) const;
@@ -598,78 +227,7 @@ public:
     void makeRotate(float angle1, const Vec3f &axis1, float angle2, const Vec3f &axis2, float angle3, const Vec3f &axis3);
     void makeRotate(const Vec3f &vec1, const Vec3f &vec2);
     Vec3f operator* (const Vec3f &v) const;
-
-    PyObject *
-    __str__();
-    %MethodCode
-        sipRes = PyString_FromString( ( "Quat("
-                                      + std::to_string(sipCpp -> x())
-                                      + ", "
-                                      + std::to_string(sipCpp -> y())
-                                      + ", "
-                                      + std::to_string(sipCpp -> z())
-                                      + ", "
-                                      + std::to_string(sipCpp -> w())
-                                      + ")"
-                                      ).c_str()
-                                    );
-    %End
-
-    PyObject *
-    __repr__();
-    %MethodCode
-        sipRes = PyString_FromString( ( "Quat("
-                                      + std::to_string(sipCpp -> x())
-                                      + ", "
-                                      + std::to_string(sipCpp -> y())
-                                      + ", "
-                                      + std::to_string(sipCpp -> z())
-                                      + ", "
-                                      + std::to_string(sipCpp -> w())
-                                      + ")"
-                                      ).c_str()
-                                    );
-    %End
-
 };
-// template<typename VT>
-// class BoundingBoxImpl
-// {
-// %TypeHeaderCode
-// #include <osg/BoundingBox>
-// %End
-//     BoundingBoxImpl(float xmin, float ymin, float zmin, float xmax, float ymax, float zmax);
-//  	  BoundingBoxImpl(const Vec3f & min, const Vec3f & max);
-//     void init();
-//     bool valid() const;
-//     void set(float xmin, float ymin, float zmin, float xmax, float ymax, float zmax);
-//     void set(const Vec3f & min, const Vec3f & max);
-//     float xMin() const;
-//     float yMin() const;
-//     float zMin() const;
-//     float xMax() const;
-//     float yMax() const;
-//     float zMax() const;
-//     const Vec3f & center() const;
-//     float radius() const;
-//     float radius2() const;
-// };
-// // const vec_type 	corner (unsigned int pos) const
-// //  	Returns a specific corner of the bounding box.
-// // void 	expandBy (const vec_type &v)
-// //  	Expands the bounding box to include the given coordinate.
-// // void 	expandBy (value_type x, value_type y, value_type z)
-// //  	Expands the bounding box to include the given coordinate.
-// // void 	expandBy (const BoundingBoxImpl &bb)
-// //  	Expands this bounding box to include the given bounding box.
-// // void 	expandBy (const BoundingSphereImpl< VT > &sh)
-// //  	Expands this bounding box to include the given sphere.
-// // BoundingBoxImpl 	intersect (const BoundingBoxImpl &bb) const
-// //  	Returns the intersection of this bounding box and the specified bounding box.
-// // bool 	intersects (const BoundingBoxImpl &bb) const
-// //  	Return true if this bounding box intersects the specified bounding box.
-// // bool 	contains (const vec_type &v) const
-// //  	Returns true if this bounding box contains the specified coordinate. 
 
 
 class Shape /Abstract/ 
@@ -741,19 +299,19 @@ public:
     toggle_outline_effect();
 
     bool
-    outline_effect_enabled();
+    outline_effect_enabled() const;
 
     void
     set_outline_effect_line_width(float width);
 
     float
-    get_outline_effect_line_width();
+    get_outline_effect_line_width() const;
 
     void
     set_outline_effect_line_color(const Vec4f & color);
 
     const Vec4f &
-    get_outline_effect_line_color();
+    get_outline_effect_line_color() const;
 
     void
     enable_cartoon_effect();
@@ -765,19 +323,19 @@ public:
     toggle_cartoon_effect();
 
     bool
-    cartoon_effect_enabled();
+    cartoon_effect_enabled() const;
 
     void
     set_cartoon_effect_outline_width(float width);
 
     float
-    get_cartoon_effect_outline_width();
+    get_cartoon_effect_outline_width() const;
 
     void
     set_cartoon_effect_outline_color(const Vec4f & color);
 
     const Vec4f &
-    get_cartoon_effect_outline_color();
+    get_cartoon_effect_outline_color() const;
 
     void
     enable_wireframe_effect();
@@ -789,19 +347,19 @@ public:
     toggle_wireframe_effect();
 
     bool
-    wireframe_effect_enabled();
+    wireframe_effect_enabled() const;
 
     void
     set_wireframe_effect_line_width(float width);
 
     float
-    get_wireframe_effect_line_width();
+    get_wireframe_effect_line_width() const;
 
     void
     set_wireframe_effect_line_color(const Vec4f & color);
 
     const Vec4f &
-    get_wireframe_effect_line_color();
+    get_wireframe_effect_line_color() const;
 
     void
     enable_specular_highlights_effect();
@@ -813,19 +371,19 @@ public:
     toggle_specular_highlights_effect();
 
     bool
-    specular_highlights_effect_enabled();
+    specular_highlights_effect_enabled() const;
 
     void
     set_specular_highlights_effect_exponent(float exponent);
 
     float
-    get_specular_highlights_effect_exponent();
+    get_specular_highlights_effect_exponent() const;
 
     void
     get_specular_highlights_effect_color(const Vec4f & color);
 
     const Vec4f &
-    get_specular_highlights_effect_color();
+    get_specular_highlights_effect_color() const;
 };
 
 
@@ -1048,259 +606,6 @@ public:
 };
 
 
-class EllipsoidalSurface : public Shape
-{
-%TypeHeaderCode
-#include "shapes/EllipsoidalSurface.hpp"
-%End
-
-public:
-
-    EllipsoidalSurface(const char * id);
-
-
-    EllipsoidalSurface( const char * id
-                      , const Vec3f & center
-                      , float a
-                      , float b
-                      , float c
-                      , const Vec3f & a_axis
-                      , const Vec3f & b_axis
-                      , float theta_min
-                      , float theta_max
-                      , float phi_min
-                      , float phi_max
-                      , unsigned int vertices
-                      , const Vec4f & color
-                      );
-
-    void
-    set_geometry( const Vec3f & center
-                , float a
-                , float b
-                , float c
-                , const Vec3f & a_axis
-                , const Vec3f & b_axis
-                , float theta_min
-                , float theta_max
-                , float phi_min
-                , float phi_max
-                , unsigned int vertices
-                );
-
-    void
-    set( const Vec3f & center
-       , float a
-       , float b
-       , float c
-       , const Vec3f & a_axis
-       , const Vec3f & b_axis
-       , float theta_min
-       , float theta_max
-       , float phi_min
-       , float phi_max
-       , unsigned int vertices
-       , const Vec4f & color
-       );
-
-    float
-    get_phi_min() const;
-
-    void
-    set_phi_min(float phi_min);
-
-    float
-    get_phi_max() const;
-
-    void
-    set_phi_max(float phi_max);
-
-    float
-    get_theta_min() const;
-
-    void
-    set_theta_min(float theta_min);
-
-    float
-    get_theta_max() const;
-
-    void
-    set_theta_max(float theta_max);
-
-    float
-    get_a() const;
-
-    void
-    set_a(float a);
-
-    float
-    get_b() const;
-
-    void
-    set_b(float b);
-
-    float
-    get_c() const;
-
-    void
-    set_c(float c);
-
-    void
-    set_abc(float a, float b, float c);
-
-    void
-    set_theta(float theta_min, float theta_max);
-
-    void
-    set_phi(float phi_min, float phi_max);
-
-    void
-    set_center(const Vec3f & center);
-
-    const Vec3f &
-    get_center() const;
-
-    void
-    set_color(const Vec4f & color);
-
-    const Vec4f &
-    get_color() const;
-
-    void
-    set_a_and_b_axes(const Vec3f & a_axis, const Vec3f & b_axis);
-
-    void
-    set_b_and_c_axes(const Vec3f & b_axis, const Vec3f & c_axis);
-
-    void
-    set_c_and_a_axes(const Vec3f & c_axis, const Vec3f & a_axis);
-
-    const Vec3f &
-    get_a_axis() const;
-
-    const Vec3f &
-    get_b_axis() const;
-
-    const Vec3f &
-    get_c_axis() const;
-
-    void
-    set_vertices(unsigned int vertices);
-
-    unsigned int
-    get_vertices() const;
-//     PyObject *
-//     __str__();
-//     %MethodCode
-//         sipRes = PyString_FromString( ( std::string("EllipsoidalSurface(")
-//                                       + "id => " + sipCpp -> id()
-//                                       + "a  => " + sipCpp -> get_a()
-//                                       + "b  => " + sipCpp -> get_b()
-//                                       + "c  => " + sipCpp -> get_c()
-//        , float b
-//        , float c
-//        , const Vec3f & a_axis
-//        , const Vec3f & b_axis
-//        , float theta_min
-//        , float theta_max
-//        , float phi_min
-//        , float phi_max
-
-// + " "
-//                                       std::to_string(sipCpp -> x())
-//                                       + ", "
-//                                       + std::to_string(sipCpp -> y())
-//                                       + ")"
-//                                       ).c_str()
-//                                     );
-//     %End
-
-//     PyObject *
-//     __repr__();
-//     %MethodCode
-//         sipRes = PyString_FromString( ( std::string("Vec2i(")
-//                                       + std::to_string(sipCpp -> x())
-//                                       + ", "
-//                                       + std::to_string(sipCpp -> y())
-//                                       + ")"
-//                                       ).c_str()
-//                                     );
-//     %End
-
-};
-
-class CatmullRom : public Shape
-{
-%TypeHeaderCode
-#include "shapes/CatmullRom.hpp"
-%End
-
-public:
-
-    CatmullRom( const char * id
-              , const Vec3f & distal
-              , float radius
-              );
-
-    void
-    set_color(const Vec4f & color);
-
-    const Vec4f &
-    get_color() const;
-
-    void
-    _interpolate_root_node_to_leaf_node( CatmullRom * child
-                                       , const uint   axial_segments
-                                       , const uint   radial_segments
-                                       );
-
-    void
-    _interpolate_root_child_node_to_internal_node( CatmullRom * parent
-                                                 , CatmullRom * child
-                                                 , CatmullRom * grandchild
-                                                 , const uint axial_segments
-                                                 , const uint radial_segments
-                                                 );
-
-
-    void
-    _interpolate_root_child_node_to_leaf_node( CatmullRom * parent
-                                             , CatmullRom * child
-                                             , const uint axial_segments
-                                             , const uint radial_segments
-                                             );
-
-    void
-    _interpolate_internal_node_to_internal_node( CatmullRom * grandparent
-                                               , CatmullRom * parent
-                                               , CatmullRom * child
-                                               , CatmullRom * grandchild
-                                               , const uint axial_segments
-                                               , const uint radial_segments
-                                               );
-
-    void
-    _interpolate_internal_node_to_leaf_node( CatmullRom * grandparent
-                                           , CatmullRom * parent
-                                           , CatmullRom * child
-                                           , const uint axial_segments
-                                           , const uint radial_segments
-                                           );
-
-    void
-    _interpolate_root_node_to_internal_node( CatmullRom * child
-                                           , CatmullRom * grandchild
-                                           , const uint axial_segments
-                                           , const uint radial_segments
-                                           );
-    void
-    _interpolate_leaf_node( CatmullRom * parent
-                          , const uint axial_segments
-                          , const uint radial_segments
-                          );
-
-};
-
 class ColorBar
 {
 %TypeHeaderCode
@@ -1433,7 +738,7 @@ public:
     get_label_formatting_precision() const;
 };
 
-class MeshView : public QObject
+class MeshView 
 {
 %TypeHeaderCode
 #include "view/View.hpp"
@@ -1441,9 +746,6 @@ class MeshView : public QObject
 
 public:
     MeshView();
-
-    bool
-    event(QEvent * event);
 
     void
     set_position(const Vec2f & position);
@@ -1507,120 +809,32 @@ public:
 
 };
 
-class GLWidget : public QGLWidget
-{
-%TypeHeaderCode
-#include <osgQt/GraphicsWindowQt>
-using namespace osgQt;
-%End
 
-public:
-    GLWidget( QWidget* parent = NULL, const QGLWidget* shareWidget = NULL, Qt::WindowFlags f = 0, bool forwardKeyEvents = false );
-    GLWidget( QGLContext* context, QWidget* parent = NULL, const QGLWidget* shareWidget = NULL, Qt::WindowFlags f = 0, bool forwardKeyEvents = false );
-    GLWidget( const QGLFormat& format, QWidget* parent = NULL, const QGLWidget* shareWidget = NULL, Qt::WindowFlags f = 0, bool forwardKeyEvents = false );
-    virtual ~GLWidget();
 
-    bool getForwardKeyEvents() const; 
-    virtual void setForwardKeyEvents( bool f );
-    
-    void setKeyboardModifiers( QInputEvent* event );
-
-    virtual void keyPressEvent( QKeyEvent* event );
-    virtual void keyReleaseEvent( QKeyEvent* event );
-    virtual void mousePressEvent( QMouseEvent* event );
-    virtual void mouseReleaseEvent( QMouseEvent* event );
-    virtual void mouseDoubleClickEvent( QMouseEvent* event );
-    virtual void mouseMoveEvent( QMouseEvent* event );
-    virtual void wheelEvent( QWheelEvent* event );
-    //virtual bool gestureEvent( QGestureEvent* event );
-
-protected:
-
-    virtual void resizeEvent( QResizeEvent* event );
-    virtual void moveEvent( QMoveEvent* event );
-    virtual void glDraw();
-    virtual bool event( QEvent* event );
-};
-
-class Viewer : public GLWidget
+class Viewer : public QGLWidget
 {
 %TypeHeaderCode
 #include "view/Viewer.hpp"
-using namespace osgQt;
 %End
 
 public:
 
-    Viewer( const QGLFormat & format
-          , QWidget * parent = nullptr
+    Viewer( QWidget * parent = nullptr
           , const QGLWidget * share_widget = nullptr
           , Qt::WindowFlags f = 0
           );
 
-    void
-    attach_shape(Shape * shape);
+    PyObject *
+    get_view_with_focus();
+    %MethodCode
+        sipRes = PyString_FromString(sipCpp -> get_view_with_focus() -> getName().c_str());
+    %End
 
     void
-    detach_shape(Shape * shape);
-
-    void
-    set_background_color(const Vec4f & background_color);
-
-    const Vec4f &
-    get_background_color();
-
+    detach_view(MeshView * mesh_view);
  
-protected:
-    virtual void
-    initializeGL();
-
     void
-    paintGL();
-
-public Q_SLOTS:
-    void
-    updateGL();
-
-    PyObject *
-    intersections(int x, int y);
-    %MethodCode
-        std::cerr << "Called int sip function" << std::endl;
-        const auto result = sipCpp -> intersections(a0, a1);
-        sipRes = intersections_to_tuple_of_pairs(result);
-        // const auto result = sipCpp -> intersections((int)(a0), (int)(a1));
-        // sipRes = PyTuple_New(result.size());
-        // for(uint i = 0; i < result.size(); ++i)
-        // {
-        //     PyTuple_SET_ITEM(sipRes, i, PyString_FromString(result[i].c_str()));
-        // }
-    %End
-
-    PyObject *
-    intersections(const Vec3f & start, const Vec3f & end);
-    %MethodCode
-        const auto result = sipCpp -> intersections(*a0, *a1);
-        sipRes = intersections_to_tuple_of_pairs(result);
-    %End
-
-signals:
-    void
-    selected(const char * id);
-};
-
-
-class CompositeView : public GLWidget
-{
-%TypeHeaderCode
-#include "view/CompositeView.hpp"
-using namespace osgQt;
-%End
-
-public:
-
-    CompositeView( QWidget * parent = nullptr
-                 , const QGLWidget * share_widget = nullptr
-                 , Qt::WindowFlags f = 0
-                 );
+    attach_view(MeshView * mesh_view);
 
     void
     attach_shape(Shape * shape);
@@ -1628,77 +842,4 @@ public:
     void
     detach_shape(Shape * shape);
 
-    const Vec4f &
-    get_background_color();
-
-    void
-    set_background_color(const Vec4f & background_color);
-
-    void
-    attach_color_bar(ColorBar * color_bar);
-
-    void
-    detach_color_bar(ColorBar * color_bar);
-
-    void
-    home();
-
-    void
-    forward(double distance_delta);
-
-    void
-    backward(double distance_delta);
-
-    void
-    left(double distance_delta);
-
-    void
-    right(double distance_delta);
-
-    void
-    up(double distance_delta);
-
-    void
-    down(double distance_delta);
-
-    void
-    zoom(double factor);
-
-    void
-    roll(double angle);
-
-    void
-    pitch(double angle);
-
-    void
-    yaw(double angle);
-
-    void
-    setParent(QWidget * parent, Qt::WindowFlags f);
-
-    void
-    setParent(QWidget * parent);
-
-protected:
-    virtual void
-    initializeGL();
-
-signals:
-    void
-    selected(const char * id);
-};
-
-
-class CompositeViewer: public QWidget
-{
-%TypeHeaderCode
-#include "view/CompositeViewer.hpp"
-using namespace osgQt;
-%End
-
-public:
-    CompositeViewer(QWidget * parent = 0, Qt::WindowFlags f = 0);
-protected:
-    virtual void
-    paintEvent(QPaintEvent * event);
 };

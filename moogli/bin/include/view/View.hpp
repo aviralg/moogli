@@ -4,9 +4,8 @@
 #include "utility/libraries.hpp"
 #include "widgets/ColorBar.hpp"
 
-class MeshView: public QObject
+class MeshView
 {
-  Q_OBJECT
 public:
     MeshView();
 
@@ -29,9 +28,9 @@ public:
     resize(int width, int height);
 
     void
-    set_graphics_window(osgQt::GraphicsWindowQt * graphics_window);
+    set_graphics_window(osgViewer::GraphicsWindowEmbedded * graphics_window);
 
-    osgQt::GraphicsWindowQt *
+    osgViewer::GraphicsWindowEmbedded *
     get_graphics_window();
 
     void
@@ -42,9 +41,6 @@ public:
 
     osg::Camera *
     create_orthographic_projection_camera();
-
-    bool
-    event(QEvent * event);
 
     void
     set_background_color(const osg::Vec4f & background_color);
@@ -121,7 +117,7 @@ private:
     osg::Vec2f _size;
     osg::Vec2f _position;
     osg::Vec4f _background_color;
-    osg::ref_ptr<osgQt::GraphicsWindowQt> _graphics_window;
+    osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> _graphics_window;
 };
 
 #endif /* __VIEW_HPP__ */

@@ -11,16 +11,23 @@
 #include "shapes/Shape.hpp"
 //#include "callbacks/MeshUpdateCallback.hpp"
 
-class Viewer : public osgQt::GLWidget
+class Viewer : public QGLWidget
 {
   Q_OBJECT
 
 public:
-  Viewer( const QGLFormat & format
-        , QWidget * parent = nullptr
-        , const QGLWidget * share_widget = nullptr
-        , Qt::WindowFlags f = 0
-        );
+    Viewer( QWidget * parent = nullptr
+          , const QGLWidget * share_widget = nullptr
+          , Qt::WindowFlags f = 0
+          );
+
+    osgGA::EventQueue* getEventQueue() const;
+
+    void
+    attach_view(MeshView * mesh_view);
+
+    void
+    detach_view(MeshView * mesh_view);
 
     void
     attach_shape(Shape * shape);
@@ -28,53 +35,35 @@ public:
     void
     detach_shape(Shape * shape);
 
-    void
-    create_cameras();
-
-    osg::Camera *
-    create_perspective_projection_camera();
-
-    osg::Camera *
-    create_orthographic_projection_camera();
-
-    void
-    set_background_color(const osg::Vec4f & background_color);
-
-    const osg::Vec4f &
-    get_background_color();
-
-protected:
-    virtual void
-    initializeGL();
-
-    void
-    paintGL();
+    osgViewer::View *
+    get_view_with_focus();
 
 signals:
     void
     selected(const char * id);
 
+
+protected:
+
+    virtual void paintEvent( QPaintEvent* paintEvent );
+    virtual void paintGL();
+    virtual void resizeGL( int width, int height );
+
+    virtual void keyPressEvent( QKeyEvent* event );
+    virtual void keyReleaseEvent( QKeyEvent* event );
+
+    virtual void mouseMoveEvent( QMouseEvent* event );
+    virtual void mousePressEvent( QMouseEvent* event );
+    virtual void mouseReleaseEvent( QMouseEvent* event );
+    virtual void wheelEvent( QWheelEvent* event );
+
+    virtual bool event( QEvent* event );
+
 private:
-    osg::ref_ptr<osgGA::MultiTouchTrackballManipulator> _manipulator;
-    osg::ref_ptr<osg::Camera> _main_camera;
-    osg::ref_ptr<osg::Camera> _heads_up_display_camera;
+
     osg::ref_ptr<osg::PositionAttitudeTransform> _shapes;
-    osg::ref_ptr<osgQt::GraphicsWindowQt> _graphics_window;
-    osg::Vec4f _background_color;
-    osg::ref_ptr<osgViewer::Viewer> _viewer;
-
-public Q_SLOTS:
-    void
-    updateGL();
-
-    // const osgUtil::LineSegmentIntersector::Intersections
-    // intersections(float x, float y);
-
-    const osgUtil::LineSegmentIntersector::Intersections
-    intersections(int x, int y);
-
-    const osgUtil::LineSegmentIntersector::Intersections &
-    intersections(const osg::Vec3f & start, const osg::Vec3f & end);
+    osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> _graphics_window;
+    osg::ref_ptr<osgViewer::CompositeViewer>        _viewer;
 };
 
 #endif /* __VIEWER_HPP__ */

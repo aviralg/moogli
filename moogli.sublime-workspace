@@ -580,18 +580,10 @@
 			}
 		},
 		{
-			"file": "/windows/d/chrome-downloads/ubuntu-dep.sh",
-			"settings":
-			{
-				"buffer_size": 113,
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "setup.py",
 			"settings":
 			{
-				"buffer_size": 6649,
+				"buffer_size": 6653,
 				"line_ending": "Unix"
 			}
 		},
@@ -624,6 +616,14 @@
 			"settings":
 			{
 				"buffer_size": 598067,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "moogli/core/viewer.py",
+			"settings":
+			{
+				"buffer_size": 6594,
 				"line_ending": "Unix"
 			}
 		},
@@ -1049,7 +1049,6 @@
 	],
 	"file_history":
 	[
-		"/home/aviral/programming/moogli/moogli/core/viewer.py",
 		"/home/aviral/programming/moogli/moogli/bin/src/mesh/Mesh.cpp",
 		"/home/aviral/programming/moogli/moogli/bin/src/mesh/FrustumMesh.cpp",
 		"/home/aviral/programming/moogli/scripts/moogliviewer",
@@ -1176,7 +1175,8 @@
 		"/home/aviral/Projects/moogli/moogli/include/utility/conversions.hpp",
 		"/home/aviral/Projects/moogli/moogli/include/mesh/SphereMesh.hpp",
 		"/home/aviral/Desktop/sip-4.16.7/sipgen/sip.h",
-		"/home/aviral/Projects/moogli/moogli/src/core/Sequence.cpp"
+		"/home/aviral/Projects/moogli/moogli/src/core/Sequence.cpp",
+		"/home/aviral/Projects/moogli/moogli/include/core/Sequence.hpp"
 	],
 	"find":
 	{
@@ -1349,7 +1349,7 @@
 	"groups":
 	[
 		{
-			"selected": 6,
+			"selected": 5,
 			"sheets":
 			[
 				{
@@ -1489,7 +1489,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
@@ -1517,44 +1517,16 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "/windows/d/chrome-downloads/ubuntu-dep.sh",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 113,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								113,
-								113
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage"
-						},
-						"translation.x": 103.0,
-						"translation.y": -0.0,
-						"zoom_level": 1.0
-					},
 					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 6,
 					"file": "setup.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6649,
+						"buffer_size": 6653,
 						"regions":
 						{
 						},
@@ -1578,7 +1550,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 7,
 					"file": "/home/aviral/programming/paper-model/fig7bcde_6.py",
 					"semi_transient": false,
 					"settings":
@@ -1602,11 +1574,11 @@
 						"translation.y": 4725.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 9,
+					"buffer": 8,
 					"file": "/home/aviral/programming/github-final/moose/moose-examples/snippets/rxdSpineSize.py",
 					"semi_transient": false,
 					"settings":
@@ -1630,11 +1602,11 @@
 						"translation.y": 5460.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 10,
+					"buffer": 9,
 					"file": "/home/aviral/programming/paper-model/test.py",
 					"semi_transient": false,
 					"settings":
@@ -1658,11 +1630,11 @@
 						"translation.y": 4347.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 11,
+					"buffer": 10,
 					"file": "/home/aviral/programming/paper-model/cells_channels/CA1_nochans.morph.xml",
 					"semi_transient": false,
 					"settings":
@@ -1687,6 +1659,34 @@
 						"zoom_level": 1.0
 					},
 					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "moogli/core/viewer.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6594,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5307,
+								5307
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 2279.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
 					"type": "text"
 				},
 				{

@@ -1,7 +1,6 @@
 #include "view/View.hpp"
 
-MeshView::MeshView() : QObject(nullptr)
-                     , _view(new osgViewer::View())
+MeshView::MeshView() : _view(new osgViewer::View())
                      , _manipulator(new osgGA::TrackballManipulator())
 {
     create_cameras();
@@ -74,40 +73,8 @@ MeshView::resize(int width, int height)
 }
 
 
-bool
-MeshView::event(QEvent * event)
-{
-    bool handled = QObject::event(event);
-
-    // This ensures that the OSG widget is always going to be repainted after the
-    // user performed some interaction. Doing this in the event handler ensures
-    // that we don't forget about some event and prevents duplicate code.
-
-    std::cerr << "Getting called" << std::endl;
-    if(event -> type() == QEvent::MouseButtonPress)
-        // && QApplication::keyboardModifiers() & Qt::ControlModifier
-    {
-        osgUtil::LineSegmentIntersector::Intersections intersections;
-        bool result = _view -> computeIntersections( _view -> getCamera()
-                                                   , osgUtil::Intersector::CoordinateFrame::PROJECTION
-                                                   , _view -> getEventQueue() -> getCurrentEventState() -> getXnormalized()
-                                                   , _view -> getEventQueue() -> getCurrentEventState() -> getYnormalized()
-                                                   , intersections
-                                                   );
-        if(result)
-        {
-            std::cerr << "Intersection Happened" << std::endl;
-            const osgUtil::LineSegmentIntersector::Intersection & hit = *intersections.begin();
-            std::cerr << "Clicked on " << hit.drawable -> asGeometry() -> getName() << std::endl;
-        }
-    }
-    return handled;
-}
-
-
-
 void
-MeshView::set_graphics_window(osgQt::GraphicsWindowQt * graphics_window)
+MeshView::set_graphics_window(osgViewer::GraphicsWindowEmbedded * graphics_window)
 {
     _graphics_window = graphics_window;
     _view -> getCamera() -> setGraphicsContext(_graphics_window.get());
@@ -120,7 +87,7 @@ MeshView::set_graphics_window(osgQt::GraphicsWindowQt * graphics_window)
     resize(width, height);
 }
 
-osgQt::GraphicsWindowQt *
+osgViewer::GraphicsWindowEmbedded *
 MeshView::get_graphics_window()
 {
     return _graphics_window.get();
