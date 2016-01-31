@@ -151,7 +151,7 @@ class View(moogli.core._moogli.MeshView):
 class Viewer(moogli.core._moogli.Viewer):
     def __init__(self, id):
         self._id = id
-        super(Viewer, self).__init__()
+        super(Viewer, self).__init__(self)
         super(Viewer, self).initializeGL()
         self.setMouseTracking(True)
         self.groups = set()
